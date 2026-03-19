@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אז מה עושים היום? — fun.israelis.nl</title>
+<meta name="description" content="אירועים מקומיים, ייחודיים וחד-פעמיים למשפחות ישראליות בהולנד. לא אטרקציות כלליות — דברים שקורים עכשיו.">
+<meta property="og:title" content="אז מה עושים היום? — fun.israelis.nl">
+<meta property="og:description" content="אירועים מקומיים לילדים ומשפחות ישראליות בהולנד">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fun.israelis.nl">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
+<style>
+:root {
+  --purple: #9B30FF;
+  --purple-dark: #7B22CC;
+  --magenta: #C850C0;
+  --blue: #4158D0;
+  --green: #2ECC40;
+  --green-dark: #27AE35;
+  --gradient: linear-gradient(135deg, var(--magenta) 0%, var(--purple) 40%, var(--blue) 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(200,80,192,0.08) 0%, rgba(155,48,255,0.08) 40%, rgba(65,88,208,0.06) 100%);
+  --bg: #FAFAFC;
+  --card-bg: #FFFFFF;
+  --text: #1A1A2E;
+  --text-light: #5A5A7A;
+  --text-lighter: #9898B0;
+  --border: #EEEEF4;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 2px 16px rgba(155,48,255,0.06);
+  --shadow-hover: 0 8px 32px rgba(155,48,255,0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: var(--gradient);
+  color: white;
+  padding: 36px 20px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 60%, rgba(46,204,64,0.06) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.hero-content { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green);
+  color: white;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  transform: rotate(-2deg);
+  box-shadow: 0 3px 12px rgba(46,204,64,0.3);
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+  text-shadow: 2px 3px 8px rgba(0,0,0,0.15);
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 15px;
+  opacity: 0.9;
+  margin-bottom: 14px;
+}
+
+.hero-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  opacity: 0.8;
+  font-weight: 300;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+/* ===== STICKY NAV ===== */
+.sticky-nav {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-row {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+}
+
+.nav-logo {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.view-toggles {
+  display: flex;
+  gap: 3px;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.view-btn {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  color: var(--text-light);
+}
+
+.view-btn.active {
+  background: white;
+  color: var(--purple);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  font-weight: 600;
+}
+
+/* Weekend Chips */
+.weekend-nav {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 16px 4px;
+}
+
+.weekend-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.weekend-chips::-webkit-scrollbar { display: none; }
+
+.wk-chip {
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Heebo', sans-serif;
+  min-width: 90px;
+  position: relative;
+}
+
+.wk-chip:hover { border-color: var(--purple); }
+
+.wk-chip.active {
+  background: var(--gradient);
+  border-color: transparent;
+  color: white;
+}
+
+.wk-chip.holiday { border-color: rgba(255,107,53,0.4); }
+
+.wk-label { font-size: 10px; font-weight: 400; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.3px; }
+.wk-dates { font-size: 15px; font-weight: 700; line-height: 1.3; margin: 2px 0; }
+.wk-count {
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(46,204,64,0.15);
+  color: var(--green-dark);
+  padding: 1px 6px;
+  border-radius: 100px;
+  margin-top: 3px;
+}
+
+.wk-chip.active .wk-label,
+.wk-chip.active .wk-dates { opacity: 1; }
+.wk-chip.active .wk-count { background: rgba(255,255,255,0.25); color: white; }
+
+.wk-holiday-tag {
+  font-size: 9px;
+  background: rgba(255,107,53,0.15);
+  color: #E06520;
+  padding: 1px 6px;
+  border-radius: 100px;
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+.wk-chip.active .wk-holiday-tag { background: rgba(255,255,255,0.2); color: white; }
+
+/* Filters */
+.filters-row {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 8px 16px 10px;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filters-row::-webkit-scrollbar { display: none; }
+
+.filter-pill {
+  white-space: nowrap;
+  padding: 5px 13px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-pill:hover { border-color: var(--purple); color: var(--purple); }
+.filter-pill.active { background: var(--purple); color: white; border-color: var(--purple); }
+
+/* ===== CONTENT ===== */
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 14px 16px;
+}
+
+.results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.results-count {
+  font-size: 13px;
+  color: var(--text-lighter);
+}
+
+.results-weekend-label {
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ===== LOADING ===== */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-lighter);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--purple);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 14px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text { font-size: 14px; }
+
+/* ===== EVENT CARDS ===== */
+.events-list { display: flex; flex-direction: column; gap: 12px; }
+
+.event-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+  animation: slideUp 0.35s ease backwards;
+}
+
+.event-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  border-color: rgba(155,48,255,0.1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.event-inner { display: flex; }
+
+.event-img {
+  width: 120px;
+  min-height: 140px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+@media (max-width: 500px) {
+  .event-inner { flex-direction: column; }
+  .event-img { width: 100%; min-height: 150px; }
+}
+
+.event-day-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.event-body {
+  padding: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+
+.etag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.etag-area { background: rgba(155,48,255,0.08); color: var(--purple); }
+.etag-type { background: rgba(46,204,64,0.1); color: var(--green-dark); }
+.etag-free { background: rgba(255,193,7,0.15); color: #D49B00; }
+.etag-age { background: rgba(65,88,208,0.08); color: var(--blue); }
+
+.event-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.event-desc {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.55;
+  font-weight: 300;
+  flex: 1;
+  margin-bottom: 8px;
+}
+
+.event-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.event-details {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--text-lighter);
+}
+
+.event-detail { display: flex; align-items: center; gap: 3px; }
+
+.event-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+
+.btn-s {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.btn-wa { background: #25D366; color: white; }
+.btn-wa:hover { background: #20BD5A; }
+.btn-fb { background: #1877F2; color: white; }
+.btn-fb:hover { background: #1565C0; }
+.btn-nav { background: #4285F4; color: white; }
+.btn-nav:hover { background: #3367D6; }
+.btn-lnk { background: var(--gradient-soft); color: var(--purple); border: 1px solid rgba(155,48,255,0.15); }
+.btn-lnk:hover { border-color: var(--purple); }
+
+/* ===== CALENDAR VIEW ===== */
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+.cal-day-group { margin-bottom: 22px; }
+
+.cal-day-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid;
+  border-image: var(--gradient) 1;
+}
+
+.cal-day-name { font-family: 'Rubik', sans-serif; font-size: 15px; font-weight: 700; }
+.cal-day-date { font-size: 12px; color: var(--text-lighter); }
+.cal-day-count {
+  margin-right: auto; margin-left: 0;
+  font-size: 10px;
+  background: var(--gradient-soft);
+  color: var(--purple);
+  padding: 2px 7px;
+  border-radius: 100px;
+  font-weight: 600;
+}
+
+.cal-events { display: flex; flex-direction: column; gap: 10px; }
+
+/* ===== MAP VIEW ===== */
+#mapContainer {
+  width: 100%;
+  height: 55vh;
+  min-height: 350px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+
+.map-event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.map-event-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+}
+
+.map-event-mini:hover, .map-event-mini.highlighted {
+  border-color: var(--purple);
+  box-shadow: var(--shadow-hover);
+}
+
+.map-mini-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.map-mini-body { flex: 1; }
+.map-mini-title { font-size: 14px; font-weight: 600; }
+.map-mini-meta { font-size: 11px; color: var(--text-lighter); margin-top: 2px; }
+.map-mini-actions { display: flex; gap: 4px; }
+
+/* Leaflet popup override */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  font-family: 'Heebo', sans-serif !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  direction: rtl !important;
+}
+
+.popup-title { font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.popup-meta { color: var(--text-light); font-size: 12px; }
+.popup-links { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.popup-link { color: var(--purple); font-weight: 600; font-size: 12px; text-decoration: none; }
+
+/* ===== NO RESULTS ===== */
+.no-results {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--text-lighter);
+}
+
+.no-results-emoji { font-size: 48px; margin-bottom: 10px; }
+.no-results-text { font-size: 16px; font-weight: 600; color: var(--text-light); }
+.no-results-sub { font-size: 13px; margin-top: 4px; }
+
+/* ===== REQUEST / FORM ===== */
+.request-section {
+  background: var(--gradient-soft);
+  border: 1.5px solid rgba(155,48,255,0.1);
+  border-radius: var(--radius);
+  padding: 22px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.request-title { font-family: 'Rubik', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 5px; }
+.request-desc { font-size: 13px; color: var(--text-light); margin-bottom: 12px; font-weight: 300; }
+
+.request-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 22px;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(155,48,255,0.25);
+}
+
+.request-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(155,48,255,0.35); }
+
+/* ===== SUGGESTION MODAL ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text-lighter);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.modal-close:hover { background: var(--bg); }
+
+.modal-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.modal-subtitle {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 18px;
+}
+
+.form-group { margin-bottom: 14px; }
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color 0.2s;
+  direction: rtl;
+}
+
+.form-input:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+
+.form-textarea { resize: vertical; min-height: 80px; }
+
+.form-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(155,48,255,0.25);
+  margin-top: 6px;
+}
+
+.form-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(155,48,255,0.35); }
+.form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.form-success {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.form-success-emoji { font-size: 48px; margin-bottom: 10px; }
+.form-success-text { font-size: 16px; font-weight: 600; color: var(--text); }
+.form-success-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+
+/* ===== ABOUT ===== */
+.about-section {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.about-title { font-family: 'Rubik', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+
+.about-text { font-size: 13px; color: var(--text-light); line-height: 1.75; font-weight: 300; }
+.about-text strong { font-weight: 600; color: var(--text); }
+
+.about-note {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-lighter);
+  line-height: 1.6;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.footer {
+  text-align: center;
+  padding: 24px 20px;
+  color: var(--text-lighter);
+  font-size: 12px;
+  margin-top: 20px;
+}
+
+.footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
+
+/* ===== FAB ===== */
+.fab {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 12px 18px;
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(46,204,64,0.35);
+  transition: all 0.2s;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(46,204,64,0.45); }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">כל סופ״ש! 🎉</div>
+    <h1 class="hero-title">אז מה עושים היום?</h1>
+    <p class="hero-subtitle">פעילויות איכות עם ילדים בסופ״ש</p>
+    <p class="hero-desc">
+      אירועים מקומיים, ייחודיים וחד-פעמיים למשפחות בהולנד.
+      לא אטרקציות כלליות — דברים שקורים <strong>עכשיו</strong>, במקום ספציפי, בתאריך ספציפי.
+    </p>
+  </div>
+</div>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav">
+  <div class="nav-row">
+    <div class="nav-logo">🎪 אז מה עושים?</div>
+    <div class="view-toggles">
+      <button class="view-btn active" data-view="list">📋 רשימה</button>
+      <button class="view-btn" data-view="calendar">📅 יומן</button>
+      <button class="view-btn" data-view="map">🗺️ מפה</button>
+    </div>
+  </div>
+
+  <div class="weekend-nav">
+    <div class="weekend-chips" id="weekendChips"></div>
+  </div>
+
+  <div class="filters-row" id="filters">
+    <button class="filter-pill active" data-filter="all">הכל</button>
+    <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
+    <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
+    <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
+    <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
+    <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
+    <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
+    <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
+    <button class="filter-pill" data-filter="free">🆓 חינם</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="content">
+  <div class="results-bar">
+    <span class="results-weekend-label" id="weekendLabel"></span>
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" id="loadingState">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">טוען אירועים...</div>
+  </div>
+
+  <!-- List View -->
+  <div class="view-panel active" id="listPanel">
+    <div class="events-list" id="listView"></div>
+  </div>
+
+  <!-- Calendar View -->
+  <div class="view-panel" id="calendarPanel"></div>
+
+  <!-- Map View -->
+  <div class="view-panel" id="mapPanel">
+    <div id="mapContainer"></div>
+    <div class="map-event-list" id="mapEventList"></div>
+  </div>
+
+  <!-- No results -->
+  <div class="no-results hidden" id="noResults">
+    <div class="no-results-emoji">🎪</div>
+    <div class="no-results-text">אין אירועים בסופ״ש הזה</div>
+    <div class="no-results-sub">נסו סופ״ש אחר או קטגוריה אחרת</div>
+  </div>
+
+  <div class="request-section">
+    <div class="request-title">💡 יודעים על אירוע שווה?</div>
+    <div class="request-desc">שתפו אותנו! אנחנו תמיד מחפשים המלצות מהקהילה.</div>
+    <button class="request-btn" onclick="openSuggestionModal()">שלחו המלצה ←</button>
+  </div>
+
+  <div class="about-section">
+    <div class="about-title">ℹ️ מה זה?</div>
+    <div class="about-text">
+      <strong>הורים לילדים בהולנד?</strong> מחפשים המלצות מגניבות לאירועים, בעיקר בסופ״שים וחופשים? הגעתם למקום הנכון!
+      <br><br>
+      בהולנד יש שפע של אירועי תרבות, בידור ובילוי מותאמים לילדים — ואין מקום אחד שמאגד וסוקר אותם. האתר הזה הוא הפתרון.
+      <br><br>
+      כאן תמצאו אירועים <strong>מקומיים וייחודיים</strong> — לא אטרקציות כלליות, אלא דברים שקורים במקום מסוים ובתאריך ספציפי.
+    </div>
+    <div class="about-note">
+      ⚠️ אינני לוקח אחריות על המידע המסוקר. אנא בדקו בקישורים וקחו החלטות מושכלות.
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>🧡 נבנה באהבה לקהילה הישראלית בהולנד</p>
+  <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
+</footer>
+
+<button class="fab" onclick="openSuggestionModal()">💬 יש לי המלצה!</button>
+
+<!-- SUGGESTION MODAL -->
+<div class="modal-overlay" id="suggestionModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSuggestionModal()">&times;</button>
+    <div id="suggestionFormContainer">
+      <div class="modal-title">💡 שלחו המלצה לאירוע</div>
+      <div class="modal-subtitle">יש לכם אירוע שווה שכדאי לשתף? ספרו לנו!</div>
+      <form id="suggestionForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
+        <div class="form-group">
+          <label class="form-label">שם האירוע *</label>
+          <input class="form-input" type="text" name="event_name" required placeholder="למשל: פסטיבל האור באיינדהובן">
+        </div>
+        <div class="form-group">
+          <label class="form-label">מתי?</label>
+          <input class="form-input" type="text" name="event_date" placeholder="למשל: שבת 21/3, 18:00-23:00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">איפה?</label>
+          <input class="form-input" type="text" name="event_location" placeholder="למשל: מרכז איינדהובן">
+        </div>
+        <div class="form-group">
+          <label class="form-label">קישור לאירוע</label>
+          <input class="form-input" type="url" name="event_link" dir="ltr" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">פרטים נוספים</label>
+          <textarea class="form-textarea" name="event_details" placeholder="מה שווה באירוע הזה? למי מתאים? מחיר?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">השם שלך (לא חובה)</label>
+          <input class="form-input" type="text" name="submitter_name" placeholder="כדי שנוכל לתת קרדיט 🙂">
+        </div>
+        <input type="hidden" name="_subject" value="המלצה חדשה לאירוע — fun.israelis.nl">
+        <button type="submit" class="form-submit" id="submitBtn">שלחו המלצה 🚀</button>
+      </form>
+    </div>
+    <div class="form-success hidden" id="suggestionSuccess">
+      <div class="form-success-emoji">🎉</div>
+      <div class="form-success-text">תודה רבה!</div>
+      <div class="form-success-sub">קיבלנו את ההמלצה שלכם ונבדוק אותה בהקדם.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+// REPLACE with your published Google Sheet CSV URL
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=0&single=true&output=csv';
+
+// ===== HOLIDAYS =====
+const holidays = [
+  { date: '2026-04-03', endDate: '2026-04-19', name: 'חופש פסח / Meivakantie' },
+  { date: '2026-05-14', name: 'Hemelvaartsdag' },
+  { date: '2026-05-25', name: 'Pinkstermaandag' },
+  { date: '2026-07-11', endDate: '2026-08-23', name: 'חופש גדול' },
+];
+
+function isHolidayDate(dateStr) {
+  for (const h of holidays) {
+    if (h.endDate) {
+      if (dateStr >= h.date && dateStr <= h.endDate) return h.name;
+    } else {
+      if (dateStr === h.date) return h.name;
+    }
+  }
+  return null;
+}
+
+// ===== STATE =====
+let events = [];
+let activeFilter = 'all';
+let activeWeekend = null;
+let activeView = 'list';
+let map = null;
+let markers = [];
+
+// ===== LOAD DATA FROM GOOGLE SHEET =====
+function parseCSV(text) {
+  const lines = text.split('\n');
+  if (lines.length < 2) return [];
+
+  const headers = parseCSVLine(lines[0]);
+  const results = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const values = parseCSVLine(line);
+    const obj = {};
+    headers.forEach((h, idx) => {
+      obj[h.trim()] = (values[idx] || '').trim();
+    });
+    results.push(obj);
+  }
+  return results;
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (i + 1 < line.length && line[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        current += ch;
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ',') {
+        result.push(current);
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+  }
+  result.push(current);
+  return result;
+}
+
+function rowToEvent(row, id) {
+  return {
+    id: id,
+    title: row.title || '',
+    desc: row.desc || '',
+    type: row.type || '',
+    area: row.area || '',
+    ages: row.ages || '',
+    price: row.price || '',
+    free: (row.free || '').toUpperCase() === 'TRUE',
+    date: row.date || '',
+    endDate: row.endDate || '',
+    time: row.time || '',
+    image: row.image || '',
+    link: row.link || '',
+    location: row.location || '',
+    lat: parseFloat(row.lat) || 0,
+    lng: parseFloat(row.lng) || 0,
+  };
+}
+
+function getImageURL(image) {
+  if (!image) return '';
+  if (image.startsWith('http')) return image;
+  return 'images/' + image;
+}
+
+async function loadEvents() {
+  try {
+    const resp = await fetch(SHEET_CSV_URL);
+    if (!resp.ok) throw new Error('Failed to fetch');
+    const text = await resp.text();
+    const rows = parseCSV(text);
+    events = rows.map((r, i) => rowToEvent(r, i + 1)).filter(e => e.title && e.date);
+  } catch (err) {
+    console.error('Error loading events:', err);
+    events = [];
+  }
+  document.getElementById('loadingState').classList.add('hidden');
+  buildWeekendChips();
+  render();
+}
+
+// ===== WEEKEND CHIPS =====
+function getUpcomingWeekends(count) {
+  const weekends = [];
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  let d = new Date(today);
+
+  while (d.getDay() !== 6) d.setDate(d.getDate() + 1);
+  if (today.getDay() === 0) { d = new Date(today); d.setDate(d.getDate() - 1); }
+  if (today.getDay() === 6) d = new Date(today);
+
+  for (let i = 0; i < count; i++) {
+    const sat = new Date(d);
+    const sun = new Date(d);
+    sun.setDate(sun.getDate() + 1);
+
+    const satStr = sat.toISOString().split('T')[0];
+    const sunStr = sun.toISOString().split('T')[0];
+
+    const holidayName = isHolidayDate(satStr) || isHolidayDate(sunStr);
+    const evCount = events.filter(e => eventOnWeekend(e, satStr, sunStr)).length;
+
+    weekends.push({ sat: satStr, sun: sunStr, satDate: sat, sunDate: sun, holiday: holidayName, eventCount: evCount });
+    d.setDate(d.getDate() + 7);
+  }
+  return weekends;
+}
+
+function eventOnWeekend(e, satStr, sunStr) {
+  if (e.endDate) return !(e.endDate < satStr || e.date > sunStr);
+  return e.date === satStr || e.date === sunStr;
+}
+
+function buildWeekendChips() {
+  const container = document.getElementById('weekendChips');
+  const weekends = getUpcomingWeekends(8);
+  const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
+
+  activeWeekend = weekends[0];
+
+  container.innerHTML = weekends.map((w, i) => {
+    const satD = w.satDate;
+    const sunD = w.sunDate;
+    const label = i === 0 ? 'הסופ״ש הקרוב' : `עוד ${i} ${i === 1 ? 'שבוע' : 'שבועות'}`;
+    const dates = `${satD.getDate()}-${sunD.getDate()} ${hebrewMonths[satD.getMonth()]}`;
+    return `<button class="wk-chip ${i === 0 ? 'active' : ''} ${w.holiday ? 'holiday' : ''}" data-idx="${i}">
+      <span class="wk-label">${label}</span>
+      <span class="wk-dates">${dates}</span>
+      ${w.eventCount > 0 ? `<span class="wk-count">${w.eventCount} אירועים</span>` : ''}
+      ${w.holiday ? `<span class="wk-holiday-tag">🎉 ${w.holiday}</span>` : ''}
+    </button>`;
+  }).join('');
+  container._weekends = weekends;
+}
+
+// ===== FILTER =====
+function getFilteredEvents() {
+  if (!activeWeekend) return [];
+  const { sat, sun } = activeWeekend;
+  return events.filter(e => {
+    if (!eventOnWeekend(e, sat, sun)) return false;
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'free') return e.free;
+    return e.type === activeFilter;
+  });
+}
+
+// ===== CARD HTML =====
+function cardHTML(e, i) {
+  const dateLabel = fmtShort(e.date) + (e.endDate ? '-' + fmtShort(e.endDate) : '');
+  const shareText = `🎪 ${e.title}\n📍 ${e.location}\n📅 ${dateLabel} | ${e.time}\n💰 ${e.price}\n\n👉 ${e.link || 'fun.israelis.nl'}`;
+  const whatsappText = encodeURIComponent(shareText);
+  const fbUrl = encodeURIComponent(e.link || 'https://fun.israelis.nl');
+  const navUrl = e.lat && e.lng ? `https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}` : '';
+  const imgUrl = getImageURL(e.image);
+  const imgStyle = imgUrl ? `background-image:url('${imgUrl}')` : `background:var(--gradient-soft);display:flex;align-items:center;justify-content:center;font-size:40px;`;
+  const imgContent = imgUrl ? '' : '';
+
+  return `
+  <div class="event-card" style="animation-delay:${i*0.04}s" data-id="${e.id}">
+    <div class="event-inner">
+      <div class="event-img" style="${imgStyle}">
+        ${!imgUrl ? `<span>${typeEmoji(e.type)}</span>` : ''}
+        <div class="event-day-badge">${fmtDay(e.date)} ${e.time}</div>
+      </div>
+      <div class="event-body">
+        <div class="event-tags">
+          <span class="etag etag-area">📍 ${e.area}</span>
+          <span class="etag etag-type">${typeEmoji(e.type)} ${typeLabel(e.type)}</span>
+          ${e.free ? '<span class="etag etag-free">🆓 חינם</span>' : ''}
+          <span class="etag etag-age">👶 ${e.ages}</span>
+        </div>
+        <h3 class="event-title">${e.title}</h3>
+        <p class="event-desc">${e.desc}</p>
+        <div class="event-footer">
+          <div class="event-details">
+            <span class="event-detail">📍 ${e.location}</span>
+            <span class="event-detail">💰 ${e.price}</span>
+          </div>
+          <div class="event-actions">
+            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank">📲 WhatsApp</a>
+            <a class="btn-s btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${fbUrl}" target="_blank">📘 Facebook</a>
+            ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 ניווט</a>` : ''}
+            ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">🔗 לאירוע</a>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== RENDER VIEWS =====
+function renderList() {
+  const el = document.getElementById('listView');
+  const filtered = getFilteredEvents();
+  updateResultsBar(filtered);
+  if (!filtered.length) { el.innerHTML = ''; return; }
+  filtered.sort((a,b) => a.date.localeCompare(b.date));
+  el.innerHTML = filtered.map((e,i) => cardHTML(e,i)).join('');
+}
+
+function renderCalendar() {
+  const el = document.getElementById('calendarPanel');
+  const filtered = getFilteredEvents();
+  updateResultsBar(filtered);
+  if (!filtered.length) { el.innerHTML = ''; return; }
+
+  const groups = {};
+  filtered.forEach(e => {
+    const dates = getEventDates(e, activeWeekend.sat, activeWeekend.sun);
+    dates.forEach(ds => {
+      if (!groups[ds]) groups[ds] = [];
+      if (!groups[ds].find(x => x.id === e.id)) groups[ds].push(e);
+    });
+  });
+
+  const sorted = Object.keys(groups).sort();
+  let idx = 0;
+  el.innerHTML = sorted.map(date => `
+    <div class="cal-day-group">
+      <div class="cal-day-header">
+        <span class="cal-day-name">${fmtDayFull(date)}</span>
+        <span class="cal-day-date">${fmtLong(date)}</span>
+        <span class="cal-day-count">${groups[date].length} אירועים</span>
+      </div>
+      <div class="cal-events">${groups[date].map(e => cardHTML(e, idx++)).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function renderMap() {
+  const filtered = getFilteredEvents();
+  updateResultsBar(filtered);
+
+  if (!map) {
+    map = L.map('mapContainer', { zoomControl: false }).setView([52.3, 4.9], 8);
+    L.control.zoom({ position: 'topright' }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      maxZoom: 18
+    }).addTo(map);
+  }
+
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+
+  const colors = ['#9B30FF','#C850C0','#4158D0','#2ECC40','#E06520','#E63946','#F4A261','#00B4D8'];
+
+  if (!filtered.length) {
+    document.getElementById('mapEventList').innerHTML = '';
+    map.setView([52.3, 4.9], 8);
+    return;
+  }
+
+  const bounds = [];
+
+  filtered.forEach((e, i) => {
+    if (!e.lat || !e.lng) return;
+    const color = colors[i % colors.length];
+
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="background:${color};width:28px;height:28px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;font-size:13px;">${typeEmoji(e.type)}</div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+
+    const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}`;
+    const dateLabel = fmtShort(e.date) + (e.endDate ? '-' + fmtShort(e.endDate) : '');
+    const whatsappText = encodeURIComponent(`🎪 ${e.title}\n📍 ${e.location}\n📅 ${dateLabel} | ${e.time}\n💰 ${e.price}\n\n👉 ${e.link || 'fun.israelis.nl'}`);
+
+    const marker = L.marker([e.lat, e.lng], { icon }).addTo(map);
+    marker.bindPopup(`
+      <div class="popup-title">${e.title}</div>
+      <div class="popup-meta">📍 ${e.location} · ${e.time} · ${e.price}</div>
+      <div class="popup-links">
+        ${e.link ? `<a class="popup-link" href="${e.link}" target="_blank">🔗 לאירוע</a>` : ''}
+        <a class="popup-link" href="${navUrl}" target="_blank">🧭 ניווט</a>
+        <a class="popup-link" href="https://wa.me/?text=${whatsappText}" target="_blank">📲 שתף</a>
+      </div>
+    `, { direction: 'top', className: '' });
+
+    markers.push(marker);
+    bounds.push([e.lat, e.lng]);
+  });
+
+  if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 11 });
+
+  document.getElementById('mapEventList').innerHTML = filtered.map((e, i) => {
+    const color = colors[i % colors.length];
+    const whatsappText = encodeURIComponent(`🎪 ${e.title}\n📍 ${e.location}\n📅 ${fmtShort(e.date)} | ${e.time}\n💰 ${e.price}`);
+    return `
+    <div class="map-event-mini" data-id="${e.id}" onclick="focusMarker(${i})">
+      <div class="map-mini-dot" style="background:${color}"></div>
+      <div class="map-mini-body">
+        <div class="map-mini-title">${e.title}</div>
+        <div class="map-mini-meta">📍 ${e.area} · ${fmtDay(e.date)} ${e.time} · ${e.price}</div>
+      </div>
+      <div class="map-mini-actions">
+        <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank" onclick="event.stopPropagation()">📲</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function focusMarker(idx) {
+  if (markers[idx]) {
+    markers[idx].openPopup();
+    map.setView(markers[idx].getLatLng(), 12, { animate: true });
+  }
+}
+
+function updateResultsBar(filtered) {
+  const noRes = document.getElementById('noResults');
+  const countEl = document.getElementById('resultsCount');
+  const labelEl = document.getElementById('weekendLabel');
+
+  if (!filtered.length) {
+    noRes.classList.remove('hidden');
+    countEl.textContent = '';
+    labelEl.textContent = '';
+  } else {
+    noRes.classList.add('hidden');
+    countEl.textContent = `${filtered.length} אירועים`;
+    if (activeWeekend) labelEl.textContent = `סופ״ש ${fmtLong(activeWeekend.sat)}`;
+  }
+}
+
+function render() {
+  if (activeView === 'list') renderList();
+  else if (activeView === 'calendar') renderCalendar();
+  else if (activeView === 'map') renderMap();
+}
+
+// ===== HELPERS =====
+function typeEmoji(t) { return {outdoor:'🌳',indoor:'🏠',music:'🎵',theater:'🎭',market:'🛍️',workshop:'🎨',sport:'⚽'}[t]||'📌'; }
+function typeLabel(t) { return {outdoor:'בחוץ',indoor:'בפנים',music:'מוזיקה',theater:'הצגה',market:'שוק',workshop:'סדנה',sport:'ספורט'}[t]||t; }
+
+function fmtShort(s) { const d=new Date(s+'T00:00:00'); return `${d.getDate()}/${d.getMonth()+1}`; }
+
+function fmtLong(s) {
+  const m=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+  const d=new Date(s+'T00:00:00');
+  return `${d.getDate()} ${m[d.getMonth()]}`;
+}
+
+function fmtDay(s) {
+  const days=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  const d=new Date(s+'T00:00:00');
+  const today=new Date(); today.setHours(0,0,0,0);
+  const diff=Math.floor((d-today)/86400000);
+  if(diff===0) return 'היום';
+  if(diff===1) return 'מחר';
+  return 'יום '+days[d.getDay()];
+}
+
+function fmtDayFull(s) {
+  const days=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  const d=new Date(s+'T00:00:00');
+  const today=new Date(); today.setHours(0,0,0,0);
+  const diff=Math.floor((d-today)/86400000);
+  if(diff===0) return '🟢 היום';
+  if(diff===1) return '🔵 מחר';
+  return (d.getDay()===6?'🟣 ':'🔵 ')+'יום '+days[d.getDay()];
+}
+
+function getEventDates(e, minDate, maxDate) {
+  const dates = [];
+  if (e.endDate) {
+    let d = new Date(Math.max(new Date(e.date), new Date(minDate)));
+    const end = new Date(Math.min(new Date(e.endDate), new Date(maxDate)));
+    while (d <= end) {
+      dates.push(d.toISOString().split('T')[0]);
+      d.setDate(d.getDate() + 1);
+    }
+  } else {
+    dates.push(e.date);
+  }
+  return dates;
+}
+
+// ===== SUGGESTION MODAL =====
+function openSuggestionModal() {
+  document.getElementById('suggestionModal').classList.add('active');
+  document.getElementById('suggestionFormContainer').classList.remove('hidden');
+  document.getElementById('suggestionSuccess').classList.add('hidden');
+  document.getElementById('suggestionForm').reset();
+}
+
+function closeSuggestionModal() {
+  document.getElementById('suggestionModal').classList.remove('active');
+}
+
+// Close modal on overlay click
+document.getElementById('suggestionModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSuggestionModal();
+});
+
+// Handle form submission
+document.getElementById('suggestionForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+
+  try {
+    const resp = await fetch(this.action, {
+      method: 'POST',
+      body: new FormData(this),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (resp.ok) {
+      document.getElementById('suggestionFormContainer').classList.add('hidden');
+      document.getElementById('suggestionSuccess').classList.remove('hidden');
+      setTimeout(closeSuggestionModal, 3000);
+    } else {
+      throw new Error('Form submission failed');
+    }
+  } catch (err) {
+    alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
+    btn.disabled = false;
+    btn.textContent = 'שלחו המלצה 🚀';
+  }
+});
+
+// ===== EVENT LISTENERS =====
+
+// View toggles
+document.querySelectorAll('.view-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeView = btn.dataset.view;
+    document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById({ list: 'listPanel', calendar: 'calendarPanel', map: 'mapPanel' }[activeView]).classList.add('active');
+    render();
+    if (activeView === 'map' && map) setTimeout(() => map.invalidateSize(), 100);
+  });
+});
+
+// Weekend chips
+document.getElementById('weekendChips').addEventListener('click', (e) => {
+  const chip = e.target.closest('.wk-chip');
+  if (!chip) return;
+  document.querySelectorAll('.wk-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  activeWeekend = document.getElementById('weekendChips')._weekends[parseInt(chip.dataset.idx)];
+  render();
+});
+
+// Filter pills
+document.getElementById('filters').addEventListener('click', (e) => {
+  const pill = e.target.closest('.filter-pill');
+  if (!pill) return;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  activeFilter = pill.dataset.filter;
+  render();
+});
+
+// ===== INIT =====
+loadEvents();
+</script>
+</body>
+</html>
