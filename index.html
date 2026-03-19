@@ -388,6 +388,7 @@ body {
 .etag-area { background: rgba(155,48,255,0.08); color: var(--purple); }
 .etag-type { background: rgba(46,204,64,0.1); color: var(--green-dark); }
 .etag-free { background: rgba(255,193,7,0.15); color: #D49B00; }
+.etag-museum { background: rgba(121,85,72,0.1); color: #5D4037; }
 .etag-age { background: rgba(65,88,208,0.08); color: var(--blue); }
 
 .event-title {
@@ -808,6 +809,7 @@ body {
     <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
     <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
     <button class="filter-pill" data-filter="free">🆓 חינם</button>
+    <button class="filter-pill" data-filter="museumkaart">🏛️ Museumkaart</button>
   </div>
 </nav>
 
@@ -1021,6 +1023,7 @@ function rowToEvent(row, id) {
     location: row.location || '',
     lat: parseFloat(row.lat) || 0,
     lng: parseFloat(row.lng) || 0,
+    museumkaart: (row.museumkaart || '').toUpperCase() === 'TRUE',
   };
 }
 
@@ -1109,6 +1112,7 @@ function getFilteredEvents() {
     if (!eventOnWeekend(e, sat, sun)) return false;
     if (activeFilter === 'all') return true;
     if (activeFilter === 'free') return e.free;
+    if (activeFilter === 'museumkaart') return e.museumkaart;
     return e.type === activeFilter;
   });
 }
@@ -1136,6 +1140,7 @@ function cardHTML(e, i) {
           <span class="etag etag-area">📍 ${e.area}</span>
           <span class="etag etag-type">${typeEmoji(e.type)} ${typeLabel(e.type)}</span>
           ${e.free ? '<span class="etag etag-free">🆓 חינם</span>' : ''}
+          ${e.museumkaart ? '<span class="etag etag-museum">🏛️ Museumkaart</span>' : ''}
           <span class="etag etag-age">👶 ${e.ages}</span>
         </div>
         <h3 class="event-title">${e.title}</h3>
