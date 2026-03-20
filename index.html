@@ -1197,7 +1197,7 @@ function getFilteredEvents() {
 // ===== CARD HTML =====
 function cardHTML(e, i) {
   const dateLabel = fmtShort(e.date) + (e.endDate ? '-' + fmtShort(e.endDate) : '');
-  const shareText = `🎪 ${e.title}\n📍 ${e.location}\n📅 ${dateLabel} | ${e.time}\n💰 ${e.price}\n\n👉 ${e.link || 'fun.israelis.nl'}`;
+  const shareText = `${e.title}\n${e.location}\n${dateLabel} | ${e.time}\n${e.price}\n\n${e.link || 'https://fun.israelis.nl'}`;
   const whatsappText = encodeURIComponent(shareText);
   const fbUrl = encodeURIComponent(e.link || 'https://fun.israelis.nl');
   const navUrl = e.lat && e.lng ? `https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}` : '';
@@ -1316,7 +1316,7 @@ function renderMap() {
 
     const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}`;
     const dateLabel = fmtShort(e.date) + (e.endDate ? '-' + fmtShort(e.endDate) : '');
-    const whatsappText = encodeURIComponent(`🎪 ${e.title}\n📍 ${e.location}\n📅 ${dateLabel} | ${e.time}\n💰 ${e.price}\n\n👉 ${e.link || 'fun.israelis.nl'}`);
+    const whatsappText = encodeURIComponent(`${e.title}\n${e.location}\n${dateLabel} | ${e.time}\n${e.price}\n\n${e.link || 'https://fun.israelis.nl'}`);
 
     const marker = L.marker([e.lat, e.lng], { icon }).addTo(map);
     marker.bindPopup(`
@@ -1337,7 +1337,7 @@ function renderMap() {
 
   document.getElementById('mapEventList').innerHTML = filtered.map((e, i) => {
     const color = colors[i % colors.length];
-    const whatsappText = encodeURIComponent(`🎪 ${e.title}\n📍 ${e.location}\n📅 ${fmtShort(e.date)} | ${e.time}\n💰 ${e.price}`);
+    const whatsappText = encodeURIComponent(`${e.title}\n${e.location}\n${fmtShort(e.date)} | ${e.time}\n${e.price}`);
     return `
     <div class="map-event-mini" data-id="${e.id}" onclick="focusMarker(${i})">
       <div class="map-mini-dot" style="background:${color}"></div>
