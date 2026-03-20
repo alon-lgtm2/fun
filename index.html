@@ -280,11 +280,19 @@ body {
   border: 2px solid var(--border);
   background: white;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
   font-family: 'Heebo', sans-serif;
   min-width: 90px;
   position: relative;
 }
+
+.sticky-nav.compact .weekend-nav { padding: 4px 24px 2px; }
+.sticky-nav.compact .wk-chip { padding: 4px 10px; min-width: 70px; }
+.sticky-nav.compact .wk-label { font-size: 8px; }
+.sticky-nav.compact .wk-dates { font-size: 12px; margin: 0; }
+.sticky-nav.compact .wk-count { font-size: 8px; margin-top: 1px; }
+.sticky-nav.compact .filters-row { padding: 4px 24px 6px; }
+.sticky-nav.compact .filter-pill { padding: 3px 8px; font-size: 10px; }
 
 .wk-chip:hover:not(.wk-empty) { border-color: var(--purple); }
 
@@ -336,23 +344,21 @@ body {
 .filters-row {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 8px 24px 10px;
+  padding: 6px 24px 8px;
   display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-
-.filters-row::-webkit-scrollbar { display: none; }
 
 .filter-pill {
   white-space: nowrap;
-  padding: 5px 13px;
+  padding: 4px 10px;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   background: white;
   font-family: 'Heebo', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-light);
   cursor: pointer;
@@ -2002,12 +2008,15 @@ document.getElementById('filters').addEventListener('click', (e) => {
 // ===== SCROLL-BASED WEEKEND AUTO-ADVANCE =====
 let scrollTimeout;
 window.addEventListener('scroll', () => {
-  // Show/hide nav logo based on hero visibility
+  // Show/hide nav logo and compact mode based on hero visibility
   const hero = document.querySelector('.hero');
   const navLogo = document.querySelector('.nav-logo');
+  const stickyNav = document.querySelector('.sticky-nav');
   if (hero && navLogo) {
     const heroBottom = hero.getBoundingClientRect().bottom;
-    navLogo.classList.toggle('visible', heroBottom < 0);
+    const scrolledPast = heroBottom < 0;
+    navLogo.classList.toggle('visible', scrolledPast);
+    stickyNav.classList.toggle('compact', scrolledPast);
   }
 
   clearTimeout(scrollTimeout);
