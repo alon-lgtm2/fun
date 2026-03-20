@@ -150,19 +150,20 @@ body {
 
 .view-toggles {
   display: flex;
-  gap: 3px;
+  gap: 4px;
   background: var(--bg);
-  border-radius: 10px;
-  padding: 3px;
+  border-radius: 12px;
+  padding: 4px;
+  border: 2px solid var(--purple-light);
 }
 
 .view-btn {
-  padding: 5px 12px;
+  padding: 8px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-family: 'Heebo', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   background: transparent;
@@ -170,10 +171,10 @@ body {
 }
 
 .view-btn.active {
-  background: white;
-  color: var(--purple);
-  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-  font-weight: 600;
+  background: var(--purple);
+  color: white;
+  box-shadow: 0 2px 8px rgba(139,92,246,0.3);
+  font-weight: 700;
 }
 
 /* Weekend Chips */
@@ -438,13 +439,11 @@ body {
 
 .event-actions {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 6px;
-  align-items: flex-start;
-  margin-top: 8px;
+  align-items: center;
+  margin-top: 6px;
 }
-
-.event-actions .btn-s { width: 100%; text-align: center; box-sizing: border-box; }
 
 .like-row {
   display: inline-flex;
@@ -912,6 +911,7 @@ body {
 
   <div class="filters-row" id="filters">
     <button class="filter-pill active" data-filter="all">הכל</button>
+    <button class="filter-pill" data-filter="liked">❤️ אהבתי</button>
     <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
     <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
     <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
@@ -920,7 +920,6 @@ body {
     <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
     <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
     <button class="filter-pill" data-filter="free">🆓 חינם</button>
-    <button class="filter-pill" data-filter="liked">❤️ אהבתי</button>
     <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
   </div>
 </nav>
@@ -1162,7 +1161,7 @@ function rowToEvent(row, id) {
 
 function getImageURL(image) {
   if (!image) return '';
-  if (image.startsWith('http')) return image;
+  if (image.startsWith('http') || image.startsWith('/') || image.startsWith('images/')) return image;
   return 'images/' + image;
 }
 
@@ -1283,6 +1282,7 @@ function cardHTML(e, i) {
           <div class="event-details">
             <span class="event-detail">📍 ${e.location}</span>
             <span class="event-detail">💰 ${e.price}</span>
+            <span class="event-detail event-weather" data-lat="${e.lat}" data-lng="${e.lng}" data-date="${e.date}"></span>
           </div>
           <div class="event-actions">
             <div class="like-row ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)">
@@ -1439,6 +1439,44 @@ function updateResultsBar(filtered) {
 function render() {
   if (activeView === 'calendar') renderCalendar();
   else if (activeView === 'map') renderMap();
+  fetchWeather();
+}
+
+// ===== WEATHER =====
+const weatherCache = {};
+const weatherIcons = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'🌨️',75:'🌨️',80:'🌦️',81:'🌧️',82:'🌧️',95:'⛈️',96:'⛈️',99:'⛈️'};
+
+async function fetchWeather() {
+  const els = document.querySelectorAll('.event-weather');
+  const toFetch = new Map();
+  els.forEach(el => {
+    const lat = el.dataset.lat, lng = el.dataset.lng, date = el.dataset.date;
+    if (!lat || !lng || !date) return;
+    const key = `${lat},${lng},${date}`;
+    if (weatherCache[key]) {
+      el.innerHTML = weatherCache[key];
+      return;
+    }
+    if (!toFetch.has(key)) toFetch.set(key, []);
+    toFetch.get(key).push(el);
+  });
+
+  for (const [key, elements] of toFetch) {
+    const [lat, lng, date] = key.split(',');
+    try {
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weathercode,temperature_2m_max,temperature_2m_min&start_date=${date}&end_date=${date}&timezone=Europe/Amsterdam`);
+      const data = await res.json();
+      if (data.daily) {
+        const code = data.daily.weathercode[0];
+        const hi = Math.round(data.daily.temperature_2m_max[0]);
+        const lo = Math.round(data.daily.temperature_2m_min[0]);
+        const icon = weatherIcons[code] || '🌡️';
+        const html = `${icon} ${hi}°/${lo}°`;
+        weatherCache[key] = html;
+        elements.forEach(el => el.innerHTML = html);
+      }
+    } catch(e) { /* skip weather if API fails */ }
+  }
 }
 
 // ===== LIKES =====
@@ -1631,9 +1669,16 @@ document.getElementById('weekendChips').addEventListener('click', (e) => {
 document.getElementById('filters').addEventListener('click', (e) => {
   const pill = e.target.closest('.filter-pill');
   if (!pill) return;
+  const wasActive = pill.classList.contains('active');
   document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-  pill.classList.add('active');
-  activeFilter = pill.dataset.filter;
+  if (wasActive && pill.dataset.filter !== 'all') {
+    // Unclick: go back to "all"
+    document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
+    activeFilter = 'all';
+  } else {
+    pill.classList.add('active');
+    activeFilter = pill.dataset.filter;
+  }
   render();
 });
 
