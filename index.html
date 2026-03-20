@@ -391,15 +391,15 @@ body {
 .loading-text { font-size: 14px; }
 
 /* ===== EVENT CARDS ===== */
-.events-list { display: flex; flex-direction: column; gap: 12px; }
+.events-list { display: flex; flex-direction: column; gap: 24px; }
 
 .event-card {
   background: var(--card-bg);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 20px rgba(155,48,255,0.08);
   transition: all 0.25s ease;
-  border: 1px solid transparent;
+  border: 1px solid rgba(155,48,255,0.06);
   animation: slideUp 0.35s ease backwards;
 }
 
@@ -428,9 +428,14 @@ body {
 
 @media (max-width: 700px) {
   .event-inner { flex-direction: column; }
-  .event-img { width: 100%; min-height: 180px; border-radius: 0 0 var(--radius) var(--radius); }
+  .event-img { width: 100%; min-height: 200px; max-height: 220px; border-radius: 0 0 var(--radius) var(--radius); order: -1; }
   .btn-s { padding: 10px 16px; font-size: 14px; border-radius: 10px; }
-  .btn-m { padding: 14px 20px; font-size: 15px; border-radius: 12px; min-height: 48px; }
+  .btn-m { padding: 14px 18px; font-size: 15px; border-radius: 12px; min-height: 48px; white-space: normal; text-align: center; }
+  .event-actions-main { flex-direction: column; gap: 10px; }
+  .event-actions-main .btn-m { width: 100%; }
+  .event-actions-top { gap: 10px; }
+  .event-tags { gap: 4px; }
+  .etag { font-size: 9px; padding: 2px 6px; }
   .like-row { padding: 8px 16px; }
   .like-count { font-size: 14px; }
   .btn-like { font-size: 20px; }
@@ -654,7 +659,7 @@ body {
 .view-panel { display: none; }
 .view-panel.active { display: block; }
 
-.cal-day-group { margin-bottom: 22px; }
+.cal-day-group { margin-bottom: 32px; }
 
 .cal-day-header {
   display: flex;
