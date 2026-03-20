@@ -10,9 +10,9 @@
   "lang": "he",
   "icons": [
     {
-      "src": "images/Button-Purple.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "images/az.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
