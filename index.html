@@ -1533,9 +1533,9 @@ function cardHTML(e, i) {
             <div class="event-actions-top">
               <div class="like-row ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)">
                 <span class="btn-like ${isLiked(e.id) ? 'liked' : ''}">❤️</span>
-                <span class="like-count">${isLiked(e.id) ? 'שמור' : 'שמירה'}</span>
+                <span class="like-count">${isLiked(e.id) ? 'לייק!' : 'לייק'}</span>
               </div>
-              <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:16px;height:16px;"> שיתוף</a>
+              <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:16px;height:16px;"> הכי כיף לטייל ביחד</a>
             </div>
             <div class="event-actions-main">
               ${e.link ? `<a class="btn-m btn-lnk" href="${e.link}" target="_blank">🔗 לפרטים נוספים</a>` : ''}
