@@ -273,7 +273,14 @@ body {
   position: relative;
 }
 
-.wk-chip:hover { border-color: var(--purple); }
+.wk-chip:hover:not(.wk-empty) { border-color: var(--purple); }
+
+.wk-chip.wk-empty {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+  background: #f5f5f5;
+}
 
 .wk-chip.active {
   background: var(--gradient);
@@ -1450,17 +1457,21 @@ function buildWeekendChips() {
   const weekends = getUpcomingWeekends(8);
   const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
 
-  activeWeekend = weekends[0];
+  const firstWithEvents = weekends.findIndex(w => w.eventCount > 0);
+  const defaultIdx = firstWithEvents >= 0 ? firstWithEvents : 0;
+  activeWeekend = weekends[defaultIdx];
 
   container.innerHTML = weekends.map((w, i) => {
     const satD = w.satDate;
     const sunD = w.sunDate;
     const label = i === 0 ? 'הסופ״ש הקרוב' : `עוד ${i} ${i === 1 ? 'שבוע' : 'שבועות'}`;
     const dates = `${satD.getDate()}-${sunD.getDate()} ${hebrewMonths[satD.getMonth()]}`;
-    return `<button class="wk-chip ${i === 0 ? 'active' : ''} ${w.holiday ? 'holiday' : ''}" data-idx="${i}">
+    const isEmpty = w.eventCount === 0;
+    const isActive = i === defaultIdx;
+    return `<button class="wk-chip ${isActive ? 'active' : ''} ${w.holiday ? 'holiday' : ''} ${isEmpty ? 'wk-empty' : ''}" data-idx="${i}">
       <span class="wk-label">${label}</span>
       <span class="wk-dates">${dates}</span>
-      ${w.eventCount > 0 ? `<span class="wk-count">${w.eventCount} אירועים</span>` : ''}
+      ${w.eventCount > 0 ? `<span class="wk-count">${w.eventCount} אירועים</span>` : '<span class="wk-count" style="background:rgba(0,0,0,0.06);color:#aaa;">אין אירועים</span>'}
       ${w.holiday ? `<span class="wk-holiday-tag">🎉 ${w.holiday}</span>` : ''}
     </button>`;
   }).join('');
@@ -1947,7 +1958,7 @@ document.querySelectorAll('.view-btn').forEach(btn => {
 // Weekend chips
 document.getElementById('weekendChips').addEventListener('click', (e) => {
   const chip = e.target.closest('.wk-chip');
-  if (!chip) return;
+  if (!chip || chip.classList.contains('wk-empty')) return;
   document.querySelectorAll('.wk-chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
   activeWeekend = document.getElementById('weekendChips')._weekends[parseInt(chip.dataset.idx)];
