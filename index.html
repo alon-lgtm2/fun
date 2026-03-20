@@ -145,19 +145,7 @@ body {
 }
 
 .nav-logo {
-  font-family: 'Rubik', sans-serif;
-  font-weight: 800;
-  font-size: 15px;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.nav-logo.visible {
-  opacity: 1;
+  display: none;
 }
 
 .nav-actions {
@@ -226,25 +214,31 @@ body {
 
 .view-toggles {
   display: flex;
-  gap: 4px;
+  gap: 0;
   background: var(--bg);
-  border-radius: 12px;
-  padding: 4px;
+  border-radius: 14px;
+  padding: 3px;
   border: 2px solid var(--purple-light);
+  position: relative;
 }
 
 .view-btn {
-  padding: 8px 20px;
+  padding: 8px 22px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-family: 'Heebo', sans-serif;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
   background: transparent;
   color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
+
+.view-btn .view-icon { font-size: 20px; }
 
 .view-btn.active {
   background: var(--purple);
@@ -286,13 +280,15 @@ body {
   position: relative;
 }
 
-.sticky-nav.compact .weekend-nav { padding: 4px 24px 2px; }
-.sticky-nav.compact .wk-chip { padding: 4px 10px; min-width: 70px; }
+.sticky-nav.compact .nav-row { padding: 4px 24px; }
+.sticky-nav.compact .weekend-nav { padding: 3px 24px 2px; }
+.sticky-nav.compact .wk-chip { padding: 3px 8px; min-width: auto; }
+.sticky-nav.compact .wk-chip:not(.active) { display: none; }
 .sticky-nav.compact .wk-label { font-size: 8px; }
-.sticky-nav.compact .wk-dates { font-size: 12px; margin: 0; }
+.sticky-nav.compact .wk-dates { font-size: 11px; margin: 0; }
 .sticky-nav.compact .wk-count { font-size: 8px; margin-top: 1px; }
-.sticky-nav.compact .filters-row { padding: 4px 24px 6px; }
-.sticky-nav.compact .filter-pill { padding: 3px 8px; font-size: 10px; }
+.sticky-nav.compact .filters-row { padding: 3px 24px 5px; gap: 4px; }
+.sticky-nav.compact .filter-pill { padding: 2px 8px; font-size: 10px; }
 
 .wk-chip:hover:not(.wk-empty) { border-color: var(--purple); }
 
@@ -1124,8 +1120,8 @@ body {
     <div class="nav-logo">🎪 אז מה עושים?</div>
     <div class="nav-actions">
       <div class="view-toggles">
-        <button class="view-btn active" data-view="calendar"><span style="font-size:18px">📋</span> רשימה</button>
-        <button class="view-btn" data-view="map"><span style="font-size:18px">🗺️</span> מפה</button>
+        <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
+        <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
       </div>
     </div>
   </div>
@@ -1349,7 +1345,7 @@ function parseCSV(text) {
     const values = parseCSVLine(line);
     const obj = {};
     headers.forEach((h, idx) => {
-      obj[h.trim()] = (values[idx] || '').trim();
+      obj[h.trim().toLowerCase()] = (values[idx] || '').trim();
     });
     results.push(obj);
   }
@@ -1990,15 +1986,12 @@ document.getElementById('filters').addEventListener('click', (e) => {
 // ===== SCROLL-BASED WEEKEND AUTO-ADVANCE =====
 let scrollTimeout;
 window.addEventListener('scroll', () => {
-  // Show/hide nav logo and compact mode based on hero visibility
+  // Compact mode based on hero visibility
   const hero = document.querySelector('.hero');
-  const navLogo = document.querySelector('.nav-logo');
   const stickyNav = document.querySelector('.sticky-nav');
-  if (hero && navLogo) {
+  if (hero && stickyNav) {
     const heroBottom = hero.getBoundingClientRect().bottom;
-    const scrolledPast = heroBottom < 0;
-    navLogo.classList.toggle('visible', scrolledPast);
-    stickyNav.classList.toggle('compact', scrolledPast);
+    stickyNav.classList.toggle('compact', heroBottom < 0);
   }
 
   clearTimeout(scrollTimeout);
