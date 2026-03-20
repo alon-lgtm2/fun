@@ -1345,7 +1345,7 @@ function isHolidayDate(dateStr) {
 
 // ===== STATE =====
 let events = [];
-let activeFilter = 'all';
+let activeFilters = new Set(); // empty = show all
 let activeWeekend = null;
 let activeView = 'calendar';
 let map = null;
@@ -1515,16 +1515,23 @@ function buildWeekendChips() {
 }
 
 // ===== FILTER =====
+function eventMatchesFilters(e) {
+  if (activeFilters.size === 0) return true;
+  for (const f of activeFilters) {
+    if (f === 'free' && !e.free) return false;
+    if (f === 'museumkaart' && !e.museumkaart) return false;
+    if (f === 'liked' && !isLiked(e.id)) return false;
+    if (['outdoor','indoor','music','theater','market','workshop','sport'].includes(f) && !e.types.includes(f)) return false;
+  }
+  return true;
+}
+
 function getFilteredEvents() {
   if (!activeWeekend) return [];
   const { sat, sun } = activeWeekend;
   return events.filter(e => {
     if (!eventOnWeekend(e, sat, sun)) return false;
-    if (activeFilter === 'all') return true;
-    if (activeFilter === 'free') return e.free;
-    if (activeFilter === 'museumkaart') return e.museumkaart;
-    if (activeFilter === 'liked') return isLiked(e.id);
-    return e.types.includes(activeFilter);
+    return eventMatchesFilters(e);
   });
 }
 
@@ -1634,13 +1641,7 @@ function renderCalendar() {
 
   relevantWeekends.forEach((w, wIdx) => {
     const weekendEvents = events.filter(e => eventOnWeekend(e, w.sat, w.sun));
-    const filtered = weekendEvents.filter(e => {
-      if (activeFilter === 'all') return true;
-      if (activeFilter === 'free') return e.free;
-      if (activeFilter === 'museumkaart') return e.museumkaart;
-      if (activeFilter === 'liked') return isLiked(e.id);
-      return e.types.includes(activeFilter);
-    });
+    const filtered = weekendEvents.filter(e => eventMatchesFilters(e));
 
     if (!filtered.length) return;
 
@@ -1797,18 +1798,39 @@ function render() {
 function updateFilterAvailability() {
   if (!activeWeekend) return;
   const { sat, sun } = activeWeekend;
-  const weekendEvents = events.filter(e => eventOnWeekend(e, sat, sun));
+  // Get all weekend events across all rendered weekends
+  const weekends = document.getElementById('weekendChips')._weekends;
+  const activeIdx = weekends ? weekends.indexOf(activeWeekend) : 0;
+  const relevantWeekends = weekends ? weekends.filter((w, i) => i >= activeIdx && w.eventCount > 0) : [activeWeekend];
+
+  let allWeekendEvents = [];
+  relevantWeekends.forEach(w => {
+    allWeekendEvents = allWeekendEvents.concat(events.filter(e => eventOnWeekend(e, w.sat, w.sun)));
+  });
+  // Deduplicate
+  const seen = new Set();
+  allWeekendEvents = allWeekendEvents.filter(e => { if (seen.has(e.id)) return false; seen.add(e.id); return true; });
+
+  // Current filtered set (events matching ALL active filters)
+  const currentFiltered = allWeekendEvents.filter(e => eventMatchesFilters(e));
 
   document.querySelectorAll('.filter-pill').forEach(pill => {
     const f = pill.dataset.filter;
     if (f === 'all') return; // always available
-    let hasMatch = false;
-    if (f === 'free') hasMatch = weekendEvents.some(e => e.free);
-    else if (f === 'museumkaart') hasMatch = weekendEvents.some(e => e.museumkaart);
-    else if (f === 'liked') hasMatch = weekendEvents.some(e => isLiked(e.id));
-    else hasMatch = weekendEvents.some(e => e.types.includes(f));
+    if (activeFilters.has(f)) return; // already active, keep it
 
-    if (hasMatch) pill.classList.remove('disabled');
+    // Check: if we ADD this filter, would any events still match?
+    const testFilters = new Set(activeFilters);
+    testFilters.add(f);
+
+    const wouldMatch = currentFiltered.some(e => {
+      if (f === 'free') return e.free;
+      if (f === 'museumkaart') return e.museumkaart;
+      if (f === 'liked') return isLiked(e.id);
+      return e.types.includes(f);
+    });
+
+    if (wouldMatch) pill.classList.remove('disabled');
     else pill.classList.add('disabled');
   });
 }
@@ -2040,20 +2062,33 @@ document.getElementById('weekendChips').addEventListener('click', (e) => {
   }
 });
 
-// Filter pills
+// Filter pills - multi-select
 document.getElementById('filters').addEventListener('click', (e) => {
   const pill = e.target.closest('.filter-pill');
-  if (!pill) return;
-  const wasActive = pill.classList.contains('active');
-  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-  if (wasActive && pill.dataset.filter !== 'all') {
-    // Unclick: go back to "all"
-    document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
-    activeFilter = 'all';
-  } else {
+  if (!pill || pill.classList.contains('disabled')) return;
+  const filter = pill.dataset.filter;
+
+  if (filter === 'all') {
+    // Reset all filters
+    activeFilters.clear();
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
     pill.classList.add('active');
-    activeFilter = pill.dataset.filter;
+  } else {
+    // Toggle this filter
+    document.querySelector('.filter-pill[data-filter="all"]').classList.remove('active');
+    if (activeFilters.has(filter)) {
+      activeFilters.delete(filter);
+      pill.classList.remove('active');
+      // If nothing selected, go back to all
+      if (activeFilters.size === 0) {
+        document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
+      }
+    } else {
+      activeFilters.add(filter);
+      pill.classList.add('active');
+    }
   }
+  updateFilterAvailability();
   render();
 });
 
