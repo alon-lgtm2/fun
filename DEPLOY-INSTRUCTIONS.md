@@ -1,18 +1,27 @@
-# Deploy to Staging — Instructions
+# Deploy Instructions — fun.israelis.nl
 
 ## Project
-- **File:** `src/fun-israelis-nl-v3.html`
+- **Site:** https://fun.israelis.nl
 - **Repo:** https://github.com/alon-lgtm2/fun.git
 - **Staging branch:** `stage`
-- **Hosting:** GitHub Pages (served from `stage` branch)
+- **Production branch:** `main`
+- **Hosting:** GitHub Pages (served from `main` branch)
 
-## Steps
-1. Ensure we're on the `stage` branch
-2. Add `src/fun-israelis-nl-v3.html` to git
-3. Commit with a descriptive message
-4. Push to `origin/stage`
-5. Verify GitHub Pages is configured to serve from the `stage` branch
+## Deploy to Staging
+1. Make changes on the `stage` branch
+2. Commit and push: `git push origin stage`
+3. Preview at the GitHub Pages staging URL
 
-## Notes
-- GitHub Pages needs to be enabled in repo Settings > Pages, set to deploy from `stage` branch
-- The HTML file will be accessible at: `https://alon-lgtm2.github.io/fun/src/fun-israelis-nl-v3.html`
+## Deploy to Production
+1. Ensure changes are committed and pushed to `stage`
+2. Push stage to main: `git push origin stage:main`
+3. Site goes live at https://fun.israelis.nl within a few minutes
+
+## Content Updates (No Deploy Needed)
+- Add/edit events in the [Google Sheet](https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=0&single=true&output=csv)
+- Add event images to `/images` folder and push
+- The site fetches data from the Sheet on every page load
+
+## DNS
+- `fun.israelis.nl` CNAME → `alon-lgtm2.github.io`
+- CNAME file in repo root handles GitHub Pages custom domain

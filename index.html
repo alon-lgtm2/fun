@@ -366,6 +366,7 @@ body {
   .event-inner { flex-direction: column; }
   .event-img { width: 100%; min-height: 150px; }
   .btn-s { padding: 10px 16px; font-size: 14px; border-radius: 10px; }
+  .btn-m { padding: 14px 20px; font-size: 15px; border-radius: 12px; min-height: 48px; }
   .like-row { padding: 8px 16px; }
   .like-count { font-size: 14px; }
   .btn-like { font-size: 20px; }
@@ -446,11 +447,46 @@ body {
 
 .event-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-  margin-top: 6px;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
 }
+
+.event-actions-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.event-actions-main {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn-m {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  flex: 1;
+  min-height: 44px;
+}
+
+.btn-m.btn-nav { background: #4285F4; color: white; }
+.btn-m.btn-nav:hover { background: #3367D6; }
+.btn-m.btn-lnk { background: var(--gradient-soft); color: var(--purple); border: 1.5px solid rgba(155,48,255,0.2); }
+.btn-m.btn-lnk:hover { border-color: var(--purple); }
 
 .like-row {
   display: inline-flex;
@@ -502,11 +538,11 @@ body {
 .btn-s {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 5px 10px;
-  border-radius: 7px;
+  gap: 5px;
+  padding: 8px 14px;
+  border-radius: 8px;
   font-family: 'Heebo', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -1225,11 +1261,14 @@ function parseCSVLine(line) {
 }
 
 function rowToEvent(row, id) {
+  const rawType = (row.type || '').toLowerCase();
+  const types = rawType.split(',').map(t => t.trim()).filter(Boolean);
   return {
     id: id,
     title: row.title || '',
     desc: row.desc || '',
-    type: row.type || '',
+    type: types.length ? types[0] : '',
+    types: types,
     area: row.area || '',
     ages: row.ages || '',
     price: row.price || '',
@@ -1333,7 +1372,7 @@ function getFilteredEvents() {
     if (activeFilter === 'free') return e.free;
     if (activeFilter === 'museumkaart') return e.museumkaart;
     if (activeFilter === 'liked') return isLiked(e.id);
-    return e.type === activeFilter;
+    return e.types.includes(activeFilter);
   });
 }
 
@@ -1358,9 +1397,9 @@ function cardHTML(e, i) {
       <div class="event-body">
         <div class="event-tags">
           <span class="etag etag-area">📍 ${e.area}</span>
-          <span class="etag etag-type">${typeEmoji(e.type)} ${typeLabel(e.type)}</span>
+          ${e.types.map(t => `<span class="etag etag-type">${typeEmoji(t)} ${typeLabel(t)}</span>`).join('')}
           ${e.free ? '<span class="etag etag-free">🆓 חינם</span>' : ''}
-          ${e.museumkaart ? '<span class="etag etag-museum">🏛️ Museumkaart</span>' : ''}
+          ${e.museumkaart ? '<span class="etag etag-museum">🏛️ מוזיאום-קארט</span>' : ''}
           <span class="etag etag-age">👶 ${e.ages}</span>
         </div>
         <h3 class="event-title">${e.title}</h3>
@@ -1372,13 +1411,17 @@ function cardHTML(e, i) {
             <span class="event-detail event-weather" data-lat="${e.lat}" data-lng="${e.lng}" data-date="${e.date}"></span>
           </div>
           <div class="event-actions">
-            <div class="like-row ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)">
-              <span class="btn-like ${isLiked(e.id) ? 'liked' : ''}">❤️</span>
-              <span class="like-count" id="likeCount-${e.id}">${getLikeCountDisplay(e.id)}</span>
+            <div class="event-actions-top">
+              <div class="like-row ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)">
+                <span class="btn-like ${isLiked(e.id) ? 'liked' : ''}">❤️</span>
+                <span class="like-count" id="likeCount-${e.id}">${getLikeCountDisplay(e.id)}</span>
+              </div>
+              <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:16px;height:16px;"> שיתוף</a>
             </div>
-            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:14px;height:14px;"> שיתוף עם חברים</a>
-            ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">לפרטים נוספים</a>` : ''}
-            ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 לניווט</a>` : ''}
+            <div class="event-actions-main">
+              ${e.link ? `<a class="btn-m btn-lnk" href="${e.link}" target="_blank">🔗 לפרטים נוספים</a>` : ''}
+              ${navUrl ? `<a class="btn-m btn-nav" href="${navUrl}" target="_blank">🧭 ניווט לאירוע</a>` : ''}
+            </div>
           </div>
         </div>
       </div>
@@ -1548,7 +1591,7 @@ function updateFilterAvailability() {
     if (f === 'free') hasMatch = weekendEvents.some(e => e.free);
     else if (f === 'museumkaart') hasMatch = weekendEvents.some(e => e.museumkaart);
     else if (f === 'liked') hasMatch = weekendEvents.some(e => isLiked(e.id));
-    else hasMatch = weekendEvents.some(e => e.type === f);
+    else hasMatch = weekendEvents.some(e => e.types.includes(f));
 
     if (hasMatch) pill.classList.remove('disabled');
     else pill.classList.add('disabled');
