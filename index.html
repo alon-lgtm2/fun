@@ -2026,6 +2026,9 @@ window.addEventListener('scroll', () => {
 });
 
 // ===== INIT =====
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
 loadEvents();
 </script>
 </body>
