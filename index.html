@@ -1423,8 +1423,8 @@ function getUpcomingWeekends(count) {
     const sun = new Date(d);
     sun.setDate(sun.getDate() + 1);
 
-    const satStr = sat.toISOString().split('T')[0];
-    const sunStr = sun.toISOString().split('T')[0];
+    const satStr = `${sat.getFullYear()}-${String(sat.getMonth()+1).padStart(2,'0')}-${String(sat.getDate()).padStart(2,'0')}`;
+    const sunStr = `${sun.getFullYear()}-${String(sun.getMonth()+1).padStart(2,'0')}-${String(sun.getDate()).padStart(2,'0')}`;
 
     const holidayName = isHolidayDate(satStr) || isHolidayDate(sunStr);
     const evCount = events.filter(e => eventOnWeekend(e, satStr, sunStr)).length;
@@ -1845,13 +1845,17 @@ function fmtDayFull(s) {
   return (d.getDay()===6?'🟣 ':'🔵 ')+'יום '+days[d.getDay()];
 }
 
+function localDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 function getEventDates(e, minDate, maxDate) {
   const dates = [];
   if (e.endDate) {
-    let d = new Date(Math.max(new Date(e.date), new Date(minDate)));
-    const end = new Date(Math.min(new Date(e.endDate), new Date(maxDate)));
+    let d = new Date(Math.max(new Date(e.date+'T00:00:00'), new Date(minDate+'T00:00:00')));
+    const end = new Date(Math.min(new Date(e.endDate+'T00:00:00'), new Date(maxDate+'T00:00:00')));
     while (d <= end) {
-      dates.push(d.toISOString().split('T')[0]);
+      dates.push(localDateStr(d));
       d.setDate(d.getDate() + 1);
     }
   } else {
