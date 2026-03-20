@@ -835,8 +835,7 @@ body {
   <div class="nav-row">
     <div class="nav-logo">🎪 אז מה עושים?</div>
     <div class="view-toggles">
-      <button class="view-btn active" data-view="list">📋 רשימה</button>
-      <button class="view-btn" data-view="calendar">📅 יומן</button>
+      <button class="view-btn active" data-view="calendar">📋 רשימה</button>
       <button class="view-btn" data-view="map">🗺️ מפה</button>
     </div>
   </div>
@@ -872,13 +871,8 @@ body {
     <div class="loading-text">טוען אירועים...</div>
   </div>
 
-  <!-- List View -->
-  <div class="view-panel active" id="listPanel">
-    <div class="events-list" id="listView"></div>
-  </div>
-
-  <!-- Calendar View -->
-  <div class="view-panel" id="calendarPanel"></div>
+  <!-- Calendar/List View -->
+  <div class="view-panel active" id="calendarPanel"></div>
 
   <!-- Map View -->
   <div class="view-panel" id="mapPanel">
@@ -1019,7 +1013,7 @@ function isHolidayDate(dateStr) {
 let events = [];
 let activeFilter = 'all';
 let activeWeekend = null;
-let activeView = 'list';
+let activeView = 'calendar';
 let map = null;
 let markers = [];
 
@@ -1372,8 +1366,7 @@ function updateResultsBar(filtered) {
 }
 
 function render() {
-  if (activeView === 'list') renderList();
-  else if (activeView === 'calendar') renderCalendar();
+  if (activeView === 'calendar') renderCalendar();
   else if (activeView === 'map') renderMap();
 }
 
@@ -1477,7 +1470,7 @@ document.querySelectorAll('.view-btn').forEach(btn => {
     btn.classList.add('active');
     activeView = btn.dataset.view;
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById({ list: 'listPanel', calendar: 'calendarPanel', map: 'mapPanel' }[activeView]).classList.add('active');
+    document.getElementById({ calendar: 'calendarPanel', map: 'mapPanel' }[activeView]).classList.add('active');
     render();
     if (activeView === 'map' && map) setTimeout(() => map.invalidateSize(), 100);
   });
