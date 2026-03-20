@@ -438,31 +438,42 @@ body {
 
 .event-actions { display: flex; gap: 5px; flex-wrap: wrap; }
 
-.btn-like {
-  background: transparent;
-  color: #B0B0B0;
-  border: none;
-  cursor: pointer;
-  transition: all 0.25s;
-  padding: 4px 0;
+.like-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
-.btn-like:hover { color: #FF4757; }
+.btn-like {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.2s;
+  filter: grayscale(1) opacity(0.4);
+}
+
+.btn-like:hover { filter: grayscale(0) opacity(0.7); transform: scale(1.1); }
 
 .btn-like.liked {
-  background: #FF4757;
-  color: white;
-  border-color: #FF4757;
+  filter: grayscale(0) opacity(1);
   animation: popLike 0.3s ease;
 }
 
 @keyframes popLike {
   0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+  50% { transform: scale(1.2); }
   100% { transform: scale(1); }
 }
 
-.like-count { font-size: 10px; margin-right: 2px; }
+.like-count {
+  font-size: 12px;
+  color: var(--text-lighter);
+  font-weight: 400;
+}
 
 .btn-s {
   display: inline-flex;
@@ -1250,7 +1261,10 @@ function cardHTML(e, i) {
         </div>
         <h3 class="event-title">${e.title}</h3>
         <p class="event-desc">${e.desc}</p>
-        <button class="btn-s btn-like ${isLiked(e.id) ? 'liked' : ''}" onclick="toggleLike(${e.id}, this)">❤️ אהבתי<span class="like-count" id="likeCount-${e.id}">${getLikeCount(e.id)}</span></button>
+        <div class="like-row">
+          <button class="btn-like ${isLiked(e.id) ? 'liked' : ''}" onclick="toggleLike(${e.id}, this)" title="אהבתי">❤️</button>
+          <span class="like-count" id="likeCount-${e.id}">${getLikeCountDisplay(e.id)}</span>
+        </div>
         <div class="event-footer">
           <div class="event-details">
             <span class="event-detail">📍 ${e.location}</span>
@@ -1410,6 +1424,7 @@ function render() {
 }
 
 // ===== LIKES =====
+// Personal likes (for filtering)
 function getLikes() {
   try { return JSON.parse(localStorage.getItem('fun_likes') || '{}'); } catch { return {}; }
 }
@@ -1418,36 +1433,56 @@ function saveLikes(likes) {
   localStorage.setItem('fun_likes', JSON.stringify(likes));
 }
 
+// Community counts (local simulation - seeded per event)
+function getCounts() {
+  try { return JSON.parse(localStorage.getItem('fun_like_counts') || '{}'); } catch { return {}; }
+}
+
+function saveCounts(counts) {
+  localStorage.setItem('fun_like_counts', JSON.stringify(counts));
+}
+
+function seedCount(id) {
+  const counts = getCounts();
+  if (counts[id] === undefined) {
+    // Seed with a small base number for community feel
+    counts[id] = Math.floor(Math.random() * 8) + 2;
+    saveCounts(counts);
+  }
+  return counts[id];
+}
+
 function isLiked(id) {
   return !!getLikes()[id];
 }
 
-function getLikeCount(id) {
-  const count = getLikes()[id] || 0;
-  return count > 0 ? ` ${count}` : '';
+function getLikeCountDisplay(id) {
+  const count = seedCount(id);
+  if (count === 0) return '';
+  return count === 1 ? 'אחד אהבו' : `${count} אהבו`;
 }
 
 function toggleLike(id, btn) {
   const likes = getLikes();
+  const counts = getCounts();
+  seedCount(id);
+
   if (likes[id]) {
     delete likes[id];
+    counts[id] = Math.max(0, (counts[id] || 1) - 1);
     btn.classList.remove('liked');
   } else {
-    likes[id] = 1;
+    likes[id] = true;
+    counts[id] = (counts[id] || 0) + 1;
     btn.classList.add('liked');
   }
   saveLikes(likes);
-  const countEl = document.getElementById(`likeCount-${id}`);
-  if (countEl) countEl.textContent = likes[id] ? ' 1' : '';
-  // Update all like count elements with the same id (card may appear in multiple views)
-  document.querySelectorAll(`#likeCount-${id}`).forEach(el => {
-    el.textContent = likes[id] ? ' 1' : '';
-  });
-  document.querySelectorAll(`.btn-like`).forEach(b => {
-    if (b.onclick && b.onclick.toString().includes(id)) {
-      if (likes[id]) b.classList.add('liked');
-      else b.classList.remove('liked');
-    }
+  saveCounts(counts);
+
+  // Update all count displays
+  const display = counts[id] === 0 ? '' : counts[id] === 1 ? 'אחד אהבו' : `${counts[id]} אהבו`;
+  document.querySelectorAll(`[id="likeCount-${id}"]`).forEach(el => {
+    el.textContent = display;
   });
 }
 
