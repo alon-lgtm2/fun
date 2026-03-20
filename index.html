@@ -5,10 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>אז מה עושים היום? -fun.israelis.nl</title>
 <meta name="description" content="אירועים מקומיים, ייחודיים וחד-פעמיים למשפחות ישראליות בהולנד. לא אטרקציות כלליות -דברים שקורים עכשיו.">
-<meta property="og:title" content="אז מה עושים היום? -fun.israelis.nl">
-<meta property="og:description" content="אירועים מקומיים לילדים ומשפחות ישראליות בהולנד">
+<meta property="og:title" content="אז מה עושים היום? - fun.israelis.nl">
+<meta property="og:description" content="אירועים מקומיים לילדים ומשפחות ישראליות בהולנד. לא אטרקציות כלליות - דברים שקורים עכשיו, במקום ספציפי, בתאריך ספציפי.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fun.israelis.nl">
+<meta property="og:site_name" content="fun.israelis.nl">
+<meta property="og:locale" content="he_IL">
+<meta property="og:image" content="https://fun.israelis.nl/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="אז מה עושים היום? - fun.israelis.nl">
+<meta name="twitter:description" content="אירועים מקומיים לילדים ומשפחות ישראליות בהולנד">
+<meta name="twitter:image" content="https://fun.israelis.nl/images/og-cover.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -50,7 +60,7 @@ body {
 .hero {
   background: var(--gradient);
   color: white;
-  padding: 56px 20px 44px;
+  padding: 10px 20px 8px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -226,13 +236,14 @@ body {
 .wk-chip.active .wk-count { background: rgba(255,255,255,0.25); color: white; }
 
 .wk-holiday-tag {
-  font-size: 9px;
+  font-size: 8px;
   background: rgba(255,107,53,0.15);
   color: #E06520;
   padding: 1px 6px;
   border-radius: 100px;
   margin-top: 2px;
   font-weight: 600;
+  display: none;
 }
 
 .wk-chip.active .wk-holiday-tag { background: rgba(255,255,255,0.2); color: white; }
@@ -835,8 +846,7 @@ body {
   <div class="nav-row">
     <div class="nav-logo">🎪 אז מה עושים?</div>
     <div class="view-toggles">
-      <button class="view-btn active" data-view="list">📋 רשימה</button>
-      <button class="view-btn" data-view="calendar">📅 יומן</button>
+      <button class="view-btn active" data-view="calendar">📋 רשימה</button>
       <button class="view-btn" data-view="map">🗺️ מפה</button>
     </div>
   </div>
@@ -872,13 +882,8 @@ body {
     <div class="loading-text">טוען אירועים...</div>
   </div>
 
-  <!-- List View -->
-  <div class="view-panel active" id="listPanel">
-    <div class="events-list" id="listView"></div>
-  </div>
-
-  <!-- Calendar View -->
-  <div class="view-panel" id="calendarPanel"></div>
+  <!-- Calendar/List View -->
+  <div class="view-panel active" id="calendarPanel"></div>
 
   <!-- Map View -->
   <div class="view-panel" id="mapPanel">
@@ -1019,7 +1024,7 @@ function isHolidayDate(dateStr) {
 let events = [];
 let activeFilter = 'all';
 let activeWeekend = null;
-let activeView = 'list';
+let activeView = 'calendar';
 let map = null;
 let markers = [];
 
@@ -1223,10 +1228,9 @@ function cardHTML(e, i) {
             <span class="event-detail">💰 ${e.price}</span>
           </div>
           <div class="event-actions">
-            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank">📲 WhatsApp</a>
-            <a class="btn-s btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${fbUrl}" target="_blank">📘 Facebook</a>
-            ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 ניווט</a>` : ''}
-            ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">🔗 לאירוע</a>` : ''}
+            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank">📲 שיתוף</a>
+            ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">לפרטים נוספים</a>` : ''}
+            ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 לניווט</a>` : ''}
           </div>
         </div>
       </div>
@@ -1372,8 +1376,7 @@ function updateResultsBar(filtered) {
 }
 
 function render() {
-  if (activeView === 'list') renderList();
-  else if (activeView === 'calendar') renderCalendar();
+  if (activeView === 'calendar') renderCalendar();
   else if (activeView === 'map') renderMap();
 }
 
@@ -1477,7 +1480,7 @@ document.querySelectorAll('.view-btn').forEach(btn => {
     btn.classList.add('active');
     activeView = btn.dataset.view;
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById({ list: 'listPanel', calendar: 'calendarPanel', map: 'mapPanel' }[activeView]).classList.add('active');
+    document.getElementById({ calendar: 'calendarPanel', map: 'mapPanel' }[activeView]).classList.add('active');
     render();
     if (activeView === 'map' && map) setTimeout(() => map.invalidateSize(), 100);
   });
