@@ -368,6 +368,8 @@ body {
 .filter-pill:hover:not(.disabled) { border-color: var(--purple); color: var(--purple); }
 .filter-pill.active { background: var(--purple); color: white; border-color: var(--purple); }
 .filter-pill.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+.liked-filter-count { font-size: 10px; font-weight: 700; }
+.liked-filter-count:empty { display: none; }
 
 /* ===== CONTENT ===== */
 .content {
@@ -1124,11 +1126,6 @@ body {
       <div class="view-toggles">
         <button class="view-btn active" data-view="calendar"><span style="font-size:18px">📋</span> רשימה</button>
         <button class="view-btn" data-view="map"><span style="font-size:18px">🗺️</span> מפה</button>
-        <button class="liked-toggle" id="likedToggle" onclick="toggleLikedFilter()" title="המועדפים שלי">
-          <span class="liked-toggle-icon" style="font-size:18px">❤️</span>
-          <span class="liked-toggle-label">מועדפים</span>
-          <span class="liked-toggle-count" id="likedToggleCount"></span>
-        </button>
       </div>
     </div>
   </div>
@@ -1139,15 +1136,16 @@ body {
 
   <div class="filters-row" id="filters">
     <button class="filter-pill active" data-filter="all">הכל</button>
-    <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
-    <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
-    <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
-    <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
+    <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
+    <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
+    <button class="filter-pill" data-filter="free">🆓 חינם</button>
     <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
     <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
+    <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
+    <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
+    <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
+    <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
     <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
-    <button class="filter-pill" data-filter="free">🆓 חינם</button>
-    <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
   </div>
 </nav>
 
@@ -1829,21 +1827,6 @@ function toggleLike(id, row) {
   });
 }
 
-function toggleLikedFilter() {
-  const btn = document.getElementById('likedToggle');
-  if (activeFilter === 'liked') {
-    activeFilter = 'all';
-    btn.classList.remove('active');
-    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-    document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
-  } else {
-    activeFilter = 'liked';
-    btn.classList.add('active');
-    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-  }
-  render();
-}
-
 function updateLikedToggleCount() {
   const likes = getLikes();
   const count = Object.keys(likes).length;
@@ -1993,7 +1976,6 @@ document.getElementById('filters').addEventListener('click', (e) => {
   if (!pill) return;
   const wasActive = pill.classList.contains('active');
   document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-  document.getElementById('likedToggle').classList.remove('active');
   if (wasActive && pill.dataset.filter !== 'all') {
     // Unclick: go back to "all"
     document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
