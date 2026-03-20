@@ -50,7 +50,7 @@ body {
 .hero {
   background: var(--gradient);
   color: white;
-  padding: 56px 20px 44px;
+  padding: 20px 20px 16px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -1217,10 +1217,9 @@ function cardHTML(e, i) {
             <span class="event-detail">💰 ${e.price}</span>
           </div>
           <div class="event-actions">
-            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank">📲 WhatsApp</a>
-            <a class="btn-s btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${fbUrl}" target="_blank">📘 Facebook</a>
-            ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 ניווט</a>` : ''}
-            ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">🔗 לאירוע</a>` : ''}
+            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank">📲 שיתוף</a>
+            ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">לפרטים נוספים</a>` : ''}
+            ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 לניווט</a>` : ''}
           </div>
         </div>
       </div>
