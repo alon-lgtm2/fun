@@ -18,7 +18,7 @@
 <meta name="twitter:title" content="אז מה עושים היום? - fun.israelis.nl">
 <meta name="twitter:description" content="אירועים מקומיים לילדים ומשפחות ישראליות בהולנד">
 <meta name="twitter:image" content="https://fun.israelis.nl/images/og-cover.png">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -276,8 +276,9 @@ body {
   transition: all 0.2s;
 }
 
-.filter-pill:hover { border-color: var(--purple); color: var(--purple); }
+.filter-pill:hover:not(.disabled) { border-color: var(--purple); color: var(--purple); }
 .filter-pill.active { background: var(--purple); color: white; border-color: var(--purple); }
+.filter-pill.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
 
 /* ===== CONTENT ===== */
 .content {
@@ -364,6 +365,12 @@ body {
 @media (max-width: 500px) {
   .event-inner { flex-direction: column; }
   .event-img { width: 100%; min-height: 150px; }
+  .btn-s { padding: 10px 16px; font-size: 14px; border-radius: 10px; }
+  .like-row { padding: 8px 16px; }
+  .like-count { font-size: 14px; }
+  .btn-like { font-size: 20px; }
+  .popup-link { padding: 10px 14px !important; font-size: 14px !important; }
+  .map-mini-actions .btn-s { padding: 10px 14px; }
 }
 
 .event-day-badge {
@@ -608,6 +615,7 @@ body {
 }
 
 .popup-title { font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.popup-desc { font-size: 12px; color: var(--text); line-height: 1.5; margin-bottom: 6px; }
 .popup-meta { color: var(--text-light); font-size: 12px; }
 .popup-links { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
 .popup-link { color: var(--purple); font-weight: 600; font-size: 12px; text-decoration: none; }
@@ -636,24 +644,80 @@ body {
 .request-title { font-family: 'Rubik', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 5px; }
 .request-desc { font-size: 13px; color: var(--text-light); margin-bottom: 12px; font-weight: 300; }
 
-.request-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 22px;
-  background: var(--gradient);
-  color: white;
-  border: none;
+.request-options {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.request-option {
+  padding: 10px 20px;
+  background: white;
+  border: 1.5px solid rgba(155,48,255,0.2);
   border-radius: 100px;
   font-family: 'Heebo', sans-serif;
   font-size: 13px;
   font-weight: 600;
+  color: var(--purple);
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.request-option:hover {
+  background: var(--purple);
+  color: white;
+  border-color: var(--purple);
+  transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(155,48,255,0.25);
 }
 
-.request-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(155,48,255,0.35); }
+.form-type-selector {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.form-type-btn {
+  padding: 8px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.form-type-btn.active {
+  background: var(--purple);
+  color: white;
+  border-color: var(--purple);
+}
+
+.add-event-card {
+  border: 2px dashed rgba(155,48,255,0.25);
+  border-radius: var(--radius);
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--gradient-soft);
+  margin-top: 10px;
+}
+
+.add-event-card:hover {
+  border-color: var(--purple);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.add-event-card-icon { font-size: 32px; margin-bottom: 8px; }
+.add-event-card-text { font-family: 'Rubik', sans-serif; font-weight: 600; font-size: 15px; color: var(--purple); }
+.add-event-card-sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
 
 /* ===== SUGGESTION MODAL ===== */
 .modal-overlay {
@@ -887,11 +951,7 @@ body {
   <div class="hero-content">
     <div class="hero-badge">כל סופ״ש! 🎉</div>
     <h1 class="hero-title">אז מה עושים היום?</h1>
-    <p class="hero-subtitle">פעילויות איכות עם ילדים בסופ״ש</p>
-    <p class="hero-desc">
-      אירועים מקומיים, ייחודיים וחד-פעמיים למשפחות בהולנד.
-      לא אטרקציות כלליות -דברים שקורים <strong>עכשיו</strong>, במקום ספציפי, בתאריך ספציפי.
-    </p>
+    <p class="hero-subtitle">פעילויות איכות עם המשפחה בהולנד בסופ״ש</p>
   </div>
 </div>
 
@@ -954,9 +1014,12 @@ body {
   </div>
 
   <div class="request-section">
-    <div class="request-title">💡 יודעים על אירוע שווה?</div>
-    <div class="request-desc">שתפו אותנו! אנחנו תמיד מחפשים המלצות מהקהילה.</div>
-    <button class="request-btn" onclick="openSuggestionModal()">שלחו המלצה ←</button>
+    <div class="request-title">💬 שתפו את דעתכם</div>
+    <div class="request-desc">יש לכם מה לשתף? נשמח לשמוע!</div>
+    <div class="request-options">
+      <button class="request-option" onclick="openSuggestionModal('event')">🎪 הוסיפו אירוע</button>
+      <button class="request-option" onclick="openSuggestionModal('feedback')">💭 פידבק</button>
+    </div>
   </div>
 
   <div class="about-section">
@@ -1005,42 +1068,66 @@ body {
   <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
 </footer>
 
-<button class="fab" onclick="openSuggestionModal()">💬 יש לי המלצה!</button>
+<button class="fab" onclick="openSuggestionModal('event')">💬 שתפו אותנו</button>
 
 <!-- SUGGESTION MODAL -->
 <div class="modal-overlay" id="suggestionModal">
   <div class="modal">
     <button class="modal-close" onclick="closeSuggestionModal()">&times;</button>
     <div id="suggestionFormContainer">
-      <div class="modal-title">💡 שלחו המלצה לאירוע</div>
-      <div class="modal-subtitle">יש לכם אירוע שווה שכדאי לשתף? ספרו לנו!</div>
+      <div class="modal-title" id="modalTitle">💬 שתפו את דעתכם</div>
+      <div class="modal-subtitle" id="modalSubtitle"></div>
+      <div class="form-type-selector" id="formTypeSelector">
+        <button class="form-type-btn active" data-type="event" onclick="switchFormType('event')">🎪 הוסיפו אירוע</button>
+        <button class="form-type-btn" data-type="feedback" onclick="switchFormType('feedback')">💭 פידבק</button>
+      </div>
       <form id="suggestionForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
-        <div class="form-group">
-          <label class="form-label">שם האירוע *</label>
-          <input class="form-input" type="text" name="event_name" required placeholder="למשל: פסטיבל האור באיינדהובן">
+        <input type="hidden" name="form_type" id="formTypeInput" value="event">
+        <!-- Event fields -->
+        <div class="form-fields" id="fieldsEvent">
+          <div class="form-group">
+            <label class="form-label">שם האירוע *</label>
+            <input class="form-input" type="text" name="event_name" placeholder="למשל: פסטיבל האור באיינדהובן">
+          </div>
+          <div class="form-group">
+            <label class="form-label">מתי?</label>
+            <input class="form-input" type="text" name="event_date" placeholder="למשל: שבת 21/3, 18:00-23:00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">איפה?</label>
+            <input class="form-input" type="text" name="event_location" placeholder="למשל: מרכז איינדהובן">
+          </div>
+          <div class="form-group">
+            <label class="form-label">קישור לאירוע</label>
+            <input class="form-input" type="url" name="event_link" dir="ltr" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">פרטים נוספים</label>
+            <textarea class="form-textarea" name="event_details" placeholder="מה שווה באירוע הזה? למי מתאים? מחיר?"></textarea>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">מתי?</label>
-          <input class="form-input" type="text" name="event_date" placeholder="למשל: שבת 21/3, 18:00-23:00">
+        <!-- Feedback fields -->
+        <div class="form-fields hidden" id="fieldsFeedback">
+          <div class="form-group">
+            <label class="form-label">מה תרצו לשתף? *</label>
+            <textarea class="form-textarea" name="feedback_text" placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">איפה?</label>
-          <input class="form-input" type="text" name="event_location" placeholder="למשל: מרכז איינדהובן">
-        </div>
-        <div class="form-group">
-          <label class="form-label">קישור לאירוע</label>
-          <input class="form-input" type="url" name="event_link" dir="ltr" placeholder="https://...">
-        </div>
-        <div class="form-group">
-          <label class="form-label">פרטים נוספים</label>
-          <textarea class="form-textarea" name="event_details" placeholder="מה שווה באירוע הזה? למי מתאים? מחיר?"></textarea>
-        </div>
+        <!-- Common fields -->
         <div class="form-group">
           <label class="form-label">השם שלך (לא חובה)</label>
-          <input class="form-input" type="text" name="submitter_name" placeholder="כדי שנוכל לתת קרדיט 🙂">
+          <input class="form-input" type="text" name="submitter_name" placeholder="כדי שנוכל לחזור אליכם">
         </div>
-        <input type="hidden" name="_subject" value="המלצה חדשה לאירוע -fun.israelis.nl">
-        <button type="submit" class="form-submit" id="submitBtn">שלחו המלצה 🚀</button>
+        <div class="form-group">
+          <label class="form-label">אימייל (לא חובה)</label>
+          <input class="form-input" type="email" name="submitter_email" dir="ltr" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">טלפון (לא חובה)</label>
+          <input class="form-input" type="tel" name="submitter_phone" dir="ltr" placeholder="+31 6...">
+        </div>
+        <input type="hidden" name="_subject" id="formSubject" value="הודעה חדשה - fun.israelis.nl">
+        <button type="submit" class="form-submit" id="submitBtn">שליחה 🚀</button>
       </form>
     </div>
     <div class="form-success hidden" id="suggestionSuccess">
@@ -1253,7 +1340,7 @@ function getFilteredEvents() {
 // ===== CARD HTML =====
 function cardHTML(e, i) {
   const dateLabel = fmtShort(e.date) + (e.endDate ? '-' + fmtShort(e.endDate) : '');
-  const shareText = `${e.title}\n${e.location}\n${dateLabel} | ${e.time}\n${e.price}\n\n${e.link || 'https://fun.israelis.nl'}`;
+  const shareText = `${e.title}\n${e.location}\n${dateLabel} | ${e.time}\n${e.price}\n${e.link ? e.link + '\n' : ''}\nלפעילויות נוספות בקרו ב"אז מה עושים היום?"\nhttps://fun.israelis.nl`;
   const whatsappText = encodeURIComponent(shareText);
   const fbUrl = encodeURIComponent(e.link || 'https://fun.israelis.nl');
   const navUrl = e.lat && e.lng ? `https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}` : '';
@@ -1335,7 +1422,12 @@ function renderCalendar() {
       </div>
       <div class="cal-events">${groups[date].map(e => cardHTML(e, idx++)).join('')}</div>
     </div>
-  `).join('');
+  `).join('') + `
+    <div class="add-event-card" onclick="openSuggestionModal('event')">
+      <div class="add-event-card-icon">➕</div>
+      <div class="add-event-card-text">יודעים על אירוע נוסף?</div>
+      <div class="add-event-card-sub">שתפו אותנו ונוסיף אותו לרשימה</div>
+    </div>`;
 }
 
 function renderMap() {
@@ -1377,18 +1469,19 @@ function renderMap() {
 
     const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}`;
     const dateLabel = fmtShort(e.date) + (e.endDate ? '-' + fmtShort(e.endDate) : '');
-    const whatsappText = encodeURIComponent(`${e.title}\n${e.location}\n${dateLabel} | ${e.time}\n${e.price}\n\n${e.link || 'https://fun.israelis.nl'}`);
+    const whatsappText = encodeURIComponent(`${e.title}\n${e.location}\n${dateLabel} | ${e.time}\n${e.price}\n${e.link ? e.link + '\n' : ''}\nלפעילויות נוספות בקרו ב"אז מה עושים היום?"\nhttps://fun.israelis.nl`);
 
     const marker = L.marker([e.lat, e.lng], { icon }).addTo(map);
     marker.bindPopup(`
       <div class="popup-title">${e.title}</div>
+      <div class="popup-desc">${e.desc}</div>
       <div class="popup-meta">📍 ${e.location} · ${e.time} · ${e.price}</div>
       <div class="popup-links">
         ${e.link ? `<a class="popup-link" href="${e.link}" target="_blank">🔗 לאירוע</a>` : ''}
         <a class="popup-link" href="${navUrl}" target="_blank">🧭 ניווט</a>
         <a class="popup-link" href="https://wa.me/?text=${whatsappText}" target="_blank">📲 שתף</a>
       </div>
-    `, { direction: 'top', className: '' });
+    `, { direction: 'top', className: '', maxWidth: 300 });
 
     markers.push(marker);
     bounds.push([e.lat, e.lng]);
@@ -1398,7 +1491,7 @@ function renderMap() {
 
   document.getElementById('mapEventList').innerHTML = filtered.map((e, i) => {
     const color = colors[i % colors.length];
-    const whatsappText = encodeURIComponent(`${e.title}\n${e.location}\n${fmtShort(e.date)} | ${e.time}\n${e.price}`);
+    const whatsappText = encodeURIComponent(`${e.title}\n${e.location}\n${fmtShort(e.date)} | ${e.time}\n${e.price}\n${e.link ? e.link + '\n' : ''}\nלפעילויות נוספות בקרו ב"אז מה עושים היום?"\nhttps://fun.israelis.nl`);
     return `
     <div class="map-event-mini" data-id="${e.id}" onclick="focusMarker(${i})">
       <div class="map-mini-dot" style="background:${color}"></div>
@@ -1440,6 +1533,26 @@ function render() {
   if (activeView === 'calendar') renderCalendar();
   else if (activeView === 'map') renderMap();
   fetchWeather();
+  updateFilterAvailability();
+}
+
+function updateFilterAvailability() {
+  if (!activeWeekend) return;
+  const { sat, sun } = activeWeekend;
+  const weekendEvents = events.filter(e => eventOnWeekend(e, sat, sun));
+
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    const f = pill.dataset.filter;
+    if (f === 'all') return; // always available
+    let hasMatch = false;
+    if (f === 'free') hasMatch = weekendEvents.some(e => e.free);
+    else if (f === 'museumkaart') hasMatch = weekendEvents.some(e => e.museumkaart);
+    else if (f === 'liked') hasMatch = weekendEvents.some(e => isLiked(e.id));
+    else hasMatch = weekendEvents.some(e => e.type === f);
+
+    if (hasMatch) pill.classList.remove('disabled');
+    else pill.classList.add('disabled');
+  });
 }
 
 // ===== WEATHER =====
@@ -1597,11 +1710,27 @@ function getEventDates(e, minDate, maxDate) {
 }
 
 // ===== SUGGESTION MODAL =====
-function openSuggestionModal() {
+function openSuggestionModal(type) {
   document.getElementById('suggestionModal').classList.add('active');
   document.getElementById('suggestionFormContainer').classList.remove('hidden');
   document.getElementById('suggestionSuccess').classList.add('hidden');
   document.getElementById('suggestionForm').reset();
+  switchFormType(type || 'event');
+}
+
+function switchFormType(type) {
+  document.querySelectorAll('.form-type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.form-type-btn[data-type="${type}"]`).classList.add('active');
+  document.getElementById('formTypeInput').value = type;
+
+  document.querySelectorAll('.form-fields').forEach(f => f.classList.add('hidden'));
+  const subjects = { event: 'אירוע חדש', feedback: 'פידבק' };
+  const subtitles = { event: 'יש לכם אירוע שווה? ספרו לנו!', feedback: 'נשמח לשמוע מה אתם חושבים' };
+  document.getElementById('modalSubtitle').textContent = subtitles[type];
+  document.getElementById('formSubject').value = `${subjects[type]} - fun.israelis.nl`;
+
+  if (type === 'event') document.getElementById('fieldsEvent').classList.remove('hidden');
+  else if (type === 'feedback') document.getElementById('fieldsFeedback').classList.remove('hidden');
 }
 
 function closeSuggestionModal() {
@@ -1636,7 +1765,7 @@ document.getElementById('suggestionForm').addEventListener('submit', async funct
   } catch (err) {
     alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
     btn.disabled = false;
-    btn.textContent = 'שלחו המלצה 🚀';
+    btn.textContent = 'שליחה 🚀';
   }
 });
 
@@ -1680,6 +1809,36 @@ document.getElementById('filters').addEventListener('click', (e) => {
     activeFilter = pill.dataset.filter;
   }
   render();
+});
+
+// ===== SCROLL-BASED WEEKEND AUTO-ADVANCE =====
+let scrollTimeout;
+window.addEventListener('scroll', () => {
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(() => {
+    if (activeView !== 'calendar') return;
+    const panel = document.getElementById('calendarPanel');
+    const groups = panel.querySelectorAll('.cal-day-group');
+    if (!groups.length) return;
+
+    // Check if we scrolled past all events
+    const lastGroup = groups[groups.length - 1];
+    const lastRect = lastGroup.getBoundingClientRect();
+    if (lastRect.bottom < window.innerHeight * 0.3) {
+      // Auto-advance to next weekend
+      const chips = document.querySelectorAll('.wk-chip');
+      const weekends = document.getElementById('weekendChips')._weekends;
+      const currentIdx = weekends.indexOf(activeWeekend);
+      if (currentIdx < weekends.length - 1) {
+        chips.forEach(c => c.classList.remove('active'));
+        chips[currentIdx + 1].classList.add('active');
+        activeWeekend = weekends[currentIdx + 1];
+        render();
+        // Scroll the chip into view
+        chips[currentIdx + 1].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, 150);
 });
 
 // ===== INIT =====
