@@ -439,14 +439,15 @@ body {
 .event-actions { display: flex; gap: 5px; flex-wrap: wrap; }
 
 .btn-like {
-  background: rgba(255,71,87,0.08);
-  color: #888;
-  border: 1.5px solid rgba(255,71,87,0.15);
+  background: transparent;
+  color: #B0B0B0;
+  border: none;
   cursor: pointer;
   transition: all 0.25s;
+  padding: 4px 0;
 }
 
-.btn-like:hover { border-color: #FF4757; color: #FF4757; }
+.btn-like:hover { color: #FF4757; }
 
 .btn-like.liked {
   background: #FF4757;
@@ -1249,14 +1250,14 @@ function cardHTML(e, i) {
         </div>
         <h3 class="event-title">${e.title}</h3>
         <p class="event-desc">${e.desc}</p>
+        <button class="btn-s btn-like ${isLiked(e.id) ? 'liked' : ''}" onclick="toggleLike(${e.id}, this)">❤️ אהבתי<span class="like-count" id="likeCount-${e.id}">${getLikeCount(e.id)}</span></button>
         <div class="event-footer">
           <div class="event-details">
             <span class="event-detail">📍 ${e.location}</span>
             <span class="event-detail">💰 ${e.price}</span>
           </div>
           <div class="event-actions">
-            <button class="btn-s btn-like ${isLiked(e.id) ? 'liked' : ''}" onclick="toggleLike(${e.id}, this)">❤️ אהבתי<span class="like-count" id="likeCount-${e.id}">${getLikeCount(e.id)}</span></button>
-            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank">📲 שיתוף</a>
+            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:14px;height:14px;"> שיתוף עם חברים</a>
             ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">לפרטים נוספים</a>` : ''}
             ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 לניווט</a>` : ''}
           </div>
