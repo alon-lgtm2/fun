@@ -148,6 +148,69 @@ body {
   background-clip: text;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.liked-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 2px solid #e8e0f0;
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+
+.liked-toggle:hover {
+  border-color: #f0a0b0;
+  background: #fff5f6;
+}
+
+.liked-toggle.active {
+  border-color: #e74c7a;
+  background: linear-gradient(135deg, #fff0f3, #ffe0e8);
+  color: #d63063;
+  box-shadow: 0 2px 10px rgba(231,76,122,0.2);
+}
+
+.liked-toggle-icon {
+  font-size: 16px;
+  filter: grayscale(1) opacity(0.5);
+  transition: all 0.25s;
+}
+
+.liked-toggle:hover .liked-toggle-icon,
+.liked-toggle.active .liked-toggle-icon {
+  filter: grayscale(0) opacity(1);
+}
+
+.liked-toggle-count {
+  font-size: 11px;
+  background: rgba(155,48,255,0.1);
+  color: var(--purple);
+  padding: 1px 7px;
+  border-radius: 100px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.liked-toggle-count:empty { display: none; }
+
+.liked-toggle.active .liked-toggle-count {
+  background: rgba(214,48,99,0.15);
+  color: #d63063;
+}
+
 .view-toggles {
   display: flex;
   gap: 4px;
@@ -1018,9 +1081,16 @@ body {
 <nav class="sticky-nav">
   <div class="nav-row">
     <div class="nav-logo">🎪 אז מה עושים?</div>
-    <div class="view-toggles">
-      <button class="view-btn active" data-view="calendar">📋 רשימה</button>
-      <button class="view-btn" data-view="map">🗺️ מפה</button>
+    <div class="nav-actions">
+      <div class="view-toggles">
+        <button class="view-btn active" data-view="calendar">📋 רשימה</button>
+        <button class="view-btn" data-view="map">🗺️ מפה</button>
+      </div>
+      <button class="liked-toggle" id="likedToggle" onclick="toggleLikedFilter()" title="המועדפים שלי">
+        <span class="liked-toggle-icon">❤️</span>
+        <span class="liked-toggle-label">מועדפים</span>
+        <span class="liked-toggle-count" id="likedToggleCount"></span>
+      </button>
     </div>
   </div>
 
@@ -1030,7 +1100,6 @@ body {
 
   <div class="filters-row" id="filters">
     <button class="filter-pill active" data-filter="all">הכל</button>
-    <button class="filter-pill" data-filter="liked">❤️ אהבתי</button>
     <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
     <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
     <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
@@ -1459,7 +1528,7 @@ function cardHTML(e, i) {
             <div class="event-actions-top">
               <div class="like-row ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)">
                 <span class="btn-like ${isLiked(e.id) ? 'liked' : ''}">❤️</span>
-                <span class="like-count" id="likeCount-${e.id}">${getLikeCountDisplay(e.id)}</span>
+                <span class="like-count">${isLiked(e.id) ? 'שמור' : 'שמירה'}</span>
               </div>
               <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:16px;height:16px;"> שיתוף</a>
             </div>
@@ -1622,6 +1691,7 @@ function render() {
   else if (activeView === 'map') renderMap();
   fetchWeather();
   updateFilterAvailability();
+  updateLikedToggleCount();
 }
 
 function updateFilterAvailability() {
@@ -1681,7 +1751,7 @@ async function fetchWeather() {
 }
 
 // ===== LIKES =====
-// Personal likes (for filtering)
+// Personal likes (stored in localStorage per user)
 function getLikes() {
   try { return JSON.parse(localStorage.getItem('fun_likes') || '{}'); } catch { return {}; }
 }
@@ -1690,64 +1760,52 @@ function saveLikes(likes) {
   localStorage.setItem('fun_likes', JSON.stringify(likes));
 }
 
-// Community counts (local simulation - seeded per event)
-function getCounts() {
-  try { return JSON.parse(localStorage.getItem('fun_like_counts') || '{}'); } catch { return {}; }
-}
-
-function saveCounts(counts) {
-  localStorage.setItem('fun_like_counts', JSON.stringify(counts));
-}
-
-function seedCount(id) {
-  const counts = getCounts();
-  if (counts[id] === undefined) {
-    // Seed with a small base number for community feel
-    counts[id] = Math.floor(Math.random() * 8) + 2;
-    saveCounts(counts);
-  }
-  return counts[id];
-}
-
 function isLiked(id) {
   return !!getLikes()[id];
 }
 
-function getLikeCountDisplay(id) {
-  const count = seedCount(id);
-  if (count === 0) return '';
-  return count === 1 ? 'אחד אהבו' : `${count} אהבו`;
-}
-
 function toggleLike(id, row) {
   const likes = getLikes();
-  const counts = getCounts();
-  seedCount(id);
 
   if (likes[id]) {
     delete likes[id];
-    counts[id] = Math.max(0, (counts[id] || 1) - 1);
     row.classList.remove('liked');
     row.querySelector('.btn-like').classList.remove('liked');
   } else {
     likes[id] = true;
-    counts[id] = (counts[id] || 0) + 1;
     row.classList.add('liked');
     row.querySelector('.btn-like').classList.add('liked');
   }
   saveLikes(likes);
-  saveCounts(counts);
+  updateLikedToggleCount();
 
-  // Update all count displays
-  const display = counts[id] === 0 ? '' : counts[id] === 1 ? 'אחד אהבו' : `${counts[id]} אהבו`;
-  document.querySelectorAll(`[id="likeCount-${id}"]`).forEach(el => {
-    el.textContent = display;
-  });
   // Sync all like-rows for this event
   document.querySelectorAll(`.like-row[data-event-id="${id}"]`).forEach(r => {
     if (likes[id]) { r.classList.add('liked'); r.querySelector('.btn-like').classList.add('liked'); }
     else { r.classList.remove('liked'); r.querySelector('.btn-like').classList.remove('liked'); }
   });
+}
+
+function toggleLikedFilter() {
+  const btn = document.getElementById('likedToggle');
+  if (activeFilter === 'liked') {
+    activeFilter = 'all';
+    btn.classList.remove('active');
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
+  } else {
+    activeFilter = 'liked';
+    btn.classList.add('active');
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  }
+  render();
+}
+
+function updateLikedToggleCount() {
+  const likes = getLikes();
+  const count = Object.keys(likes).length;
+  const el = document.getElementById('likedToggleCount');
+  el.textContent = count > 0 ? count : '';
 }
 
 // ===== HELPERS =====
@@ -1888,6 +1946,7 @@ document.getElementById('filters').addEventListener('click', (e) => {
   if (!pill) return;
   const wasActive = pill.classList.contains('active');
   document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('likedToggle').classList.remove('active');
   if (wasActive && pill.dataset.filter !== 'all') {
     // Unclick: go back to "all"
     document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
