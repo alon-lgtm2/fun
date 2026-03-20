@@ -2003,17 +2003,21 @@ window.addEventListener('scroll', () => {
     const lastGroup = groups[groups.length - 1];
     const lastRect = lastGroup.getBoundingClientRect();
     if (lastRect.bottom < window.innerHeight * 0.3) {
-      // Auto-advance to next weekend
+      // Auto-advance to next weekend that has events
       const chips = document.querySelectorAll('.wk-chip');
       const weekends = document.getElementById('weekendChips')._weekends;
       const currentIdx = weekends.indexOf(activeWeekend);
-      if (currentIdx < weekends.length - 1) {
+      // Find next weekend with events
+      let nextIdx = -1;
+      for (let j = currentIdx + 1; j < weekends.length; j++) {
+        if (weekends[j].eventCount > 0) { nextIdx = j; break; }
+      }
+      if (nextIdx >= 0) {
         chips.forEach(c => c.classList.remove('active'));
-        chips[currentIdx + 1].classList.add('active');
-        activeWeekend = weekends[currentIdx + 1];
+        chips[nextIdx].classList.add('active');
+        activeWeekend = weekends[nextIdx];
         render();
-        // Scroll the chip into view
-        chips[currentIdx + 1].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        chips[nextIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
     }
   }, 150);
