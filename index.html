@@ -136,12 +136,15 @@ body {
 }
 
 .nav-row {
-  max-width: 1400px;
-  margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 8px 24px;
+}
+
+.nav-and-weekend {
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .nav-logo {
@@ -249,8 +252,6 @@ body {
 
 /* Weekend Chips */
 .weekend-nav {
-  max-width: 1400px;
-  margin: 0 auto;
   padding: 10px 24px 4px;
 }
 
@@ -281,12 +282,23 @@ body {
 }
 
 .sticky-nav.compact .nav-row { padding: 4px 24px; }
-.sticky-nav.compact .weekend-nav { padding: 3px 24px 2px; }
-.sticky-nav.compact .wk-chip { padding: 3px 8px; min-width: auto; }
+.sticky-nav.compact .weekend-chips { gap: 4px; }
+.sticky-nav.compact .wk-chip { padding: 3px 8px; min-width: auto; flex-direction: row; gap: 6px; }
 .sticky-nav.compact .wk-chip:not(.active) { display: none; }
-.sticky-nav.compact .wk-label { font-size: 8px; }
-.sticky-nav.compact .wk-dates { font-size: 11px; margin: 0; }
-.sticky-nav.compact .wk-count { font-size: 8px; margin-top: 1px; }
+.sticky-nav.compact .wk-label { display: none; }
+.sticky-nav.compact .wk-dates { font-size: 13px; font-weight: 700; margin: 0; }
+.sticky-nav.compact .wk-count { font-size: 9px; margin-top: 0; }
+.sticky-nav.compact .nav-and-weekend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 4px 24px;
+}
+.sticky-nav.compact .nav-row { display: contents; }
+.sticky-nav.compact .weekend-nav { display: contents; padding: 0; }
 .sticky-nav.compact .filters-row { padding: 3px 24px 5px; gap: 4px; }
 .sticky-nav.compact .filter-pill { padding: 2px 8px; font-size: 10px; }
 
@@ -878,6 +890,12 @@ body {
 .add-event-card-text { font-family: 'Rubik', sans-serif; font-weight: 600; font-size: 15px; color: var(--purple); }
 .add-event-card-sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
 
+.add-event-card.between-weekends {
+  margin: 32px 0;
+  background: linear-gradient(135deg, #f0e6ff 0%, #e6f0ff 100%);
+  border-color: rgba(155,48,255,0.15);
+}
+
 /* ===== SUGGESTION MODAL ===== */
 .modal-overlay {
   display: none;
@@ -1116,18 +1134,20 @@ body {
 
 <!-- STICKY NAV -->
 <nav class="sticky-nav">
-  <div class="nav-row">
-    <div class="nav-logo">🎪 אז מה עושים?</div>
-    <div class="nav-actions">
-      <div class="view-toggles">
-        <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
-        <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
+  <div class="nav-and-weekend">
+    <div class="nav-row">
+      <div class="nav-logo">🎪 אז מה עושים?</div>
+      <div class="nav-actions">
+        <div class="view-toggles">
+          <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
+          <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="weekend-nav">
-    <div class="weekend-chips" id="weekendChips"></div>
+    <div class="weekend-nav">
+      <div class="weekend-chips" id="weekendChips"></div>
+    </div>
   </div>
 
   <div class="filters-row" id="filters">
@@ -1175,7 +1195,7 @@ body {
   </div>
 
   <div class="request-section">
-    <div class="request-title">💬 שתפו את דעתכם</div>
+    <div class="request-title">💬 מה דעתכם?</div>
     <div class="request-desc">יש לכם מה לשתף? נשמח לשמוע!</div>
     <div class="request-options">
       <button class="request-option" onclick="openSuggestionModal('event')">🎪 הוסיפו אירוע</button>
@@ -1236,7 +1256,7 @@ body {
   <div class="modal">
     <button class="modal-close" onclick="closeSuggestionModal()">&times;</button>
     <div id="suggestionFormContainer">
-      <div class="modal-title" id="modalTitle">💬 שתפו את דעתכם</div>
+      <div class="modal-title" id="modalTitle">💬 מה דעתכם?</div>
       <div class="modal-subtitle" id="modalSubtitle"></div>
       <div class="form-type-selector" id="formTypeSelector">
         <button class="form-type-btn active" data-type="event" onclick="switchFormType('event')">🎪 הוסיפו אירוע</button>
@@ -1592,36 +1612,79 @@ function renderList() {
 
 function renderCalendar() {
   const el = document.getElementById('calendarPanel');
-  const filtered = getFilteredEvents();
-  updateResultsBar(filtered);
-  if (!filtered.length) { el.innerHTML = ''; return; }
+  const weekends = document.getElementById('weekendChips')._weekends;
+  if (!weekends) { el.innerHTML = ''; return; }
 
-  const groups = {};
-  filtered.forEach(e => {
-    const dates = getEventDates(e, activeWeekend.sat, activeWeekend.sun);
-    dates.forEach(ds => {
-      if (!groups[ds]) groups[ds] = [];
-      if (!groups[ds].find(x => x.id === e.id)) groups[ds].push(e);
+  // Get all weekends with events, starting from active
+  const activeIdx = weekends.indexOf(activeWeekend);
+  const relevantWeekends = weekends.filter((w, i) => i >= activeIdx && w.eventCount > 0);
+
+  if (!relevantWeekends.length) {
+    updateResultsBar([]);
+    el.innerHTML = '';
+    return;
+  }
+
+  // Update results bar for active weekend only
+  const activeFiltered = getFilteredEvents();
+  updateResultsBar(activeFiltered);
+
+  let html = '';
+  let idx = 0;
+
+  relevantWeekends.forEach((w, wIdx) => {
+    const weekendEvents = events.filter(e => eventOnWeekend(e, w.sat, w.sun));
+    const filtered = weekendEvents.filter(e => {
+      if (activeFilter === 'all') return true;
+      if (activeFilter === 'free') return e.free;
+      if (activeFilter === 'museumkaart') return e.museumkaart;
+      if (activeFilter === 'liked') return isLiked(e.id);
+      return e.types.includes(activeFilter);
     });
+
+    if (!filtered.length) return;
+
+    const groups = {};
+    filtered.forEach(e => {
+      const dates = getEventDates(e, w.sat, w.sun);
+      dates.forEach(ds => {
+        if (!groups[ds]) groups[ds] = [];
+        if (!groups[ds].find(x => x.id === e.id)) groups[ds].push(e);
+      });
+    });
+
+    const sorted = Object.keys(groups).sort();
+    html += sorted.map(date => `
+      <div class="cal-day-group" data-weekend-sat="${w.sat}" data-weekend-sun="${w.sun}">
+        <div class="cal-day-header">
+          <span class="cal-day-name">${fmtDayFull(date)}</span>
+          <span class="cal-day-date">${fmtLong(date)}</span>
+          <span class="cal-day-count">${groups[date].length} אירועים</span>
+        </div>
+        <div class="cal-events">${groups[date].map(e => cardHTML(e, idx++)).join('')}</div>
+      </div>
+    `).join('');
+
+    // Add recommendation card between weekends
+    if (wIdx < relevantWeekends.length - 1) {
+      html += `
+        <div class="add-event-card between-weekends" onclick="openSuggestionModal('event')">
+          <div class="add-event-card-icon">💡</div>
+          <div class="add-event-card-text">יודעים על אירוע בסופ״ש הבא? ספרו לנו!</div>
+          <div class="add-event-card-sub">מה דעתכם? נוסיף אותו לרשימה</div>
+        </div>`;
+    }
   });
 
-  const sorted = Object.keys(groups).sort();
-  let idx = 0;
-  el.innerHTML = sorted.map(date => `
-    <div class="cal-day-group">
-      <div class="cal-day-header">
-        <span class="cal-day-name">${fmtDayFull(date)}</span>
-        <span class="cal-day-date">${fmtLong(date)}</span>
-        <span class="cal-day-count">${groups[date].length} אירועים</span>
-      </div>
-      <div class="cal-events">${groups[date].map(e => cardHTML(e, idx++)).join('')}</div>
-    </div>
-  `).join('') + `
+  // Final recommendation card
+  html += `
     <div class="add-event-card" onclick="openSuggestionModal('event')">
       <div class="add-event-card-icon">➕</div>
       <div class="add-event-card-text">מתכננים אירוע? רוצים להמליץ על אירוע שעומד להתקיים? ספרו לנו</div>
-      <div class="add-event-card-sub">שתפו אותנו ונוסיף אותו לרשימה</div>
+      <div class="add-event-card-sub">מה דעתכם? נוסיף אותו לרשימה</div>
     </div>`;
+
+  el.innerHTML = html;
 }
 
 function renderMap() {
@@ -1960,10 +2023,21 @@ document.querySelectorAll('.view-btn').forEach(btn => {
 document.getElementById('weekendChips').addEventListener('click', (e) => {
   const chip = e.target.closest('.wk-chip');
   if (!chip || chip.classList.contains('wk-empty')) return;
+  const weekends = document.getElementById('weekendChips')._weekends;
+  const clickedWeekend = weekends[parseInt(chip.dataset.idx)];
   document.querySelectorAll('.wk-chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
-  activeWeekend = document.getElementById('weekendChips')._weekends[parseInt(chip.dataset.idx)];
-  render();
+  activeWeekend = clickedWeekend;
+
+  // Try to scroll to that weekend's section
+  const target = document.querySelector(`.cal-day-group[data-weekend-sat="${clickedWeekend.sat}"]`);
+  if (target) {
+    const navHeight = document.querySelector('.sticky-nav').offsetHeight;
+    const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 10;
+    window.scrollTo({ top, behavior: 'smooth' });
+  } else {
+    render();
+  }
 });
 
 // Filter pills
@@ -1994,35 +2068,41 @@ window.addEventListener('scroll', () => {
     stickyNav.classList.toggle('compact', heroBottom < 0);
   }
 
+  // Update active weekend chip based on visible day groups
   clearTimeout(scrollTimeout);
   scrollTimeout = setTimeout(() => {
     if (activeView !== 'calendar') return;
     const panel = document.getElementById('calendarPanel');
-    const groups = panel.querySelectorAll('.cal-day-group');
+    const groups = panel.querySelectorAll('.cal-day-group[data-weekend-sat]');
     if (!groups.length) return;
 
-    // Check if we scrolled past all events
-    const lastGroup = groups[groups.length - 1];
-    const lastRect = lastGroup.getBoundingClientRect();
-    if (lastRect.bottom < window.innerHeight * 0.3) {
-      // Auto-advance to next weekend that has events
-      const chips = document.querySelectorAll('.wk-chip');
-      const weekends = document.getElementById('weekendChips')._weekends;
-      const currentIdx = weekends.indexOf(activeWeekend);
-      // Find next weekend with events
-      let nextIdx = -1;
-      for (let j = currentIdx + 1; j < weekends.length; j++) {
-        if (weekends[j].eventCount > 0) { nextIdx = j; break; }
-      }
-      if (nextIdx >= 0) {
-        chips.forEach(c => c.classList.remove('active'));
-        chips[nextIdx].classList.add('active');
-        activeWeekend = weekends[nextIdx];
-        render();
-        chips[nextIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    const weekends = document.getElementById('weekendChips')._weekends;
+    const chips = document.querySelectorAll('.wk-chip');
+    const navHeight = document.querySelector('.sticky-nav').offsetHeight;
+
+    // Find the first visible day group
+    let visibleSat = null;
+    for (const g of groups) {
+      const rect = g.getBoundingClientRect();
+      if (rect.bottom > navHeight + 50) {
+        visibleSat = g.dataset.weekendSat;
+        break;
       }
     }
-  }, 150);
+
+    if (visibleSat) {
+      const matchIdx = weekends.findIndex(w => w.sat === visibleSat);
+      if (matchIdx >= 0 && weekends[matchIdx] !== activeWeekend) {
+        activeWeekend = weekends[matchIdx];
+        chips.forEach(c => c.classList.remove('active'));
+        if (chips[matchIdx]) {
+          chips[matchIdx].classList.add('active');
+          chips[matchIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+        updateResultsBar(getFilteredEvents());
+      }
+    }
+  }, 100);
 });
 
 // ===== INIT =====
