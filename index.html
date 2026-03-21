@@ -134,6 +134,7 @@ body {
   z-index: 100;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
 }
 
 .nav-bar {
@@ -143,7 +144,11 @@ body {
   gap: 10px;
   max-width: 1400px;
   margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+
+.nav-bar::-webkit-scrollbar { display: none; }
 
 .nav-logo {
   font-family: 'Rubik', sans-serif;
