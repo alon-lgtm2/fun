@@ -134,21 +134,87 @@ body {
   z-index: 100;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   border-bottom: 1px solid var(--border);
-  overflow: hidden;
+}
+
+.nav-bar-outer {
+  display: flex;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 8px 16px;
+  gap: 10px;
 }
 
 .nav-bar {
   display: flex;
   align-items: center;
-  padding: 8px 16px;
   gap: 10px;
-  max-width: 1400px;
-  margin: 0 auto;
+  flex: 1;
+  min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
 }
 
 .nav-bar::-webkit-scrollbar { display: none; }
+
+.nav-menu-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.nav-menu-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--text-light);
+}
+
+.nav-menu-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+.nav-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  border: 1px solid var(--border);
+  min-width: 180px;
+  z-index: 200;
+  overflow: hidden;
+}
+
+.nav-menu.open { display: block; }
+
+.nav-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.nav-menu-item:hover { background: var(--bg); }
+.nav-menu-item:not(:last-child) { border-bottom: 1px solid var(--border); }
 
 .nav-logo {
   font-family: 'Rubik', sans-serif;
@@ -254,78 +320,120 @@ body {
   font-weight: 700;
 }
 
-/* Weekend Chips - inline single active chip */
-.weekend-chips {
-  display: flex;
-  gap: 4px;
-  scrollbar-width: none;
+/* Weekend Picker */
+.weekend-picker {
+  position: relative;
   flex-shrink: 0;
 }
 
-.weekend-chips::-webkit-scrollbar { display: none; }
-
-.wk-chip {
+.weekend-active-btn {
   white-space: nowrap;
-  display: none;
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 6px;
   padding: 4px 14px;
   border-radius: 10px;
-  border: 2px solid var(--border);
-  background: white;
+  border: 2px solid transparent;
+  background: var(--gradient);
+  color: white;
   cursor: pointer;
   transition: all 0.25s;
   font-family: 'Heebo', sans-serif;
-  min-width: auto;
-  position: relative;
 }
 
-.wk-chip.active { display: flex; }
-
-.wk-chip:hover:not(.wk-empty) { border-color: var(--purple); }
-
-.wk-chip.wk-empty {
-  opacity: 0.4;
-  cursor: default;
-  pointer-events: none;
-  background: #f5f5f5;
-}
-
-.wk-chip.active {
-  background: var(--gradient);
-  border-color: transparent;
-  color: white;
-}
-
-.wk-chip.holiday { border-color: rgba(255,107,53,0.4); }
-
-.wk-label { display: none; }
-.wk-dates { font-size: 13px; font-weight: 700; line-height: 1; margin: 0; }
-.wk-count {
+.weekend-active-btn:hover { opacity: 0.9; }
+.weekend-active-btn .wk-dates { font-size: 13px; font-weight: 700; line-height: 1; margin: 0; }
+.weekend-active-btn .wk-count {
   font-size: 10px;
   font-weight: 600;
   background: rgba(255,255,255,0.25);
   color: white;
   padding: 1px 6px;
   border-radius: 100px;
-  margin-top: 0;
+}
+.weekend-active-btn .wk-arrow { font-size: 10px; opacity: 0.8; transition: transform 0.2s; }
+.weekend-picker.open .wk-arrow { transform: rotate(180deg); }
+
+.weekend-dropdown {
+  display: none;
+  position: fixed;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  border: 1px solid var(--border);
+  z-index: 300;
+  min-width: 220px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 4px;
 }
 
-.wk-chip.active .wk-label,
-.wk-chip.active .wk-dates { opacity: 1; }
+.weekend-dropdown.open { display: block; }
+
+.weekend-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wk-chip {
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Heebo', sans-serif;
+  width: 100%;
+}
+
+.wk-chip:hover:not(.wk-empty) { background: var(--bg); }
+
+.wk-chip.wk-empty {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.wk-chip.active {
+  background: var(--gradient);
+  color: white;
+  border-radius: 8px;
+}
+
+.wk-chip.holiday .wk-holiday-tag { display: inline-block; }
+
+.wk-label { font-size: 11px; font-weight: 400; opacity: 0.6; min-width: 75px; }
+.wk-dates { font-size: 13px; font-weight: 700; line-height: 1; margin: 0; }
+.wk-count {
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(46,204,64,0.15);
+  color: var(--green-dark);
+  padding: 1px 6px;
+  border-radius: 100px;
+  margin-right: auto;
+}
+
 .wk-chip.active .wk-count { background: rgba(255,255,255,0.25); color: white; }
 
 .wk-holiday-tag {
   font-size: 8px;
-  background: rgba(255,255,255,0.2);
-  color: white;
+  background: rgba(255,107,53,0.15);
+  color: #E06520;
   padding: 1px 6px;
   border-radius: 100px;
-  margin-top: 0;
   font-weight: 600;
   display: none;
 }
+
+.wk-chip.active .wk-holiday-tag { background: rgba(255,255,255,0.2); color: white; }
 
 .wk-chip.active .wk-holiday-tag { background: rgba(255,255,255,0.2); color: white; }
 
@@ -559,9 +667,10 @@ body {
 .event-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 16px;
+  gap: 12px;
   margin-top: 4px;
   width: 100%;
+  flex-wrap: nowrap;
 }
 
 .action-icon {
@@ -1106,28 +1215,48 @@ body {
 
 <!-- STICKY NAV -->
 <nav class="sticky-nav">
-  <div class="nav-bar">
-    <div class="nav-logo">🎪 אז מה עושים?</div>
+  <div class="nav-bar-outer">
+    <div class="nav-bar">
+      <div class="nav-logo">🎪 אז מה עושים?</div>
 
-    <div class="weekend-chips" id="weekendChips"></div>
+      <div class="weekend-picker" id="weekendPicker">
+        <button class="weekend-active-btn" id="weekendActiveBtn">
+          <span class="wk-dates" id="weekendActiveDates"></span>
+          <span class="wk-count" id="weekendActiveCount"></span>
+          <span class="wk-arrow">▼</span>
+        </button>
+        <div class="weekend-dropdown">
+          <div class="weekend-chips" id="weekendChips"></div>
+        </div>
+      </div>
 
-    <div class="filters-row" id="filters">
-      <button class="filter-pill active" data-filter="all">הכל</button>
-      <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
-      <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
-      <button class="filter-pill" data-filter="free">🆓 חינם</button>
-      <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
-      <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
-      <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
-      <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
-      <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
-      <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
-      <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
+      <div class="filters-row" id="filters">
+        <button class="filter-pill active" data-filter="all">הכל</button>
+        <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
+        <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
+        <button class="filter-pill" data-filter="free">🆓 חינם</button>
+        <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
+        <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
+        <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
+        <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
+        <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
+        <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
+        <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
+      </div>
+
+      <div class="view-toggles">
+        <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
+        <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
+      </div>
     </div>
 
-    <div class="view-toggles">
-      <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
-      <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
+    <div class="nav-menu-wrapper">
+      <button class="nav-menu-btn" id="menuBtn" onclick="document.getElementById('navMenu').classList.toggle('open')">☰</button>
+      <div class="nav-menu" id="navMenu">
+        <a href="places.html" class="nav-menu-item">📍 מקומות מומלצים</a>
+        <a href="holidays.html" class="nav-menu-item">🇳🇱 חגים וחופשות</a>
+        <button class="nav-menu-item" onclick="document.getElementById('navMenu').classList.remove('open'); openSuggestionModal('feedback')">💬 צרו קשר</button>
+      </div>
     </div>
   </div>
 </nav>
@@ -1484,6 +1613,18 @@ function buildWeekendChips() {
     </button>`;
   }).join('');
   container._weekends = weekends;
+  updateWeekendActiveBtn();
+}
+
+function updateWeekendActiveBtn() {
+  if (!activeWeekend) return;
+  const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
+  const satD = activeWeekend.satDate;
+  const sunD = activeWeekend.sunDate;
+  const dates = `${satD.getDate()}-${sunD.getDate()} ${hebrewMonths[satD.getMonth()]}`;
+  document.getElementById('weekendActiveDates').textContent = dates;
+  const countEl = document.getElementById('weekendActiveCount');
+  countEl.textContent = `${activeWeekend.eventCount} אירועים`;
 }
 
 // ===== FILTER =====
@@ -2049,7 +2190,25 @@ document.querySelectorAll('.view-btn').forEach(btn => {
   });
 });
 
-// Weekend chips
+// Weekend picker toggle
+document.getElementById('weekendActiveBtn').addEventListener('click', () => {
+  const picker = document.getElementById('weekendPicker');
+  const dropdown = picker.querySelector('.weekend-dropdown');
+  const isOpen = dropdown.classList.contains('open');
+  if (isOpen) {
+    dropdown.classList.remove('open');
+    picker.classList.remove('open');
+  } else {
+    const btn = document.getElementById('weekendActiveBtn');
+    const rect = btn.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + 6) + 'px';
+    dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+    dropdown.classList.add('open');
+    picker.classList.add('open');
+  }
+});
+
+// Weekend chip selection
 document.getElementById('weekendChips').addEventListener('click', (e) => {
   const chip = e.target.closest('.wk-chip');
   if (!chip || chip.classList.contains('wk-empty')) return;
@@ -2058,6 +2217,9 @@ document.getElementById('weekendChips').addEventListener('click', (e) => {
   document.querySelectorAll('.wk-chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
   activeWeekend = clickedWeekend;
+  updateWeekendActiveBtn();
+  document.getElementById('weekendPicker').classList.remove('open');
+  document.querySelector('.weekend-dropdown').classList.remove('open');
 
   // Try to scroll to that weekend's section
   const target = document.querySelector(`.cal-day-group[data-weekend-sat="${clickedWeekend.sat}"]`);
@@ -2098,6 +2260,21 @@ document.getElementById('filters').addEventListener('click', (e) => {
   }
   updateFilterAvailability();
   render();
+});
+
+// Close dropdowns on click outside
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('navMenu');
+  const menuBtn = document.getElementById('menuBtn');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !menuBtn.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+  const picker = document.getElementById('weekendPicker');
+  const wkDropdown = picker.querySelector('.weekend-dropdown');
+  if (wkDropdown.classList.contains('open') && !picker.contains(e.target)) {
+    wkDropdown.classList.remove('open');
+    picker.classList.remove('open');
+  }
 });
 
 // ===== SCROLL-BASED WEEKEND AUTO-ADVANCE =====
@@ -2141,6 +2318,7 @@ window.addEventListener('scroll', () => {
           chips[matchIdx].classList.add('active');
         }
         updateResultsBar(getFilteredEvents());
+        updateWeekendActiveBtn();
       }
     }
   });
