@@ -360,6 +360,25 @@ body {
   background-position: center;
   flex-shrink: 0;
   position: relative;
+  transition: background-image 0.3s ease;
+}
+
+.event-img.img-loading {
+  background: linear-gradient(110deg, #f0f0f0 8%, #e0e0e0 18%, #f0f0f0 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+.event-img.img-error {
+  background: var(--gradient-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
 }
 
 @media (max-width: 500px) {
@@ -1345,13 +1364,12 @@ function cardHTML(e, i) {
   const fbUrl = encodeURIComponent(e.link || 'https://fun.israelis.nl');
   const navUrl = e.lat && e.lng ? `https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}` : '';
   const imgUrl = getImageURL(e.image);
-  const imgStyle = imgUrl ? `background-image:url('${imgUrl}')` : `background:var(--gradient-soft);display:flex;align-items:center;justify-content:center;font-size:40px;`;
-  const imgContent = imgUrl ? '' : '';
+  const noImgStyle = `background:var(--gradient-soft);display:flex;align-items:center;justify-content:center;font-size:40px;`;
 
   return `
   <div class="event-card" style="animation-delay:${i*0.04}s" data-id="${e.id}">
     <div class="event-inner">
-      <div class="event-img" style="${imgStyle}">
+      <div class="event-img ${imgUrl ? 'img-loading' : ''}" ${imgUrl ? `data-bg="${imgUrl}"` : `style="${noImgStyle}"`} data-type-emoji="${typeEmoji(e.type)}">
         ${!imgUrl ? `<span>${typeEmoji(e.type)}</span>` : ''}
         <div class="event-day-badge">${fmtDay(e.date)} ${e.time}</div>
       </div>
@@ -1376,7 +1394,7 @@ function cardHTML(e, i) {
               <span class="btn-like ${isLiked(e.id) ? 'liked' : ''}">❤️</span>
               <span class="like-count" id="likeCount-${e.id}">${getLikeCountDisplay(e.id)}</span>
             </div>
-            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:14px;height:14px;"> שיתוף עם חברים</a>
+            <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:14px;height:14px;" loading="lazy" decoding="async"> שיתוף עם חברים</a>
             ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">לפרטים נוספים</a>` : ''}
             ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 לניווט</a>` : ''}
           </div>
@@ -1840,6 +1858,51 @@ window.addEventListener('scroll', () => {
     }
   }, 150);
 });
+
+// ===== LAZY LOADING IMAGES =====
+const imgObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const url = el.dataset.bg;
+    if (!url) return;
+
+    const img = new Image();
+    img.onload = () => {
+      el.style.backgroundImage = `url('${url}')`;
+      el.classList.remove('img-loading');
+    };
+    img.onerror = () => {
+      el.classList.remove('img-loading');
+      el.classList.add('img-error');
+      const emoji = el.dataset.typeEmoji || '';
+      if (emoji && !el.querySelector('.fallback-emoji')) {
+        const span = document.createElement('span');
+        span.className = 'fallback-emoji';
+        span.textContent = emoji;
+        el.style.background = 'var(--gradient-soft)';
+        el.style.display = 'flex';
+        el.style.alignItems = 'center';
+        el.style.justifyContent = 'center';
+        el.style.fontSize = '40px';
+        el.prepend(span);
+      }
+    };
+    img.src = url;
+    delete el.dataset.bg;
+    imgObserver.unobserve(el);
+  });
+}, { rootMargin: '200px' });
+
+function observeImages() {
+  document.querySelectorAll('.event-img[data-bg]').forEach(el => imgObserver.observe(el));
+}
+
+// Patch render functions to observe images after DOM update
+const _origRenderList = renderList;
+renderList = function() { _origRenderList(); observeImages(); };
+const _origRenderCalendar = renderCalendar;
+renderCalendar = function() { _origRenderCalendar(); observeImages(); };
 
 // ===== INIT =====
 loadEvents();
