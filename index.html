@@ -149,8 +149,17 @@ body {
 }
 
 .nav-logo {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   display: none;
 }
+
+.sticky-nav.compact .nav-logo { display: block; }
 
 .nav-actions {
   display: flex;
@@ -282,7 +291,20 @@ body {
   position: relative;
 }
 
-/* Compact mode — no height changes, just visual refinements */
+/* Compact mode */
+.sticky-nav.compact .nav-row {
+  justify-content: space-between;
+  padding: 6px 24px;
+}
+.sticky-nav.compact .weekend-nav { padding: 0 24px 4px; }
+.sticky-nav.compact .weekend-chips { gap: 4px; }
+.sticky-nav.compact .wk-chip { padding: 3px 10px; min-width: auto; flex-direction: row; gap: 6px; border-radius: 8px; }
+.sticky-nav.compact .wk-chip:not(.active) { display: none; }
+.sticky-nav.compact .wk-label { display: none; }
+.sticky-nav.compact .wk-dates { font-size: 13px; font-weight: 700; margin: 0; }
+.sticky-nav.compact .wk-count { font-size: 9px; margin-top: 0; }
+.sticky-nav.compact .filters-row { padding: 2px 24px 6px; gap: 4px; }
+.sticky-nav.compact .filter-pill { padding: 2px 8px; font-size: 10px; }
 
 .wk-chip:hover:not(.wk-empty) { border-color: var(--purple); }
 
@@ -449,10 +471,10 @@ body {
   .event-img { width: 100%; min-height: 200px; max-height: 220px; border-radius: 0 0 var(--radius) var(--radius); order: -1; }
   .btn-s { padding: 10px 16px; font-size: 14px; border-radius: 10px; }
   .event-footer { flex-direction: column; align-items: center; }
-  .event-actions { gap: 20px; padding-bottom: 8px; }
-  .action-icon { width: 56px; height: 56px; font-size: 26px; }
-  .action-icon-wa img { width: 28px; height: 28px; }
-  .action-icon-label { font-size: 10px; }
+  .event-actions { gap: 18px; padding-bottom: 10px; }
+  .action-icon { width: 48px; height: 48px; font-size: 22px; }
+  .action-icon-wa img { width: 24px; height: 24px; }
+  .action-icon-label { font-size: 11px; }
   .event-tags { gap: 4px; }
   .etag { font-size: 9px; padding: 2px 6px; }
   .popup-link { padding: 10px 14px !important; font-size: 14px !important; }
@@ -565,14 +587,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;
-  font-size: 24px;
+  font-size: 20px;
   position: relative;
 }
 
@@ -585,7 +607,7 @@ body {
   box-shadow: 0 3px 10px rgba(37,211,102,0.3);
 }
 .action-icon-wa:hover { box-shadow: 0 5px 16px rgba(37,211,102,0.4); }
-.action-icon-wa img { width: 26px; height: 26px; filter: brightness(0) invert(1); }
+.action-icon-wa img { width: 22px; height: 22px; filter: brightness(0) invert(1); }
 
 .action-icon-like {
   background: #fff;
@@ -615,10 +637,10 @@ body {
 
 .action-icon-label {
   position: absolute;
-  bottom: -18px;
+  bottom: -20px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 9px;
+  font-size: 11px;
   font-family: 'Heebo', sans-serif;
   font-weight: 500;
   color: var(--text-lighter);
@@ -2068,15 +2090,44 @@ document.getElementById('filters').addEventListener('click', (e) => {
 
 // ===== SCROLL-BASED WEEKEND AUTO-ADVANCE =====
 let scrollRaf = null;
+let isCompact = false;
+let heroThreshold = 0;
+// Cache hero bottom position once
+setTimeout(() => {
+  const hero = document.querySelector('.hero');
+  if (hero) heroThreshold = hero.offsetTop + hero.offsetHeight;
+}, 500);
 
 window.addEventListener('scroll', () => {
   if (scrollRaf) return;
   scrollRaf = requestAnimationFrame(() => {
     scrollRaf = null;
+    const stickyNav = document.querySelector('.sticky-nav');
+
+    // Compact mode with scroll compensation
+    if (stickyNav && heroThreshold > 0) {
+      const scrollY = window.scrollY || window.pageYOffset;
+      if (!isCompact && scrollY > heroThreshold + 50) {
+        // Measure height before compact
+        const heightBefore = stickyNav.offsetHeight;
+        isCompact = true;
+        stickyNav.classList.add('compact');
+        // Compensate: adjust scroll by the height difference
+        const heightAfter = stickyNav.offsetHeight;
+        const diff = heightBefore - heightAfter;
+        if (diff > 0) window.scrollBy(0, -diff);
+      } else if (isCompact && scrollY < heroThreshold - 20) {
+        const heightBefore = stickyNav.offsetHeight;
+        isCompact = false;
+        stickyNav.classList.remove('compact');
+        const heightAfter = stickyNav.offsetHeight;
+        const diff = heightAfter - heightBefore;
+        if (diff > 0) window.scrollBy(0, diff);
+      }
+    }
 
     // Update active weekend chip based on visible day groups
     if (activeView !== 'calendar') return;
-    const stickyNav = document.querySelector('.sticky-nav');
     const panel = document.getElementById('calendarPanel');
     const groups = panel.querySelectorAll('.cal-day-group[data-weekend-sat]');
     if (!groups.length) return;
