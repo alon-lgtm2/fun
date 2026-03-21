@@ -282,26 +282,7 @@ body {
   position: relative;
 }
 
-.sticky-nav.compact .nav-and-weekend {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 4px 24px;
-}
-.sticky-nav.compact .nav-row { padding: 0; }
-.sticky-nav.compact .weekend-nav { padding: 0; }
-.sticky-nav.compact .weekend-chips { gap: 4px; }
-.sticky-nav.compact .wk-chip { padding: 4px 12px; min-width: auto; flex-direction: row; gap: 6px; border-radius: 10px; }
-.sticky-nav.compact .wk-chip:not(.active) { display: none; }
-.sticky-nav.compact .wk-label { display: none; }
-.sticky-nav.compact .wk-dates { font-size: 13px; font-weight: 700; margin: 0; }
-.sticky-nav.compact .wk-count { font-size: 9px; margin-top: 0; }
-.sticky-nav.compact .filters-row { padding: 3px 24px 5px; gap: 4px; }
-.sticky-nav.compact .filter-pill { padding: 2px 8px; font-size: 10px; }
+/* Compact mode — no height changes, just visual refinements */
 
 .wk-chip:hover:not(.wk-empty) { border-color: var(--purple); }
 
@@ -2087,35 +2068,15 @@ document.getElementById('filters').addEventListener('click', (e) => {
 
 // ===== SCROLL-BASED WEEKEND AUTO-ADVANCE =====
 let scrollRaf = null;
-let isCompact = false;
-// Cache hero height once after load
-let heroThreshold = 0;
-setTimeout(() => {
-  const hero = document.querySelector('.hero');
-  if (hero) heroThreshold = hero.offsetTop + hero.offsetHeight;
-}, 500);
 
 window.addEventListener('scroll', () => {
   if (scrollRaf) return;
   scrollRaf = requestAnimationFrame(() => {
     scrollRaf = null;
 
-    // Compact mode based on scroll position (not element position — avoids feedback loop)
-    const stickyNav = document.querySelector('.sticky-nav');
-    if (stickyNav && heroThreshold > 0) {
-      const scrollY = window.scrollY || window.pageYOffset;
-      // Hysteresis: go compact at threshold, un-compact 30px before
-      if (!isCompact && scrollY > heroThreshold) {
-        isCompact = true;
-        stickyNav.classList.add('compact');
-      } else if (isCompact && scrollY < heroThreshold - 30) {
-        isCompact = false;
-        stickyNav.classList.remove('compact');
-      }
-    }
-
     // Update active weekend chip based on visible day groups
     if (activeView !== 'calendar') return;
+    const stickyNav = document.querySelector('.sticky-nav');
     const panel = document.getElementById('calendarPanel');
     const groups = panel.querySelectorAll('.cal-day-group[data-weekend-sat]');
     if (!groups.length) return;
