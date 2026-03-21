@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מקומות שאנחנו ממליצים - fun.israelis.nl</title>
+<meta name="description" content="מסעדות, מוזיאונים וגני שעשועים מומלצים למשפחות בהולנד">
+<meta property="og:title" content="מקומות שאנחנו ממליצים">
+<meta property="og:description" content="מסעדות, מוזיאונים וגני שעשועים מומלצים למשפחות בהולנד">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fun.israelis.nl/places.html">
+<meta property="og:site_name" content="fun.israelis.nl">
+<meta property="og:locale" content="he_IL">
+<meta property="og:image" content="https://fun.israelis.nl/images/ogtag.png">
+<link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="images/az.png">
+<meta name="theme-color" content="#9B30FF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="מה עושים?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
+<style>
+:root {
+  --purple: #9B30FF;
+  --purple-dark: #7B22CC;
+  --magenta: #C850C0;
+  --blue: #4158D0;
+  --green: #2ECC40;
+  --green-dark: #27AE35;
+  --gradient: linear-gradient(135deg, var(--magenta) 0%, var(--purple) 40%, var(--blue) 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(200,80,192,0.08) 0%, rgba(155,48,255,0.08) 40%, rgba(65,88,208,0.06) 100%);
+  --bg: #F0EFF4;
+  --card-bg: #FFFFFF;
+  --text: #1A1A2E;
+  --text-light: #5A5A7A;
+  --text-lighter: #9898B0;
+  --border: #EEEEF4;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 2px 16px rgba(155,48,255,0.06);
+  --shadow-hover: 0 8px 32px rgba(155,48,255,0.12);
+  --restaurant: #0288D1;
+  --museum: #F9A825;
+  --playground: #9C27B0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: var(--gradient);
+  color: white;
+  padding: 24px 20px 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 60%, rgba(46,204,64,0.06) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+
+.hero-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+  margin-bottom: 10px;
+}
+.hero-back:hover { opacity: 1; }
+
+.hero-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+  text-shadow: 2px 3px 8px rgba(0,0,0,0.15);
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+/* ===== STICKY NAV ===== */
+.sticky-nav {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 24px;
+}
+
+.filters-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-pill {
+  white-space: nowrap;
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-pill:hover { border-color: var(--purple); color: var(--purple); }
+.filter-pill.active { background: var(--purple); color: white; border-color: var(--purple); }
+
+.filter-pill .filter-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.filter-count {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(155,48,255,0.1);
+  color: var(--purple);
+  padding: 1px 7px;
+  border-radius: 100px;
+}
+
+.filter-pill.active .filter-count {
+  background: rgba(255,255,255,0.3);
+  color: white;
+}
+
+.view-toggle-row {
+  display: flex;
+  gap: 0;
+  background: var(--bg);
+  border-radius: 14px;
+  padding: 3px;
+  border: 2px solid var(--border);
+}
+
+.view-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  background: transparent;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.view-btn .view-icon { font-size: 18px; }
+
+.view-btn.active {
+  background: var(--purple);
+  color: white;
+  box-shadow: 0 2px 8px rgba(139,92,246,0.3);
+  font-weight: 700;
+}
+
+/* ===== MAP ===== */
+.map-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 24px;
+}
+
+#placesMap {
+  width: 100%;
+  height: 500px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  z-index: 1;
+}
+
+@media (max-width: 700px) {
+  #placesMap { height: 350px; }
+}
+
+/* ===== PLACE CARDS ===== */
+.content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 24px 40px;
+}
+
+.results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  margin-top: 10px;
+}
+
+.results-count {
+  font-size: 13px;
+  color: var(--text-lighter);
+}
+
+.places-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 700px) {
+  .places-grid { grid-template-columns: 1fr; }
+}
+
+.place-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 2px 20px rgba(155,48,255,0.08);
+  border: 1px solid rgba(155,48,255,0.06);
+  transition: all 0.25s ease;
+  animation: slideUp 0.35s ease backwards;
+  cursor: pointer;
+  position: relative;
+}
+
+.place-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  border-color: rgba(155,48,255,0.12);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.place-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.place-cat-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.place-name {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.place-category {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 100px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.place-category.restaurant { background: rgba(2,136,209,0.1); color: var(--restaurant); }
+.place-category.museum { background: rgba(249,168,37,0.1); color: #E08F00; }
+.place-category.playground { background: rgba(156,39,176,0.1); color: var(--playground); }
+
+.place-desc {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.place-no-desc {
+  font-size: 13px;
+  color: var(--text-lighter);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.place-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.place-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.place-nav-btn {
+  background: rgba(65,88,208,0.1);
+  color: var(--blue);
+}
+.place-nav-btn:hover { background: var(--blue); color: white; }
+
+.place-search-btn {
+  background: rgba(155,48,255,0.08);
+  color: var(--purple);
+}
+.place-search-btn:hover { background: var(--purple); color: white; }
+
+/* Map popup */
+.place-popup { direction: rtl; text-align: right; }
+.place-popup h3 { font-family: 'Rubik', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+.place-popup p { font-size: 13px; color: var(--text-light); line-height: 1.5; margin-bottom: 8px; }
+.place-popup a { color: var(--purple); font-weight: 600; font-size: 13px; text-decoration: none; }
+.place-popup a:hover { text-decoration: underline; }
+
+/* Leaflet popup RTL fix */
+.leaflet-popup-content { direction: rtl; text-align: right; }
+
+/* ===== REQUEST SECTION ===== */
+.request-section {
+  background: var(--gradient-soft);
+  border: 1.5px solid rgba(155,48,255,0.1);
+  border-radius: var(--radius);
+  padding: 22px;
+  text-align: center;
+  margin-top: 24px;
+}
+
+.request-title { font-family: 'Rubik', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 5px; }
+.request-desc { font-size: 13px; color: var(--text-light); margin-bottom: 12px; font-weight: 300; }
+
+.request-options {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.request-option {
+  padding: 10px 20px;
+  background: white;
+  border: 1.5px solid rgba(155,48,255,0.2);
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--purple);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.request-option:hover {
+  background: var(--purple);
+  color: white;
+  border-color: var(--purple);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(155,48,255,0.25);
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 28px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-lighter);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: var(--bg); color: var(--text); }
+
+.modal-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.modal-subtitle { font-size: 13px; color: var(--text-light); text-align: center; margin-bottom: 16px; }
+
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text-light); }
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  background: var(--bg);
+}
+.form-input:focus, .form-textarea:focus { outline: none; border-color: var(--purple); }
+.form-textarea { min-height: 80px; resize: vertical; }
+
+.form-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 6px;
+}
+.form-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(155,48,255,0.3); }
+
+.form-success { text-align: center; padding: 30px 10px; }
+.form-success-emoji { font-size: 48px; margin-bottom: 10px; }
+.form-success-text { font-size: 16px; font-weight: 600; color: var(--text); }
+.form-success-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+.hidden { display: none !important; }
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+  color: var(--text-lighter);
+  margin-top: 30px;
+}
+footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
+
+/* ===== FAB ===== */
+.fab {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  padding: 14px 22px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(155,48,255,0.35);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s;
+}
+.fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(155,48,255,0.45); }
+
+/* ===== LIST / MAP TOGGLE ===== */
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* ===== SEARCH ===== */
+.search-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: 1;
+  max-width: 300px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  background: var(--bg);
+  transition: border-color 0.2s;
+  direction: rtl;
+}
+.search-input:focus { outline: none; border-color: var(--purple); }
+.search-input::placeholder { color: var(--text-lighter); }
+
+@media (max-width: 700px) {
+  .hero-title { font-size: 28px; }
+  .hero-subtitle { font-size: 14px; }
+  .filters-row { gap: 6px; }
+  .filter-pill { padding: 6px 14px; font-size: 12px; }
+  .search-row { max-width: 100%; }
+  .nav-inner { padding: 8px 16px; }
+  .nav-top { flex-direction: column; gap: 8px; }
+  .content { padding: 10px 16px 40px; }
+  .map-container { padding: 10px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <a href="index.html" class="hero-back">→ חזרה לאירועים</a>
+    <h1 class="hero-title">📍 מקומות שאנחנו ממליצים</h1>
+    <p class="hero-subtitle">מסעדות, מוזיאונים וגני שעשועים שהיינו בהם באופן אישי ואנחנו חותמים עליהם</p>
+  </div>
+</div>
+
+<!-- STICKY NAV -->
+<div class="sticky-nav">
+  <div class="nav-inner">
+    <div class="nav-top" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+      <div class="view-toggle-row">
+        <button class="view-btn active" data-view="map" onclick="switchView('map')"><span class="view-icon">🗺️</span> מפה</button>
+        <button class="view-btn" data-view="list" onclick="switchView('list')"><span class="view-icon">📋</span> רשימה</button>
+      </div>
+      <div class="search-row">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 חיפוש מקום..." oninput="filterPlaces()">
+      </div>
+    </div>
+    <div class="filters-row">
+      <button class="filter-pill active" data-cat="all" onclick="toggleFilter('all')">הכל <span class="filter-count" id="countAll"></span></button>
+      <button class="filter-pill" data-cat="restaurant" onclick="toggleFilter('restaurant')"><span class="filter-dot" style="background:var(--restaurant)"></span> 🍽️ מסעדות <span class="filter-count" id="countRestaurant"></span></button>
+      <button class="filter-pill" data-cat="museum" onclick="toggleFilter('museum')"><span class="filter-dot" style="background:var(--museum)"></span> 🏛️ מוזיאונים <span class="filter-count" id="countMuseum"></span></button>
+      <button class="filter-pill" data-cat="playground" onclick="toggleFilter('playground')"><span class="filter-dot" style="background:var(--playground)"></span> 🛝 גני שעשועים <span class="filter-count" id="countPlayground"></span></button>
+    </div>
+  </div>
+</div>
+
+<!-- MAP VIEW -->
+<div class="view-panel active" id="mapView">
+  <div class="map-container">
+    <div id="placesMap"></div>
+  </div>
+</div>
+
+<!-- LIST VIEW -->
+<div class="view-panel" id="listView">
+  <div class="content">
+    <div class="results-bar">
+      <span class="results-count" id="resultsCount"></span>
+    </div>
+    <div class="places-grid" id="placesGrid"></div>
+  </div>
+</div>
+
+<!-- LIST BELOW MAP (always visible in map mode) -->
+<div class="content" id="mapListContent">
+  <div class="results-bar">
+    <span class="results-count" id="resultsCountMap"></span>
+  </div>
+  <div class="places-grid" id="placesGridMap"></div>
+</div>
+
+<!-- SUGGEST -->
+<div class="content" style="padding-top:0">
+  <div class="request-section">
+    <div class="request-title">📍 מכירים מקום שווה?</div>
+    <div class="request-desc">הכירו לנו מקומות חדשים שאהבתם ונוסיף אותם לרשימה</div>
+    <div class="request-options">
+      <button class="request-option" onclick="openPlaceModal()">📍 המליצו על מקום</button>
+      <a href="index.html" class="request-option" style="text-decoration:none">🎪 לאירועים בסופ״ש</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>נבנה באהבה לקהילה הישראלית בהולנד 🧡</p>
+  <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
+</footer>
+
+<button class="fab" onclick="openPlaceModal()"><span style="font-size:22px">📍</span> המליצו על מקום</button>
+
+<!-- PLACE SUGGESTION MODAL -->
+<div class="modal-overlay" id="placeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePlaceModal()">&times;</button>
+    <div id="placeFormContainer">
+      <div class="modal-title">📍 המליצו על מקום</div>
+      <div class="modal-subtitle">שתפו אותנו במקום מעולה שאתם מכירים</div>
+      <form id="placeForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
+        <input type="hidden" name="form_type" value="place_suggestion">
+        <input type="hidden" name="_subject" value="המלצה על מקום - fun.israelis.nl">
+        <div class="form-group">
+          <label class="form-label">שם המקום *</label>
+          <input class="form-input" type="text" name="place_name" placeholder="למשל: מסעדת XYZ" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">סוג המקום</label>
+          <select class="form-input" name="place_type" style="cursor:pointer">
+            <option value="restaurant">🍽️ מסעדה</option>
+            <option value="museum">🏛️ מוזיאון</option>
+            <option value="playground">🛝 גן שעשועים / ג׳ימבורי</option>
+            <option value="other">אחר</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">עיר / אזור</label>
+          <input class="form-input" type="text" name="place_city" placeholder="למשל: אמסטרדם">
+        </div>
+        <div class="form-group">
+          <label class="form-label">למה אתם ממליצים?</label>
+          <textarea class="form-textarea" name="place_reason" placeholder="מה מיוחד במקום הזה? מתאים לאיזה גילאים?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">קישור (Google Maps / אתר)</label>
+          <input class="form-input" type="url" name="place_link" dir="ltr" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">השם שלך (לא חובה)</label>
+          <input class="form-input" type="text" name="submitter_name">
+        </div>
+        <button type="submit" class="form-submit" id="placeSubmitBtn">שליחה 🚀</button>
+      </form>
+    </div>
+    <div class="form-success hidden" id="placeSuccess">
+      <div class="form-success-emoji">🎉</div>
+      <div class="form-success-text">תודה רבה!</div>
+      <div class="form-success-sub">קיבלנו את ההמלצה שלכם ונבדוק אותה בהקדם.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== PLACES DATA (extracted from KMZ) =====
+const PLACES = [
+  // 🍽️ מסעדות שוות עם ילדים
+  { name: "Venneper Lodge", desc: "אוכל מעולה. גן שעשועים בחוץ במתחם. ג׳ימבורי ואיזור להקרנת סרטים בפנים", cat: "restaurant", lat: 52.2652934, lng: 4.5960539 },
+  { name: "Eeterij De Beleving", desc: "מסעדה / פאב עם ג׳ימבורי רציני. חלק מכפר נופש של euro parcs", cat: "restaurant", lat: 52.2702583, lng: 4.4752599 },
+  { name: "De Vondeltuin", desc: "מקום מעולה בוונדלפארק עם גן שעשועים וארגז חול. אידיאלי בעיקר כשיש מזג אוויר טוב", cat: "restaurant", lat: 52.3549116, lng: 4.8565129 },
+  { name: "Haddock Restaurant", desc: "מסעדה ידידותית לילדים על ה״חוף״ האמסטרדמי", cat: "restaurant", lat: 52.371674, lng: 4.972785 },
+  { name: "Meerzicht Farm", desc: "מסעדת פנקייקים ביער אמסטרדם עם שפע מתקנים לילדים", cat: "restaurant", lat: 52.3263765, lng: 4.8210133 },
+  { name: "Hans & Gretel pancake house", desc: "עמי ותמי - אטרקציות משוגע לילדים", cat: "restaurant", lat: 52.4021638, lng: 5.6144467 },
+  { name: "Goatfarm Ridammerhoeve", desc: "חוות חיות עם בית קפה / מסעדה חמודה", cat: "restaurant", lat: 52.3130493, lng: 4.8244443 },
+  { name: "Buitenplaats Plantage B.V.", desc: "מסעדה רחבת ידיים עם אזור משחקים, אולם קולנוע ושטיחים להתחרדן. מומלץ להביא איתכם משחקי קופסה", cat: "restaurant", lat: 52.3299589, lng: 4.5822671 },
+  { name: "MOON", desc: "מסעדה טבעונית עם אזור משחקים לילדים והמון תחפושות", cat: "restaurant", lat: 52.6300055, lng: 4.7508492 },
+  { name: "Kraantje Lek", desc: "גן שעשועים ענק (בחוץ) ודיונה מכובדת בכניסה", cat: "restaurant", lat: 52.3828875, lng: 4.5915228 },
+  { name: "Fussia", desc: "אכול כפי יכולתך - עם חדר משחקים קטן", cat: "restaurant", lat: 52.2816007, lng: 4.8420472 },
+  { name: "Anna Church Amstelveen", desc: "כנסיה שהוסבה למסעדה / פאב. אזור עם משחקי קופסה וכו׳", cat: "restaurant", lat: 52.3046576, lng: 4.8470213 },
+  { name: "Grand Café Groeneveld", desc: "בית קפה צמוד לטירה עם ארגז חול וטרקטורים לילדים", cat: "restaurant", lat: 52.218482, lng: 5.255574 },
+  { name: "Bremerbaai", desc: "מסעדה טובה על החוף עם גן שעשועים צמוד", cat: "restaurant", lat: 52.4163122, lng: 5.7321341 },
+  { name: "Theetuin Overleek", desc: "בית קפה / מסעדה עם גן שעשועים קטן בחצר", cat: "restaurant", lat: 52.4543782, lng: 4.9999868 },
+  { name: "Happy Italy Amsterdam", desc: "מסעדה איטלקית עם ג׳ימבורי קטן", cat: "restaurant", lat: 52.3384642, lng: 4.8935035 },
+  { name: "Margherita Tutta La Vita", desc: "אין אזור משחקים - אבל סופר ידידותי לילדים, דפי צביעה וכנראה גם הפיצה הכי טובה בעיר", cat: "restaurant", lat: 52.3290043, lng: 4.9560219 },
+  { name: "factory Woerden", desc: "אמנם מדובר בג׳ימבורי, אבל האוכל סביר לגמרי", cat: "restaurant", lat: 52.0798188, lng: 4.9103991 },
+  { name: "Corendon Urban Amsterdam Schiphol Airport Hotel", desc: "מסעדה טובה בז׳אנר אכול כפי יכולתך - עם גן שעשועים ובוינג 747-400 בחצר", cat: "restaurant", lat: 52.3286583, lng: 4.7883406 },
+  { name: "McDonald's Schiphol", desc: "רק מקדונלדס, אבל אפשר ללעוס המבורגר ולהתבונן במטוסים נוחתים", cat: "restaurant", lat: 52.321065, lng: 4.792317 },
+  { name: "Hart Beach Restaurant", desc: null, cat: "restaurant", lat: 52.103539, lng: 4.2655533 },
+  { name: "The Fat Mermaid", desc: null, cat: "restaurant", lat: 52.1107207, lng: 4.2758288 },
+  { name: "Ribhouse Texas Woudenberg", desc: null, cat: "restaurant", lat: 52.0816036, lng: 5.4209896 },
+  { name: "Restaurant Pof", desc: "מסעדה טובה עם גן שעשועים טבעי נהדר", cat: "restaurant", lat: 52.4194393, lng: 4.8742585 },
+  { name: "Geertje's Hoeve", desc: "חווה חקלאית מלאה בפעיליות לילדים עם מסעדה במרכזה.", cat: "restaurant", lat: 52.1173288, lng: 5.004975 },
+  { name: "Hajé restaurant Natuurpark", desc: "מסעדה בתוך חי בר הולנדי - גן שעשועים בחוץ. מומלץ", cat: "restaurant", lat: 52.483335, lng: 5.5306136 },
+  { name: "Café-restaurant brambergen", desc: "מסעדה במיקום מושלם, בסמוך גם שעשועים טבעי גדול ושפע של מסלולי טיול מרהיבים. שווה להיכנס למרכז המבקרים הצמוד למסעדה לפרטים נוספים", cat: "restaurant", lat: 52.2508026, lng: 5.1240193 },
+  { name: "Pllek", desc: null, cat: "restaurant", lat: 52.3991581, lng: 4.8928756 },
+  { name: "Pannenkoekenrestaurant De Suikerhoeve", desc: null, cat: "restaurant", lat: 52.1556079, lng: 4.7881797 },
+  { name: "Graaf Jan Mijdrecht", desc: null, cat: "restaurant", lat: 52.207318, lng: 4.866849 },
+
+  // 🏛️ מוזיאונים ממש שווים עם ילדים
+  { name: "Nature Museum Fryslân", desc: null, cat: "museum", lat: 53.2041386, lng: 5.7959017 },
+  { name: "Children's Book Museum", desc: null, cat: "museum", lat: 52.0811169, lng: 4.3280473 },
+  { name: "National Museum of Ethnology", desc: null, cat: "museum", lat: 52.1633115, lng: 4.4824673 },
+  { name: "Het Dolhuys", desc: null, cat: "museum", lat: 52.3905708, lng: 4.63773 },
+  { name: "LAM museum", desc: "לא מקבלים כרטיס מוזיאונים. ניתן להזמין כרטיסים בחינם באתר", cat: "museum", lat: 52.2681096, lng: 4.5421788 },
+  { name: "Archeon Museum Park", desc: null, cat: "museum", lat: 52.1141808, lng: 4.6519965 },
+  { name: "Luchtvaartmuseum Aviodrome", desc: null, cat: "museum", lat: 52.4578787, lng: 5.5308014 },
+  { name: "Zuiderzeemuseum", desc: null, cat: "museum", lat: 52.7048041, lng: 5.2977067 },
+  { name: "Netherlands Open Air Museum", desc: null, cat: "museum", lat: 52.0099492, lng: 5.9066406 },
+  { name: "Old Crafts & Toy Museum", desc: "לא מקבלים כרטיס מוזיאונים", cat: "museum", lat: 52.17, lng: 5.5552778 },
+  { name: "Naturalis Biodiversity Center", desc: null, cat: "museum", lat: 52.1646451, lng: 4.4730775 },
+  { name: "Navy Museum", desc: null, cat: "museum", lat: 52.9637586, lng: 4.771679 },
+  { name: "Discovery Museum", desc: null, cat: "museum", lat: 50.8610759, lng: 6.0581648 },
+  { name: "Nationaal Militair Museum", desc: null, cat: "museum", lat: 52.1319244, lng: 5.2761886 },
+  { name: "Rijksmuseum", desc: null, cat: "museum", lat: 52.3599976, lng: 4.8852188 },
+  { name: "Spoorwegmuseum", desc: null, cat: "museum", lat: 52.0879556, lng: 5.1312274 },
+  { name: "Museum Speelklok", desc: null, cat: "museum", lat: 52.0908209, lng: 5.1195867 },
+  { name: "The National Maritime Museum", desc: null, cat: "museum", lat: 52.3716667, lng: 4.915 },
+  { name: "Maritime Museum", desc: null, cat: "museum", lat: 51.9175663, lng: 4.4822147 },
+  { name: "Zaanse Schans", desc: null, cat: "museum", lat: 52.472886, lng: 4.8218542 },
+  { name: "Philips Museum", desc: null, cat: "museum", lat: 51.4393827, lng: 5.4755434 },
+  { name: "DAF Museum", desc: null, cat: "museum", lat: 51.4372291, lng: 5.4904642 },
+  { name: "Muiden Castle", desc: null, cat: "museum", lat: 52.3343808, lng: 5.0711877 },
+  { name: "Nijntje Museum", desc: null, cat: "museum", lat: 52.0914607, lng: 5.119277 },
+
+  // 🛝 ג׳ימבורי וגני שעשועים שווים
+  { name: "Speelnatuur van OERRR 's-Graveland", desc: "עוד גן שעשועים טבעי מעולה. מושלם ליום שמשי", cat: "playground", lat: 52.2509579, lng: 5.1233089 },
+  { name: "Playground Kindervreugd", desc: null, cat: "playground", lat: 52.4903152, lng: 4.6550638 },
+  { name: "Funzone Aalsmeer", desc: null, cat: "playground", lat: 52.2815093, lng: 4.7850813 },
+  { name: "Speeltuin Groenendaal", desc: null, cat: "playground", lat: 52.3395097, lng: 4.6136539 },
+  { name: "Darteldome", desc: null, cat: "playground", lat: 52.46423, lng: 4.8274739 },
+  { name: "Speeltuin Monnickendam", desc: null, cat: "playground", lat: 52.4564647, lng: 5.0357959 },
+  { name: "Natuurspeeltuin", desc: "גן שעשועים טבעי שנמצא בתוך מתחם ירוק ובצמוד למסעדת Pof", cat: "playground", lat: 52.4201274, lng: 4.8745276 },
+  { name: "Speeltuin Oosterpark", desc: null, cat: "playground", lat: 52.3605369, lng: 4.917788 },
+  { name: "Ballorig Almere", desc: null, cat: "playground", lat: 52.3514216, lng: 5.2152063 },
+  { name: "Seringenpark", desc: null, cat: "playground", lat: 52.268267, lng: 4.7677171 },
+  { name: "Monkey Town Diemen", desc: null, cat: "playground", lat: 52.3320056, lng: 4.9787785 },
+  { name: "Speeltuin", desc: null, cat: "playground", lat: 52.3187858, lng: 4.9584365 },
+  { name: "Playground Amsteldorp", desc: null, cat: "playground", lat: 52.343374, lng: 4.929917 },
+  { name: "Bamboelabyrint Nirwana", desc: null, cat: "playground", lat: 52.2468862, lng: 4.7930669 },
+];
+
+// ===== STATE =====
+let activeFilter = 'all';
+let currentView = 'map';
+let map = null;
+let markers = [];
+let searchTerm = '';
+
+// ===== CATEGORY CONFIG =====
+const CAT_CONFIG = {
+  restaurant: { color: '#0288D1', emoji: '🍽️', label: 'מסעדה' },
+  museum: { color: '#F9A825', emoji: '🏛️', label: 'מוזיאון' },
+  playground: { color: '#9C27B0', emoji: '🛝', label: 'גן שעשועים' },
+};
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  updateCounts();
+  initMap();
+  renderCards('placesGridMap');
+  renderCards('placesGrid');
+});
+
+function updateCounts() {
+  document.getElementById('countAll').textContent = PLACES.length;
+  document.getElementById('countRestaurant').textContent = PLACES.filter(p => p.cat === 'restaurant').length;
+  document.getElementById('countMuseum').textContent = PLACES.filter(p => p.cat === 'museum').length;
+  document.getElementById('countPlayground').textContent = PLACES.filter(p => p.cat === 'playground').length;
+}
+
+// ===== MAP =====
+function initMap() {
+  map = L.map('placesMap', { scrollWheelZoom: true }).setView([52.3, 4.9], 8);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 19
+  }).addTo(map);
+
+  addMarkers();
+}
+
+function createMarkerIcon(cat) {
+  const color = CAT_CONFIG[cat].color;
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `<div style="
+      width: 32px; height: 32px;
+      background: ${color};
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    ">${CAT_CONFIG[cat].emoji}</div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -18]
+  });
+}
+
+function addMarkers() {
+  // Clear existing
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+
+  const filtered = getFilteredPlaces();
+
+  filtered.forEach(place => {
+    const marker = L.marker([place.lat, place.lng], { icon: createMarkerIcon(place.cat) });
+
+    const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
+    const searchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}`;
+
+    const popupHtml = `
+      <div class="place-popup">
+        <h3>${CAT_CONFIG[place.cat].emoji} ${place.name}</h3>
+        ${place.desc ? `<p>${place.desc}</p>` : ''}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="${navUrl}" target="_blank">🧭 נסענו!</a>
+          <a href="${searchUrl}" target="_blank">🔍 ב-Google Maps</a>
+        </div>
+      </div>
+    `;
+
+    marker.bindPopup(popupHtml, { maxWidth: 280 });
+    marker.addTo(map);
+    markers.push(marker);
+  });
+
+  // Fit bounds if markers exist
+  if (markers.length > 0) {
+    const group = L.featureGroup(markers);
+    map.fitBounds(group.getBounds().pad(0.1));
+  }
+}
+
+// ===== FILTERING =====
+function getFilteredPlaces() {
+  let filtered = PLACES;
+  if (activeFilter !== 'all') {
+    filtered = filtered.filter(p => p.cat === activeFilter);
+  }
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(term) ||
+      (p.desc && p.desc.toLowerCase().includes(term))
+    );
+  }
+  return filtered;
+}
+
+function toggleFilter(cat) {
+  activeFilter = cat;
+
+  // Update pill states
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.classList.toggle('active', pill.dataset.cat === cat);
+  });
+
+  filterPlaces();
+}
+
+function filterPlaces() {
+  searchTerm = document.getElementById('searchInput').value.trim();
+
+  addMarkers();
+  renderCards('placesGridMap');
+  renderCards('placesGrid');
+}
+
+// ===== RENDER CARDS =====
+function renderCards(containerId) {
+  const container = document.getElementById(containerId);
+  const filtered = getFilteredPlaces();
+
+  const countEl = containerId === 'placesGrid'
+    ? document.getElementById('resultsCount')
+    : document.getElementById('resultsCountMap');
+
+  countEl.textContent = `${filtered.length} מקומות`;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-lighter);">
+        <div style="font-size:48px;margin-bottom:10px;">🔍</div>
+        <div style="font-size:16px;font-weight:600;color:var(--text-light);">לא נמצאו מקומות</div>
+        <div style="font-size:13px;margin-top:4px;">נסו קטגוריה אחרת או חיפוש אחר</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map((place, i) => {
+    const config = CAT_CONFIG[place.cat];
+    const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
+    const searchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}`;
+
+    return `
+      <div class="place-card" style="animation-delay:${i * 0.03}s" onclick="focusPlace(${place.lat}, ${place.lng})" data-lat="${place.lat}" data-lng="${place.lng}">
+        <div class="place-card-header">
+          <span class="place-cat-dot" style="background:${config.color}"></span>
+          <span class="place-name">${place.name}</span>
+        </div>
+        <span class="place-category ${place.cat}">${config.emoji} ${config.label}</span>
+        ${place.desc
+          ? `<div class="place-desc">${place.desc}</div>`
+          : `<div class="place-no-desc">עוד לא הספקנו לכתוב - אבל אנחנו ממליצים!</div>`
+        }
+        <div class="place-actions" onclick="event.stopPropagation()">
+          <a href="${navUrl}" target="_blank" class="place-action-btn place-nav-btn">🧭 נסענו!</a>
+          <a href="${searchUrl}" target="_blank" class="place-action-btn place-search-btn">🔍 Google Maps</a>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ===== VIEW TOGGLE =====
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === view);
+  });
+
+  document.getElementById('mapView').classList.toggle('active', view === 'map');
+  document.getElementById('listView').classList.toggle('active', view === 'list');
+  document.getElementById('mapListContent').style.display = view === 'map' ? 'block' : 'none';
+
+  if (view === 'map' && map) {
+    setTimeout(() => map.invalidateSize(), 100);
+  }
+}
+
+// ===== FOCUS PLACE ON MAP =====
+function focusPlace(lat, lng) {
+  if (currentView === 'list') {
+    switchView('map');
+  }
+  if (map) {
+    map.setView([lat, lng], 14, { animate: true });
+    // Open the popup for that marker
+    markers.forEach(m => {
+      const pos = m.getLatLng();
+      if (Math.abs(pos.lat - lat) < 0.0001 && Math.abs(pos.lng - lng) < 0.0001) {
+        m.openPopup();
+      }
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// ===== MODAL =====
+function openPlaceModal() {
+  document.getElementById('placeModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePlaceModal() {
+  document.getElementById('placeModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close modal on overlay click
+document.getElementById('placeModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closePlaceModal();
+});
+
+// Form submission
+document.getElementById('placeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('placeSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+
+  try {
+    const formData = new FormData(e.target);
+    await fetch(e.target.action, {
+      method: 'POST',
+      body: formData,
+      headers: { Accept: 'application/json' }
+    });
+
+    document.getElementById('placeFormContainer').classList.add('hidden');
+    document.getElementById('placeSuccess').classList.remove('hidden');
+  } catch (err) {
+    alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'שליחה 🚀';
+  }
+});
+</script>
+</body>
+</html>
