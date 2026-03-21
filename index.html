@@ -40,7 +40,7 @@
   --green-dark: #27AE35;
   --gradient: linear-gradient(135deg, var(--magenta) 0%, var(--purple) 40%, var(--blue) 100%);
   --gradient-soft: linear-gradient(135deg, rgba(200,80,192,0.08) 0%, rgba(155,48,255,0.08) 40%, rgba(65,88,208,0.06) 100%);
-  --bg: #FAFAFC;
+  --bg: #F0EFF4;
   --card-bg: #FFFFFF;
   --text: #1A1A2E;
   --text-light: #5A5A7A;
@@ -428,7 +428,7 @@ body {
 .loading-text { font-size: 14px; }
 
 /* ===== EVENT CARDS ===== */
-.events-list { display: flex; flex-direction: column; gap: 24px; }
+.events-list { display: flex; flex-direction: column; gap: 32px; }
 
 .event-card {
   background: var(--card-bg);
@@ -467,17 +467,13 @@ body {
   .event-inner { flex-direction: column; }
   .event-img { width: 100%; min-height: 200px; max-height: 220px; border-radius: 0 0 var(--radius) var(--radius); order: -1; }
   .btn-s { padding: 10px 16px; font-size: 14px; border-radius: 10px; }
-  .btn-m { padding: 14px 18px; font-size: 15px; border-radius: 12px; min-height: 48px; white-space: normal; text-align: center; }
   .event-footer { flex-direction: column; align-items: center; }
-  .event-actions { width: 100%; }
-  .event-actions-top { width: 100%; justify-content: center; gap: 10px; }
-  .event-actions-main { flex-direction: column; gap: 10px; width: 100%; }
-  .event-actions-main .btn-m { width: 100%; }
+  .event-actions { gap: 20px; padding-bottom: 8px; }
+  .action-icon { width: 56px; height: 56px; font-size: 26px; }
+  .action-icon-wa img { width: 28px; height: 28px; }
+  .action-icon-label { font-size: 10px; }
   .event-tags { gap: 4px; }
   .etag { font-size: 9px; padding: 2px 6px; }
-  .like-row { padding: 8px 16px; }
-  .like-count { font-size: 14px; }
-  .btn-like { font-size: 20px; }
   .popup-link { padding: 10px 14px !important; font-size: 14px !important; }
   .map-mini-actions .btn-s { padding: 10px 14px; }
 }
@@ -578,84 +574,74 @@ body {
 
 .event-actions {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  justify-content: center;
+  gap: 16px;
   margin-top: 14px;
-  align-items: center;
   width: 100%;
 }
 
-.event-actions-top {
+.action-icon {
   display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
   align-items: center;
   justify-content: center;
-  width: 100%;
-}
-
-.event-actions-main {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-}
-
-.btn-m {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 22px;
-  border-radius: 12px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;
-  min-height: 44px;
-  white-space: nowrap;
+  font-size: 24px;
+  position: relative;
 }
 
-.btn-m.btn-nav { background: linear-gradient(135deg, #4285F4, #1a6dff); color: white; box-shadow: 0 2px 8px rgba(66,133,244,0.3); }
-.btn-m.btn-nav:hover { background: linear-gradient(135deg, #3367D6, #1557d0); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(66,133,244,0.4); }
-.btn-m.btn-lnk { background: linear-gradient(135deg, #f5f0ff, #ece5ff); color: var(--purple); border: 1.5px solid rgba(155,48,255,0.2); }
-.btn-m.btn-lnk:hover { border-color: var(--purple); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(155,48,255,0.15); }
-
-.like-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 10px 20px;
-  border-radius: 22px;
-  border: 1.5px solid #e0e0e0;
-  background: #fafafa;
-  transition: all 0.2s;
-  font-size: 14px;
+.action-icon:hover {
+  transform: translateY(-2px);
 }
 
-.like-row:hover { border-color: #ccc; background: #f5f5f5; }
-.like-row.liked { border-color: #f0c0c8; background: #fff5f6; }
-
-.btn-like {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 0;
-  line-height: 1;
-  transition: transform 0.2s;
-  filter: grayscale(1) opacity(0.4);
-  pointer-events: none;
+.action-icon-wa {
+  background: #25D366;
+  box-shadow: 0 3px 10px rgba(37,211,102,0.3);
 }
+.action-icon-wa:hover { box-shadow: 0 5px 16px rgba(37,211,102,0.4); }
+.action-icon-wa img { width: 26px; height: 26px; filter: brightness(0) invert(1); }
 
-.like-row:hover .btn-like { filter: grayscale(0) opacity(0.7); }
-
-.like-row.liked .btn-like {
-  filter: grayscale(0) opacity(1);
+.action-icon-like {
+  background: #fff;
+  border: 2px solid #e8e0f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.action-icon-like:hover { border-color: #f0a0b0; background: #fff5f6; }
+.action-icon-like.liked {
+  background: #ffe0e6;
+  border-color: #e74c7a;
   animation: popLike 0.3s ease;
+}
+
+.action-icon-info {
+  background: linear-gradient(135deg, #f5f0ff, #ece5ff);
+  border: 2px solid rgba(155,48,255,0.2);
+  box-shadow: 0 2px 8px rgba(155,48,255,0.1);
+}
+.action-icon-info:hover { border-color: var(--purple); box-shadow: 0 4px 12px rgba(155,48,255,0.2); }
+
+.action-icon-nav {
+  background: linear-gradient(135deg, #4285F4, #1a6dff);
+  box-shadow: 0 3px 10px rgba(66,133,244,0.3);
+  color: white;
+}
+.action-icon-nav:hover { box-shadow: 0 5px 16px rgba(66,133,244,0.4); }
+
+.action-icon-label {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 500;
+  color: var(--text-lighter);
+  white-space: nowrap;
 }
 
 @keyframes popLike {
@@ -1590,17 +1576,22 @@ function cardHTML(e, i) {
             <span class="event-detail event-weather" data-lat="${e.lat}" data-lng="${e.lng}" data-date="${e.date}"></span>
           </div>
           <div class="event-actions">
-            <div class="event-actions-top">
-              <div class="like-row ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)">
-                <span class="btn-like ${isLiked(e.id) ? 'liked' : ''}">❤️</span>
-                <span class="like-count">${isLiked(e.id) ? 'לייק!' : 'לייק'}</span>
+              <a class="action-icon action-icon-wa" href="https://wa.me/?text=${whatsappText}" target="_blank" title="שיתוף בוואטסאפ">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="">
+                <span class="action-icon-label">שיתוף</span>
+              </a>
+              <div class="action-icon action-icon-like ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)" title="לייק">
+                <span>${isLiked(e.id) ? '❤️' : '🤍'}</span>
+                <span class="action-icon-label">לייק</span>
               </div>
-              <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:16px;height:16px;"> הכי כיף לטייל ביחד</a>
-            </div>
-            <div class="event-actions-main">
-              ${e.link ? `<a class="btn-m btn-lnk" href="${e.link}" target="_blank">🔗 לפרטים נוספים</a>` : ''}
-              ${navUrl ? `<a class="btn-m btn-nav" href="${navUrl}" target="_blank">🧭 נסענו!</a>` : ''}
-            </div>
+              ${e.link ? `<a class="action-icon action-icon-info" href="${e.link}" target="_blank" title="לפרטים נוספים">
+                <span>ℹ️</span>
+                <span class="action-icon-label">פרטים</span>
+              </a>` : ''}
+              ${navUrl ? `<a class="action-icon action-icon-nav" href="${navUrl}" target="_blank" title="נסענו!">
+                <span>🧭</span>
+                <span class="action-icon-label">ניווט</span>
+              </a>` : ''}
           </div>
         </div>
       </div>
@@ -1887,25 +1878,26 @@ function isLiked(id) {
   return !!getLikes()[id];
 }
 
-function toggleLike(id, row) {
+function toggleLike(id, el) {
   const likes = getLikes();
 
   if (likes[id]) {
     delete likes[id];
-    row.classList.remove('liked');
-    row.querySelector('.btn-like').classList.remove('liked');
   } else {
     likes[id] = true;
-    row.classList.add('liked');
-    row.querySelector('.btn-like').classList.add('liked');
   }
   saveLikes(likes);
   updateLikedToggleCount();
 
-  // Sync all like-rows for this event
-  document.querySelectorAll(`.like-row[data-event-id="${id}"]`).forEach(r => {
-    if (likes[id]) { r.classList.add('liked'); r.querySelector('.btn-like').classList.add('liked'); }
-    else { r.classList.remove('liked'); r.querySelector('.btn-like').classList.remove('liked'); }
+  // Sync all like icons for this event
+  document.querySelectorAll(`.action-icon-like[data-event-id="${id}"]`).forEach(r => {
+    if (likes[id]) {
+      r.classList.add('liked');
+      r.querySelector('span').textContent = '❤️';
+    } else {
+      r.classList.remove('liked');
+      r.querySelector('span').textContent = '🤍';
+    }
   });
 }
 
