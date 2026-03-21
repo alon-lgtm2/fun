@@ -1095,67 +1095,7 @@ body {
 .form-success-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
 
 /* ===== ABOUT ===== */
-.about-section {
-  background: white;
-  border-radius: var(--radius);
-  padding: 32px;
-  margin-top: 24px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
-}
-
-@media (max-width: 700px) {
-  .about-section { grid-template-columns: 1fr; padding: 24px; gap: 20px; }
-}
-
-.about-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  grid-column: 1 / -1;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.about-block {
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  padding: 20px;
-}
-
-.about-block-icon {
-  font-size: 28px;
-  margin-bottom: 8px;
-}
-
-.about-block-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: var(--text);
-}
-
-.about-text {
-  font-size: 14px;
-  color: var(--text-light);
-  line-height: 1.8;
-  font-weight: 400;
-}
-
-.about-text strong { font-weight: 600; color: var(--text); }
-
 .about-note {
-  grid-column: 1 / -1;
   font-size: 12px;
   color: var(--text-lighter);
   line-height: 1.6;
@@ -1255,6 +1195,7 @@ body {
       <div class="nav-menu" id="navMenu">
         <a href="places.html" class="nav-menu-item">📍 מקומות מומלצים</a>
         <a href="holidays.html" class="nav-menu-item">🇳🇱 חגים וחופשות</a>
+        <a href="about.html" class="nav-menu-item">🧡 קצת עלינו</a>
         <button class="nav-menu-item" onclick="document.getElementById('navMenu').classList.remove('open'); openSuggestionModal('feedback')">💬 צרו קשר</button>
       </div>
     </div>
@@ -1301,46 +1242,6 @@ body {
     </div>
   </div>
 
-  <div class="about-section">
-    <div class="about-title">קצת עלינו</div>
-
-    <div class="about-block">
-      <div class="about-block-icon">🎯</div>
-      <div class="about-block-title">מה תמצאו כאן?</div>
-      <div class="about-text">
-        אירועים <strong>מקומיים וייחודיים</strong> לילדים ומשפחות בהולנד - לא אטרקציות כלליות, אלא דברים שקורים במקום מסוים, בתאריך ספציפי, ומתאימים למשפחות.
-      </div>
-    </div>
-
-    <div class="about-block">
-      <div class="about-block-icon">🔍</div>
-      <div class="about-block-title">איך זה עובד?</div>
-      <div class="about-text">
-        התכנים מסוקרים ונאספים באופן ידני כדי להביא לכם את הדברים הכי שווים שקורים ברחבי המדינה. כל אירוע נבדק ומתעדכן.
-      </div>
-    </div>
-
-    <div class="about-block">
-      <div class="about-block-icon">🧡</div>
-      <div class="about-block-title">מי אנחנו?</div>
-      <div class="about-text">
-        האתר הוא חלק מ-<a href="https://israelis.nl" target="_blank" style="color:var(--purple);text-decoration:none;font-weight:600;">israelis.nl</a> - פלטפורמה לקהילה הישראלית בהולנד. נבנה מאהבה, בשבילכם.
-      </div>
-    </div>
-
-    <div class="about-block">
-      <div class="about-block-icon">💡</div>
-      <div class="about-block-title">יש לכם המלצה?</div>
-      <div class="about-text">
-        יודעים על אירוע שווה שלא מופיע כאן? <strong onclick="openSuggestionModal()" style="cursor:pointer;color:var(--purple);">שלחו לנו המלצה</strong> ונוסיף אותו!
-        <br>ובינתיים, בקרו ב<a href="places.html" style="color:var(--purple);font-weight:600;text-decoration:none;">מקומות שאנחנו ממליצים</a> 📍
-      </div>
-    </div>
-
-    <div class="about-note">
-      ⚠️ המידע באתר נאסף ממקורות שונים ומתעדכן באופן שוטף. מומלץ תמיד לבדוק בקישור לאירוע לפני שיוצאים לדרך.
-    </div>
-  </div>
 
 
 </main>
