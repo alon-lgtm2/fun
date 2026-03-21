@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>מקומות שאנחנו ממליצים - fun.israelis.nl</title>
+<title>מקומות מומלצים - fun.israelis.nl</title>
 <meta name="description" content="מסעדות, מוזיאונים וגני שעשועים מומלצים למשפחות בהולנד">
-<meta property="og:title" content="מקומות שאנחנו ממליצים">
+<meta property="og:title" content="מקומות מומלצים">
 <meta property="og:description" content="מסעדות, מוזיאונים וגני שעשועים מומלצים למשפחות בהולנד">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fun.israelis.nl/places.html">
@@ -588,7 +588,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 <div class="hero">
   <div class="hero-content">
     <a href="index.html" class="hero-back">→ חזרה לאירועים</a>
-    <h1 class="hero-title">📍 מקומות שאנחנו ממליצים</h1>
+    <h1 class="hero-title">📍 מקומות מומלצים</h1>
     <p class="hero-subtitle">מסעדות, מוזיאונים וגני שעשועים שהיינו בהם באופן אישי ואנחנו חותמים עליהם</p>
   </div>
 </div>
@@ -607,8 +607,8 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
     </div>
     <div class="filters-row">
       <button class="filter-pill active" data-cat="all" onclick="toggleFilter('all')">הכל <span class="filter-count" id="countAll"></span></button>
-      <button class="filter-pill" data-cat="restaurant" onclick="toggleFilter('restaurant')"><span class="filter-dot" style="background:var(--restaurant)"></span> 🍽️ מסעדות <span class="filter-count" id="countRestaurant"></span></button>
-      <button class="filter-pill" data-cat="museum" onclick="toggleFilter('museum')"><span class="filter-dot" style="background:var(--museum)"></span> 🏛️ מוזיאונים <span class="filter-count" id="countMuseum"></span></button>
+      <button class="filter-pill" data-cat="restaurant" onclick="toggleFilter('restaurant')"><span class="filter-dot" style="background:var(--restaurant)"></span> 🍽️ מסעדות עם ילדים <span class="filter-count" id="countRestaurant"></span></button>
+      <button class="filter-pill" data-cat="museum" onclick="toggleFilter('museum')"><span class="filter-dot" style="background:var(--museum)"></span> 🏛️ מוזיאונים עם ילדים <span class="filter-count" id="countMuseum"></span></button>
       <button class="filter-pill" data-cat="playground" onclick="toggleFilter('playground')"><span class="filter-dot" style="background:var(--playground)"></span> 🛝 גני שעשועים <span class="filter-count" id="countPlayground"></span></button>
     </div>
   </div>
@@ -645,6 +645,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
     <div class="request-title">📍 מכירים מקום שווה?</div>
     <div class="request-desc">הכירו לנו מקומות חדשים שאהבתם ונוסיף אותם לרשימה</div>
     <div class="request-options">
+      <button class="request-option" onclick="sharePlaces()">📤 שתפו את הרשימה</button>
       <button class="request-option" onclick="openPlaceModal()">📍 המליצו על מקום</button>
       <a href="index.html" class="request-option" style="text-decoration:none">🎪 לאירועים בסופ״ש</a>
     </div>
@@ -709,82 +710,70 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 </div>
 
 <script>
-// ===== PLACES DATA (extracted from KMZ) =====
-const PLACES = [
-  // 🍽️ מסעדות שוות עם ילדים
-  { name: "Venneper Lodge", desc: "אוכל מעולה. גן שעשועים בחוץ במתחם. ג׳ימבורי ואיזור להקרנת סרטים בפנים", cat: "restaurant", lat: 52.2652934, lng: 4.5960539 },
-  { name: "Eeterij De Beleving", desc: "מסעדה / פאב עם ג׳ימבורי רציני. חלק מכפר נופש של euro parcs", cat: "restaurant", lat: 52.2702583, lng: 4.4752599 },
-  { name: "De Vondeltuin", desc: "מקום מעולה בוונדלפארק עם גן שעשועים וארגז חול. אידיאלי בעיקר כשיש מזג אוויר טוב", cat: "restaurant", lat: 52.3549116, lng: 4.8565129 },
-  { name: "Haddock Restaurant", desc: "מסעדה ידידותית לילדים על ה״חוף״ האמסטרדמי", cat: "restaurant", lat: 52.371674, lng: 4.972785 },
-  { name: "Meerzicht Farm", desc: "מסעדת פנקייקים ביער אמסטרדם עם שפע מתקנים לילדים", cat: "restaurant", lat: 52.3263765, lng: 4.8210133 },
-  { name: "Hans & Gretel pancake house", desc: "עמי ותמי - אטרקציות משוגע לילדים", cat: "restaurant", lat: 52.4021638, lng: 5.6144467 },
-  { name: "Goatfarm Ridammerhoeve", desc: "חוות חיות עם בית קפה / מסעדה חמודה", cat: "restaurant", lat: 52.3130493, lng: 4.8244443 },
-  { name: "Buitenplaats Plantage B.V.", desc: "מסעדה רחבת ידיים עם אזור משחקים, אולם קולנוע ושטיחים להתחרדן. מומלץ להביא איתכם משחקי קופסה", cat: "restaurant", lat: 52.3299589, lng: 4.5822671 },
-  { name: "MOON", desc: "מסעדה טבעונית עם אזור משחקים לילדים והמון תחפושות", cat: "restaurant", lat: 52.6300055, lng: 4.7508492 },
-  { name: "Kraantje Lek", desc: "גן שעשועים ענק (בחוץ) ודיונה מכובדת בכניסה", cat: "restaurant", lat: 52.3828875, lng: 4.5915228 },
-  { name: "Fussia", desc: "אכול כפי יכולתך - עם חדר משחקים קטן", cat: "restaurant", lat: 52.2816007, lng: 4.8420472 },
-  { name: "Anna Church Amstelveen", desc: "כנסיה שהוסבה למסעדה / פאב. אזור עם משחקי קופסה וכו׳", cat: "restaurant", lat: 52.3046576, lng: 4.8470213 },
-  { name: "Grand Café Groeneveld", desc: "בית קפה צמוד לטירה עם ארגז חול וטרקטורים לילדים", cat: "restaurant", lat: 52.218482, lng: 5.255574 },
-  { name: "Bremerbaai", desc: "מסעדה טובה על החוף עם גן שעשועים צמוד", cat: "restaurant", lat: 52.4163122, lng: 5.7321341 },
-  { name: "Theetuin Overleek", desc: "בית קפה / מסעדה עם גן שעשועים קטן בחצר", cat: "restaurant", lat: 52.4543782, lng: 4.9999868 },
-  { name: "Happy Italy Amsterdam", desc: "מסעדה איטלקית עם ג׳ימבורי קטן", cat: "restaurant", lat: 52.3384642, lng: 4.8935035 },
-  { name: "Margherita Tutta La Vita", desc: "אין אזור משחקים - אבל סופר ידידותי לילדים, דפי צביעה וכנראה גם הפיצה הכי טובה בעיר", cat: "restaurant", lat: 52.3290043, lng: 4.9560219 },
-  { name: "factory Woerden", desc: "אמנם מדובר בג׳ימבורי, אבל האוכל סביר לגמרי", cat: "restaurant", lat: 52.0798188, lng: 4.9103991 },
-  { name: "Corendon Urban Amsterdam Schiphol Airport Hotel", desc: "מסעדה טובה בז׳אנר אכול כפי יכולתך - עם גן שעשועים ובוינג 747-400 בחצר", cat: "restaurant", lat: 52.3286583, lng: 4.7883406 },
-  { name: "McDonald's Schiphol", desc: "רק מקדונלדס, אבל אפשר ללעוס המבורגר ולהתבונן במטוסים נוחתים", cat: "restaurant", lat: 52.321065, lng: 4.792317 },
-  { name: "Hart Beach Restaurant", desc: null, cat: "restaurant", lat: 52.103539, lng: 4.2655533 },
-  { name: "The Fat Mermaid", desc: null, cat: "restaurant", lat: 52.1107207, lng: 4.2758288 },
-  { name: "Ribhouse Texas Woudenberg", desc: null, cat: "restaurant", lat: 52.0816036, lng: 5.4209896 },
-  { name: "Restaurant Pof", desc: "מסעדה טובה עם גן שעשועים טבעי נהדר", cat: "restaurant", lat: 52.4194393, lng: 4.8742585 },
-  { name: "Geertje's Hoeve", desc: "חווה חקלאית מלאה בפעיליות לילדים עם מסעדה במרכזה.", cat: "restaurant", lat: 52.1173288, lng: 5.004975 },
-  { name: "Hajé restaurant Natuurpark", desc: "מסעדה בתוך חי בר הולנדי - גן שעשועים בחוץ. מומלץ", cat: "restaurant", lat: 52.483335, lng: 5.5306136 },
-  { name: "Café-restaurant brambergen", desc: "מסעדה במיקום מושלם, בסמוך גם שעשועים טבעי גדול ושפע של מסלולי טיול מרהיבים. שווה להיכנס למרכז המבקרים הצמוד למסעדה לפרטים נוספים", cat: "restaurant", lat: 52.2508026, lng: 5.1240193 },
-  { name: "Pllek", desc: null, cat: "restaurant", lat: 52.3991581, lng: 4.8928756 },
-  { name: "Pannenkoekenrestaurant De Suikerhoeve", desc: null, cat: "restaurant", lat: 52.1556079, lng: 4.7881797 },
-  { name: "Graaf Jan Mijdrecht", desc: null, cat: "restaurant", lat: 52.207318, lng: 4.866849 },
+// ===== PLACES DATA (loaded from Google Sheets CSV) =====
+const PLACES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=993728456&single=true&output=csv';
+let PLACES = [];
 
-  // 🏛️ מוזיאונים ממש שווים עם ילדים
-  { name: "Nature Museum Fryslân", desc: null, cat: "museum", lat: 53.2041386, lng: 5.7959017 },
-  { name: "Children's Book Museum", desc: null, cat: "museum", lat: 52.0811169, lng: 4.3280473 },
-  { name: "National Museum of Ethnology", desc: null, cat: "museum", lat: 52.1633115, lng: 4.4824673 },
-  { name: "Het Dolhuys", desc: null, cat: "museum", lat: 52.3905708, lng: 4.63773 },
-  { name: "LAM museum", desc: "לא מקבלים כרטיס מוזיאונים. ניתן להזמין כרטיסים בחינם באתר", cat: "museum", lat: 52.2681096, lng: 4.5421788 },
-  { name: "Archeon Museum Park", desc: null, cat: "museum", lat: 52.1141808, lng: 4.6519965 },
-  { name: "Luchtvaartmuseum Aviodrome", desc: null, cat: "museum", lat: 52.4578787, lng: 5.5308014 },
-  { name: "Zuiderzeemuseum", desc: null, cat: "museum", lat: 52.7048041, lng: 5.2977067 },
-  { name: "Netherlands Open Air Museum", desc: null, cat: "museum", lat: 52.0099492, lng: 5.9066406 },
-  { name: "Old Crafts & Toy Museum", desc: "לא מקבלים כרטיס מוזיאונים", cat: "museum", lat: 52.17, lng: 5.5552778 },
-  { name: "Naturalis Biodiversity Center", desc: null, cat: "museum", lat: 52.1646451, lng: 4.4730775 },
-  { name: "Navy Museum", desc: null, cat: "museum", lat: 52.9637586, lng: 4.771679 },
-  { name: "Discovery Museum", desc: null, cat: "museum", lat: 50.8610759, lng: 6.0581648 },
-  { name: "Nationaal Militair Museum", desc: null, cat: "museum", lat: 52.1319244, lng: 5.2761886 },
-  { name: "Rijksmuseum", desc: null, cat: "museum", lat: 52.3599976, lng: 4.8852188 },
-  { name: "Spoorwegmuseum", desc: null, cat: "museum", lat: 52.0879556, lng: 5.1312274 },
-  { name: "Museum Speelklok", desc: null, cat: "museum", lat: 52.0908209, lng: 5.1195867 },
-  { name: "The National Maritime Museum", desc: null, cat: "museum", lat: 52.3716667, lng: 4.915 },
-  { name: "Maritime Museum", desc: null, cat: "museum", lat: 51.9175663, lng: 4.4822147 },
-  { name: "Zaanse Schans", desc: null, cat: "museum", lat: 52.472886, lng: 4.8218542 },
-  { name: "Philips Museum", desc: null, cat: "museum", lat: 51.4393827, lng: 5.4755434 },
-  { name: "DAF Museum", desc: null, cat: "museum", lat: 51.4372291, lng: 5.4904642 },
-  { name: "Muiden Castle", desc: null, cat: "museum", lat: 52.3343808, lng: 5.0711877 },
-  { name: "Nijntje Museum", desc: null, cat: "museum", lat: 52.0914607, lng: 5.119277 },
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (i + 1 < line.length && line[i + 1] === '"') { current += '"'; i++; }
+        else { inQuotes = false; }
+      } else { current += ch; }
+    } else {
+      if (ch === '"') { inQuotes = true; }
+      else if (ch === ',') { result.push(current); current = ''; }
+      else { current += ch; }
+    }
+  }
+  result.push(current);
+  return result;
+}
 
-  // 🛝 ג׳ימבורי וגני שעשועים שווים
-  { name: "Speelnatuur van OERRR 's-Graveland", desc: "עוד גן שעשועים טבעי מעולה. מושלם ליום שמשי", cat: "playground", lat: 52.2509579, lng: 5.1233089 },
-  { name: "Playground Kindervreugd", desc: null, cat: "playground", lat: 52.4903152, lng: 4.6550638 },
-  { name: "Funzone Aalsmeer", desc: null, cat: "playground", lat: 52.2815093, lng: 4.7850813 },
-  { name: "Speeltuin Groenendaal", desc: null, cat: "playground", lat: 52.3395097, lng: 4.6136539 },
-  { name: "Darteldome", desc: null, cat: "playground", lat: 52.46423, lng: 4.8274739 },
-  { name: "Speeltuin Monnickendam", desc: null, cat: "playground", lat: 52.4564647, lng: 5.0357959 },
-  { name: "Natuurspeeltuin", desc: "גן שעשועים טבעי שנמצא בתוך מתחם ירוק ובצמוד למסעדת Pof", cat: "playground", lat: 52.4201274, lng: 4.8745276 },
-  { name: "Speeltuin Oosterpark", desc: null, cat: "playground", lat: 52.3605369, lng: 4.917788 },
-  { name: "Ballorig Almere", desc: null, cat: "playground", lat: 52.3514216, lng: 5.2152063 },
-  { name: "Seringenpark", desc: null, cat: "playground", lat: 52.268267, lng: 4.7677171 },
-  { name: "Monkey Town Diemen", desc: null, cat: "playground", lat: 52.3320056, lng: 4.9787785 },
-  { name: "Speeltuin", desc: null, cat: "playground", lat: 52.3187858, lng: 4.9584365 },
-  { name: "Playground Amsteldorp", desc: null, cat: "playground", lat: 52.343374, lng: 4.929917 },
-  { name: "Bamboelabyrint Nirwana", desc: null, cat: "playground", lat: 52.2468862, lng: 4.7930669 },
-];
+function parseCSV(text) {
+  const lines = text.split('\n');
+  if (lines.length < 2) return [];
+  const headers = parseCSVLine(lines[0]);
+  const results = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const values = parseCSVLine(line);
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h.trim().toLowerCase()] = (values[idx] || '').trim(); });
+    results.push(obj);
+  }
+  return results;
+}
+
+async function loadPlaces() {
+  try {
+    const cacheBust = Math.floor(Date.now() / 60000);
+    const resp = await fetch(PLACES_SHEET_URL + '&_cb=' + cacheBust);
+    if (!resp.ok) throw new Error('Failed to fetch places');
+    const text = await resp.text();
+    const rows = parseCSV(text);
+    PLACES = rows.filter(r => r.name && r.lat && r.lng).map(r => ({
+      name: r.name,
+      desc: r.desc || null,
+      cat: r.cat || 'restaurant',
+      lat: parseFloat(r.lat),
+      lng: parseFloat(r.lng),
+    }));
+  } catch (err) {
+    console.error('Error loading places:', err);
+    PLACES = [];
+  }
+  updateCounts();
+  initMap();
+  renderCards('placesGridMap');
+  renderCards('placesGrid');
+}
 
 // ===== STATE =====
 let activeFilter = 'all';
@@ -802,10 +791,7 @@ const CAT_CONFIG = {
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-  updateCounts();
-  initMap();
-  renderCards('placesGridMap');
-  renderCards('placesGrid');
+  loadPlaces();
 });
 
 function updateCounts() {
@@ -999,6 +985,17 @@ function focusPlace(lat, lng) {
 }
 
 // ===== MODAL =====
+function sharePlaces() {
+  const url = 'https://fun.israelis.nl/places.html';
+  const text = '📍 מקומות מומלצים למשפחות בהולנד - מסעדות, מוזיאונים וגני שעשועים';
+  if (navigator.share) {
+    navigator.share({ title: 'מקומות מומלצים', text: text, url: url }).catch(() => {});
+  } else {
+    const waUrl = 'https://wa.me/?text=' + encodeURIComponent(text + '\n' + url);
+    window.open(waUrl, '_blank');
+  }
+}
+
 function openPlaceModal() {
   document.getElementById('placeModal').classList.add('active');
   document.body.style.overflow = 'hidden';

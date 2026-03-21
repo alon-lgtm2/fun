@@ -1582,10 +1582,12 @@ function cardHTML(e, i) {
   return `
   <div class="event-card" style="animation-delay:${i*0.04}s" data-id="${e.id}">
     <div class="event-inner">
+      ${e.link ? `<a href="${e.link}" target="_blank" style="display:block;text-decoration:none;cursor:pointer;">` : ''}
       <div class="event-img ${!imgUrl ? 'event-img-placeholder' : ''}" style="${imgStyle}">
         ${!imgUrl ? `<span class="placeholder-emoji">${typeEmoji(e.type)}</span><span class="placeholder-area">${e.area}</span>` : ''}
         <div class="event-day-badge">${fmtDay(e.date)} ${e.time}</div>
       </div>
+      ${e.link ? '</a>' : ''}
       <div class="event-body">
         <div class="event-tags">
           <span class="etag etag-area">📍 ${e.area}</span>
