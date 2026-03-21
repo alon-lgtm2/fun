@@ -674,15 +674,15 @@ body {
 }
 
 @media (min-width: 701px) {
-  .event-body {
-    display: flex;
-    flex-direction: column;
-  }
-  .event-desc { flex: none; }
+  .event-inner { position: relative; }
   .event-actions {
-    margin-top: 8px;
-    margin-bottom: auto;
-    justify-content: flex-end;
+    position: absolute;
+    top: 45%;
+    transform: translateY(-50%);
+    right: 520px;
+    width: auto;
+    margin: 0;
+    gap: 10px;
   }
 }
 
