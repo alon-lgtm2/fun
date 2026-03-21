@@ -20,6 +20,8 @@
 <meta name="twitter:image" content="https://fun.israelis.nl/images/og-cover.png">
 <link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://upload.wikimedia.org">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -360,7 +362,7 @@ body {
   background-position: center;
   flex-shrink: 0;
   position: relative;
-  transition: background-image 0.3s ease;
+  opacity: 1;
 }
 
 .event-img.img-loading {
@@ -369,8 +371,17 @@ body {
   animation: shimmer 1.5s linear infinite;
 }
 
+.event-img.img-loaded {
+  animation: fadeInImg 0.3s ease forwards;
+}
+
 @keyframes shimmer {
   to { background-position: -200% 0; }
+}
+
+@keyframes fadeInImg {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
 }
 
 .event-img.img-error {
@@ -1860,42 +1871,109 @@ window.addEventListener('scroll', () => {
 });
 
 // ===== LAZY LOADING IMAGES =====
+const imgCache = new Map(); // url -> 'loaded' | 'error'
+const IMG_LOAD_TIMEOUT = 8000; // 8s timeout per image
+const IMG_MAX_RETRIES = 2;
+
+function loadImage(el, url, attempt) {
+  attempt = attempt || 0;
+
+  // If already cached as loaded, apply immediately
+  if (imgCache.get(url) === 'loaded') {
+    el.style.backgroundImage = `url('${url}')`;
+    el.classList.remove('img-loading');
+    el.classList.add('img-loaded');
+    return;
+  }
+
+  // If previously failed all retries, show fallback
+  if (imgCache.get(url) === 'error') {
+    showImgFallback(el);
+    return;
+  }
+
+  const img = new Image();
+  let done = false;
+
+  const timeout = setTimeout(() => {
+    if (done) return;
+    done = true;
+    img.src = ''; // cancel load
+    if (attempt < IMG_MAX_RETRIES) {
+      loadImage(el, url, attempt + 1);
+    } else {
+      imgCache.set(url, 'error');
+      showImgFallback(el);
+    }
+  }, IMG_LOAD_TIMEOUT);
+
+  img.onload = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(timeout);
+    imgCache.set(url, 'loaded');
+    el.style.backgroundImage = `url('${url}')`;
+    el.classList.remove('img-loading');
+    el.classList.add('img-loaded');
+  };
+
+  img.onerror = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(timeout);
+    if (attempt < IMG_MAX_RETRIES) {
+      setTimeout(() => loadImage(el, url, attempt + 1), 500 * (attempt + 1));
+    } else {
+      imgCache.set(url, 'error');
+      showImgFallback(el);
+    }
+  };
+
+  img.src = url;
+}
+
+function showImgFallback(el) {
+  el.classList.remove('img-loading');
+  el.classList.add('img-error');
+  const emoji = el.dataset.typeEmoji || '';
+  if (emoji && !el.querySelector('.fallback-emoji')) {
+    const span = document.createElement('span');
+    span.className = 'fallback-emoji';
+    span.textContent = emoji;
+    el.style.background = 'var(--gradient-soft)';
+    el.style.display = 'flex';
+    el.style.alignItems = 'center';
+    el.style.justifyContent = 'center';
+    el.style.fontSize = '40px';
+    el.prepend(span);
+  }
+}
+
 const imgObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
     const el = entry.target;
     const url = el.dataset.bg;
     if (!url) return;
-
-    const img = new Image();
-    img.onload = () => {
-      el.style.backgroundImage = `url('${url}')`;
-      el.classList.remove('img-loading');
-    };
-    img.onerror = () => {
-      el.classList.remove('img-loading');
-      el.classList.add('img-error');
-      const emoji = el.dataset.typeEmoji || '';
-      if (emoji && !el.querySelector('.fallback-emoji')) {
-        const span = document.createElement('span');
-        span.className = 'fallback-emoji';
-        span.textContent = emoji;
-        el.style.background = 'var(--gradient-soft)';
-        el.style.display = 'flex';
-        el.style.alignItems = 'center';
-        el.style.justifyContent = 'center';
-        el.style.fontSize = '40px';
-        el.prepend(span);
-      }
-    };
-    img.src = url;
     delete el.dataset.bg;
     imgObserver.unobserve(el);
+    loadImage(el, url, 0);
   });
-}, { rootMargin: '200px' });
+}, { rootMargin: '300px' });
 
 function observeImages() {
-  document.querySelectorAll('.event-img[data-bg]').forEach(el => imgObserver.observe(el));
+  document.querySelectorAll('.event-img[data-bg]').forEach(el => {
+    // If the image is already cached, apply immediately without observer
+    const url = el.dataset.bg;
+    if (url && imgCache.get(url) === 'loaded') {
+      delete el.dataset.bg;
+      el.style.backgroundImage = `url('${url}')`;
+      el.classList.remove('img-loading');
+      el.classList.add('img-loaded');
+    } else {
+      imgObserver.observe(el);
+    }
+  });
 }
 
 // Patch render functions to observe images after DOM update
@@ -1903,6 +1981,8 @@ const _origRenderList = renderList;
 renderList = function() { _origRenderList(); observeImages(); };
 const _origRenderCalendar = renderCalendar;
 renderCalendar = function() { _origRenderCalendar(); observeImages(); };
+const _origRenderMap = renderMap;
+renderMap = function() { _origRenderMap(); observeImages(); };
 
 // ===== INIT =====
 loadEvents();
