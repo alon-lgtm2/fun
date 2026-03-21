@@ -674,17 +674,15 @@ body {
 }
 
 @media (min-width: 701px) {
-  .event-inner { position: relative; }
-  .event-body { padding-left: 70px; }
-  .event-actions {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+  .event-body {
+    display: flex;
     flex-direction: column;
-    width: auto;
-    margin: 0;
-    left: 20px;
-    gap: 8px;
+  }
+  .event-desc { flex: none; }
+  .event-actions {
+    margin-top: auto;
+    margin-bottom: auto;
+    justify-content: center;
   }
 }
 
@@ -1608,7 +1606,7 @@ function cardHTML(e, i) {
           <span class="etag etag-area">📍 ${e.area}</span>
           ${e.types.map(t => `<span class="etag etag-type">${typeEmoji(t)} ${typeLabel(t)}</span>`).join('')}
           ${e.free ? '<span class="etag etag-free">🆓 חינם</span>' : ''}
-          ${e.museumkaart ? '<span class="etag etag-museum">🏛️ מוזיאום-קארט</span>' : ''}
+          ${e.museumkaart ? '<span class="etag etag-museum">🏛️ Museumkaart</span>' : ''}
           <span class="etag etag-age">👶 ${e.ages}</span>
         </div>
         <h3 class="event-title">${e.title}</h3>
