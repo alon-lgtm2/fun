@@ -53,6 +53,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Heebo', sans-serif;
@@ -133,6 +134,7 @@ body {
   z-index: 100;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   border-bottom: 1px solid var(--border);
+  transition: all 0.2s ease;
 }
 
 .nav-row {
@@ -281,15 +283,9 @@ body {
   position: relative;
 }
 
-.sticky-nav.compact .nav-row { padding: 4px 24px; }
-.sticky-nav.compact .weekend-chips { gap: 4px; }
-.sticky-nav.compact .wk-chip { padding: 3px 8px; min-width: auto; flex-direction: row; gap: 6px; }
-.sticky-nav.compact .wk-chip:not(.active) { display: none; }
-.sticky-nav.compact .wk-label { display: none; }
-.sticky-nav.compact .wk-dates { font-size: 13px; font-weight: 700; margin: 0; }
-.sticky-nav.compact .wk-count { font-size: 9px; margin-top: 0; }
 .sticky-nav.compact .nav-and-weekend {
   display: flex;
+  flex-direction: row-reverse;
   align-items: center;
   justify-content: center;
   gap: 12px;
@@ -297,8 +293,14 @@ body {
   margin: 0 auto;
   padding: 4px 24px;
 }
-.sticky-nav.compact .nav-row { display: contents; }
-.sticky-nav.compact .weekend-nav { display: contents; padding: 0; }
+.sticky-nav.compact .nav-row { padding: 0; }
+.sticky-nav.compact .weekend-nav { padding: 0; }
+.sticky-nav.compact .weekend-chips { gap: 4px; }
+.sticky-nav.compact .wk-chip { padding: 4px 12px; min-width: auto; flex-direction: row; gap: 6px; border-radius: 10px; }
+.sticky-nav.compact .wk-chip:not(.active) { display: none; }
+.sticky-nav.compact .wk-label { display: none; }
+.sticky-nav.compact .wk-dates { font-size: 13px; font-weight: 700; margin: 0; }
+.sticky-nav.compact .wk-count { font-size: 9px; margin-top: 0; }
 .sticky-nav.compact .filters-row { padding: 3px 24px 5px; gap: 4px; }
 .sticky-nav.compact .filter-pill { padding: 2px 8px; font-size: 10px; }
 
@@ -374,7 +376,7 @@ body {
 }
 
 .filter-pill:hover:not(.disabled) { border-color: var(--purple); color: var(--purple); }
-.filter-pill.active { background: var(--purple); color: white; border-color: var(--purple); }
+.filter-pill.active { background: var(--purple); color: white !important; border-color: var(--purple); -webkit-text-fill-color: white; }
 .filter-pill.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
 .liked-filter-count { font-size: 10px; font-weight: 700; }
 .liked-filter-count:empty { display: none; }
@@ -2093,27 +2095,30 @@ document.getElementById('filters').addEventListener('click', (e) => {
 });
 
 // ===== SCROLL-BASED WEEKEND AUTO-ADVANCE =====
-let scrollTimeout;
+let scrollRaf = null;
 window.addEventListener('scroll', () => {
-  // Compact mode based on hero visibility
-  const hero = document.querySelector('.hero');
-  const stickyNav = document.querySelector('.sticky-nav');
-  if (hero && stickyNav) {
-    const heroBottom = hero.getBoundingClientRect().bottom;
-    stickyNav.classList.toggle('compact', heroBottom < 0);
-  }
+  if (scrollRaf) return;
+  scrollRaf = requestAnimationFrame(() => {
+    scrollRaf = null;
 
-  // Update active weekend chip based on visible day groups
-  clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => {
+    // Compact mode based on hero visibility
+    const hero = document.querySelector('.hero');
+    const stickyNav = document.querySelector('.sticky-nav');
+    if (hero && stickyNav) {
+      const heroBottom = hero.getBoundingClientRect().bottom;
+      stickyNav.classList.toggle('compact', heroBottom < 0);
+    }
+
+    // Update active weekend chip based on visible day groups
     if (activeView !== 'calendar') return;
     const panel = document.getElementById('calendarPanel');
     const groups = panel.querySelectorAll('.cal-day-group[data-weekend-sat]');
     if (!groups.length) return;
 
     const weekends = document.getElementById('weekendChips')._weekends;
+    if (!weekends) return;
     const chips = document.querySelectorAll('.wk-chip');
-    const navHeight = document.querySelector('.sticky-nav').offsetHeight;
+    const navHeight = stickyNav ? stickyNav.offsetHeight : 0;
 
     // Find the first visible day group
     let visibleSat = null;
@@ -2132,13 +2137,12 @@ window.addEventListener('scroll', () => {
         chips.forEach(c => c.classList.remove('active'));
         if (chips[matchIdx]) {
           chips[matchIdx].classList.add('active');
-          chips[matchIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
         updateResultsBar(getFilteredEvents());
       }
     }
-  }, 100);
-});
+  });
+}, { passive: true });
 
 // ===== INIT =====
 if ('serviceWorker' in navigator) {
