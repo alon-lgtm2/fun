@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>חגים וחופשות בהולנד - fun.israelis.nl</title>
+<meta name="description" content="חגים רשמיים וחופשות בתי ספר בהולנד 2026-2027">
+<meta property="og:title" content="חגים וחופשות בהולנד">
+<meta property="og:description" content="חגים רשמיים וחופשות בתי ספר בהולנד 2026-2027">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fun.israelis.nl/holidays.html">
+<meta property="og:site_name" content="fun.israelis.nl">
+<meta property="og:locale" content="he_IL">
+<meta property="og:image" content="https://fun.israelis.nl/images/ogtag.png">
+<link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="images/az.png">
+<meta name="theme-color" content="#9B30FF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="מה עושים?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
+<style>
+:root {
+  --purple: #9B30FF;
+  --purple-dark: #7B22CC;
+  --magenta: #C850C0;
+  --blue: #4158D0;
+  --green: #2ECC40;
+  --green-dark: #27AE35;
+  --gradient: linear-gradient(135deg, var(--magenta) 0%, var(--purple) 40%, var(--blue) 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(200,80,192,0.08) 0%, rgba(155,48,255,0.08) 40%, rgba(65,88,208,0.06) 100%);
+  --bg: #F0EFF4;
+  --card-bg: #FFFFFF;
+  --text: #1A1A2E;
+  --text-light: #5A5A7A;
+  --text-lighter: #9898B0;
+  --border: #EEEEF4;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 2px 16px rgba(155,48,255,0.06);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); }
+
+.hero {
+  background: var(--gradient);
+  padding: 40px 20px 32px;
+  text-align: center;
+  color: white;
+  position: relative;
+}
+
+.hero-content { max-width: 700px; margin: 0 auto; }
+.hero-title { font-family: 'Rubik', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+.hero-subtitle { font-size: 15px; opacity: 0.9; }
+
+.hero-back {
+  display: inline-block;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.15);
+  transition: background 0.2s;
+}
+.hero-back:hover { background: rgba(255,255,255,0.25); }
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.info-section {
+  background: white;
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.info-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.info-tab {
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.info-tab:hover { border-color: var(--purple); color: var(--purple); }
+.info-tab.active { background: var(--purple); color: white; border-color: var(--purple); }
+
+.info-tab-content { display: none; }
+.info-tab-content.active { display: block; }
+
+.holiday-year { margin-bottom: 24px; }
+.holiday-year:last-child { margin-bottom: 0; }
+
+.holiday-year-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--purple);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid rgba(155,48,255,0.1);
+}
+
+.holiday-list { display: flex; flex-direction: column; gap: 6px; }
+
+.holiday-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--bg);
+  font-size: 13px;
+  gap: 12px;
+}
+
+.holiday-item.highlight {
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  border: 1px solid rgba(255,152,0,0.2);
+}
+
+.holiday-date {
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  min-width: 140px;
+}
+
+.holiday-name {
+  color: var(--text-light);
+  text-align: left;
+  flex: 1;
+}
+
+.school-note {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2e7d32;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.school-table {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.school-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  background: var(--purple);
+  color: white;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.school-header span:first-child { text-align: right; }
+
+.school-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 10px 12px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  align-items: center;
+}
+
+.school-row:last-child { border-bottom: none; }
+.school-row:nth-child(even) { background: var(--bg); }
+.school-row.highlight { background: linear-gradient(135deg, #fff8e1, #fff3c4); }
+
+.school-label {
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+}
+
+.about-block { margin-bottom: 16px; }
+.about-block-icon { font-size: 24px; margin-bottom: 4px; }
+.about-block-title { font-family: 'Rubik', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.about-text { font-size: 13px; color: var(--text-light); line-height: 1.7; }
+
+footer {
+  text-align: center;
+  padding: 24px 20px;
+  color: var(--text-lighter);
+  font-size: 13px;
+}
+footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
+
+@media (max-width: 700px) {
+  .holiday-item { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .holiday-date { min-width: auto; }
+  .info-section { padding: 20px 16px; }
+  .school-header, .school-row { grid-template-columns: 1.5fr 1fr 1fr 1fr; font-size: 10px; padding: 8px 8px; }
+  .school-header { font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-content">
+    <a href="index.html" class="hero-back">→ חזרה לאירועים</a>
+    <h1 class="hero-title">🇳🇱 חגים וחופשות בהולנד</h1>
+    <p class="hero-subtitle">חגים רשמיים, חופשות בתי ספר ומידע חשוב</p>
+  </div>
+</div>
+
+<div class="content">
+  <div class="info-section">
+    <div class="info-tabs">
+      <button class="info-tab active" data-tab="holidays">🎉 חגים רשמיים</button>
+      <button class="info-tab" data-tab="school">🏫 חופשות בתי ספר</button>
+      <button class="info-tab" data-tab="info">ℹ️ מידע חשוב</button>
+    </div>
+
+    <div class="info-tab-content active" id="tab-holidays">
+      <div class="holiday-year">
+        <h3 class="holiday-year-title">2026</h3>
+        <div class="holiday-list">
+          <div class="holiday-item">
+            <span class="holiday-date">1 בינואר (חמישי)</span>
+            <span class="holiday-name">🎆 ראש השנה — Nieuwjaarsdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">3 באפריל (שישי)</span>
+            <span class="holiday-name">✝️ יום שישי הטוב — Goede Vrijdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">5-6 באפריל (ראשון-שני)</span>
+            <span class="holiday-name">🐣 פסחא — Eerste en Tweede Paasdag</span>
+          </div>
+          <div class="holiday-item highlight">
+            <span class="holiday-date">27 באפריל (שני)</span>
+            <span class="holiday-name">👑 יום המלך — Koningsdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">5 במאי (שלישי)</span>
+            <span class="holiday-name">🕊️ יום השחרור — Bevrijdingsdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">14 במאי (חמישי)</span>
+            <span class="holiday-name">☁️ יום העלייה — Hemelvaartsdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">24-25 במאי (ראשון-שני)</span>
+            <span class="holiday-name">🕊️ שבועות — Pinksteren</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">25-26 בדצמבר (שישי-שבת)</span>
+            <span class="holiday-name">🎄 חג המולד — Kerstmis</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="holiday-year">
+        <h3 class="holiday-year-title">2027</h3>
+        <div class="holiday-list">
+          <div class="holiday-item">
+            <span class="holiday-date">1 בינואר (שישי)</span>
+            <span class="holiday-name">🎆 ראש השנה — Nieuwjaarsdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">26 במרץ (שישי)</span>
+            <span class="holiday-name">✝️ יום שישי הטוב — Goede Vrijdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">28-29 במרץ (ראשון-שני)</span>
+            <span class="holiday-name">🐣 פסחא — Eerste en Tweede Paasdag</span>
+          </div>
+          <div class="holiday-item highlight">
+            <span class="holiday-date">27 באפריל (שלישי)</span>
+            <span class="holiday-name">👑 יום המלך — Koningsdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">5 במאי (רביעי)</span>
+            <span class="holiday-name">🕊️ יום השחרור — Bevrijdingsdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">6 במאי (חמישי)</span>
+            <span class="holiday-name">☁️ יום העלייה — Hemelvaartsdag</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">16-17 במאי (ראשון-שני)</span>
+            <span class="holiday-name">🕊️ שבועות — Pinksteren</span>
+          </div>
+          <div class="holiday-item">
+            <span class="holiday-date">25-26 בדצמבר (שבת-ראשון)</span>
+            <span class="holiday-name">🎄 חג המולד — Kerstmis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-tab-content" id="tab-school">
+      <div class="school-note">📌 הולנד מחולקת ל-3 אזורים לעניין חופשות: צפון (Noord), מרכז (Midden) ודרום (Zuid)</div>
+
+      <h3 class="holiday-year-title">שנת לימודים 2025-2026</h3>
+
+      <div class="school-table">
+        <div class="school-header">
+          <span>חופשה</span>
+          <span>צפון</span>
+          <span>מרכז</span>
+          <span>דרום</span>
+        </div>
+        <div class="school-row">
+          <span class="school-label">🍂 סתיו — Herfstvakantie</span>
+          <span>18-26 באוקטובר</span>
+          <span>18-26 באוקטובר</span>
+          <span>11-19 באוקטובר</span>
+        </div>
+        <div class="school-row">
+          <span class="school-label">🎄 חנוכייה/חג המולד — Kerstvakantie</span>
+          <span>20 דצמ׳ - 4 ינו׳</span>
+          <span>20 דצמ׳ - 4 ינו׳</span>
+          <span>20 דצמ׳ - 4 ינו׳</span>
+        </div>
+        <div class="school-row">
+          <span class="school-label">🌷 אביב — Voorjaarsvakantie</span>
+          <span>21 פבר׳ - 1 מרץ</span>
+          <span>14-22 בפברואר</span>
+          <span>14-22 בפברואר</span>
+        </div>
+        <div class="school-row">
+          <span class="school-label">🌸 מאי — Meivakantie</span>
+          <span>25 אפר׳ - 3 מאי</span>
+          <span>25 אפר׳ - 3 מאי</span>
+          <span>25 אפר׳ - 3 מאי</span>
+        </div>
+        <div class="school-row highlight">
+          <span class="school-label">☀️ קיץ — Zomervakantie</span>
+          <span>4 יולי - 16 אוג׳</span>
+          <span>18 יולי - 30 אוג׳</span>
+          <span>11 יולי - 23 אוג׳</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-tab-content" id="tab-info">
+      <div class="about-block">
+        <div class="about-block-icon">⚖️</div>
+        <div class="about-block-title">האם יש זכות ליום חופש?</div>
+        <div class="about-text">
+          אין חוק שמחייב מעסיקים לתת יום חופש בחגים רשמיים. הזכות ליום חופש תלויה בהסכם הקיבוצי (CAO) או בחוזה האישי שלכם. כדאי לבדוק!
+        </div>
+      </div>
+      <div class="about-block">
+        <div class="about-block-icon">📅</div>
+        <div class="about-block-title">הארכת מועדים</div>
+        <div class="about-text">
+          אם מועד אחרון לתשלום או הגשת מסמך חל בשבת, ראשון או חג רשמי — המועד מוארך אוטומטית ליום העבודה הבא.
+        </div>
+      </div>
+      <div class="about-block">
+        <div class="about-block-icon">🏫</div>
+        <div class="about-block-title">חופשות בתי ספר</div>
+        <div class="about-text">
+          התאריכים נקבעים על ידי משרד החינוך (OCW) ותקפים לבתי ספר יסודיים, מיוחדים ותיכוניים. מוסדות MBO והשכלה גבוהה קובעים תאריכים עצמאיים. בית הספר שלכם עשוי לסטות מהתאריכים — בדקו במדריך בית הספר.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>נבנה באהבה לקהילה הישראלית בהולנד</p>
+  <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
+</footer>
+
+<script>
+document.querySelectorAll('.info-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.info-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.info-tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
