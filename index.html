@@ -560,8 +560,8 @@ body {
   .event-img { width: 100%; min-height: 200px; max-height: 220px; border-radius: 0 0 var(--radius) var(--radius); order: -1; }
   .btn-s { padding: 10px 16px; font-size: 14px; border-radius: 10px; }
   .event-footer { flex-direction: column; align-items: flex-start; }
-  .event-actions { position: static; flex-direction: row; width: 100%; transform: none; gap: 18px; left: auto; top: auto; }
-  .action-icon { width: 48px; height: 48px; font-size: 22px; }
+  .event-actions { position: static; flex-direction: row; width: auto; transform: none; gap: 12px; left: auto; top: auto; justify-content: flex-end; align-self: flex-end; }
+  .action-icon { width: 42px; height: 42px; font-size: 20px; }
   .action-icon-wa img { width: 24px; height: 24px; }
   .action-icon-label { font-size: 11px; }
   .event-tags { gap: 4px; }
@@ -675,7 +675,7 @@ body {
 
 @media (max-width: 700px) {
   .event-actions {
-    justify-content: center;
+    justify-content: flex-end;
     padding: 12px 0 24px;
     margin: 8px 0;
     border-top: 1px solid rgba(155,48,255,0.06);
@@ -685,11 +685,13 @@ body {
 
 @media (min-width: 701px) {
   .event-inner { position: relative; }
+  .event-body { padding-left: 230px; }
   .event-actions {
     position: absolute;
     top: 45%;
     transform: translateY(-50%);
-    right: 520px;
+    left: 20px;
+    right: auto;
     width: auto;
     margin: 0;
     gap: 10px;
