@@ -219,6 +219,9 @@ body {
 }
 
 .wk-chip.holiday { border-color: rgba(255,107,53,0.4); }
+.wk-chip.past { opacity: 0.55; border-style: dashed; }
+.wk-chip.past:hover { opacity: 0.85; }
+.wk-chip.past.active { opacity: 1; border-style: solid; }
 
 .wk-label { font-size: 10px; font-weight: 400; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.3px; }
 .wk-dates { font-size: 15px; font-weight: 700; line-height: 1.3; margin: 2px 0; }
@@ -1309,10 +1312,48 @@ function getUpcomingWeekends(count) {
     const holidayName = isHolidayDate(satStr) || isHolidayDate(sunStr);
     const evCount = events.filter(e => eventOnWeekend(e, satStr, sunStr)).length;
 
-    weekends.push({ sat: satStr, sun: sunStr, satDate: sat, sunDate: sun, holiday: holidayName, eventCount: evCount });
+    weekends.push({ sat: satStr, sun: sunStr, satDate: sat, sunDate: sun, holiday: holidayName, eventCount: evCount, past: false });
     d.setDate(d.getDate() + 7);
   }
   return weekends;
+}
+
+function getPastWeekends() {
+  const pastWeekends = [];
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  // Find the earliest event date
+  const eventDates = events.map(e => e.date).filter(d => d).sort();
+  if (!eventDates.length) return [];
+
+  const earliest = new Date(eventDates[0] + 'T00:00:00');
+  // Find the Saturday of that week
+  let d = new Date(earliest);
+  while (d.getDay() !== 6) d.setDate(d.getDate() - 1);
+
+  // Find this coming Saturday
+  let thisSat = new Date(today);
+  while (thisSat.getDay() !== 6) thisSat.setDate(thisSat.getDate() + 1);
+  if (today.getDay() === 0) { thisSat = new Date(today); thisSat.setDate(thisSat.getDate() - 1); }
+  if (today.getDay() === 6) thisSat = new Date(today);
+
+  while (d < thisSat) {
+    const sat = new Date(d);
+    const sun = new Date(d);
+    sun.setDate(sun.getDate() + 1);
+
+    const satStr = sat.toISOString().split('T')[0];
+    const sunStr = sun.toISOString().split('T')[0];
+
+    const evCount = events.filter(e => eventOnWeekend(e, satStr, sunStr)).length;
+    if (evCount > 0) {
+      const holidayName = isHolidayDate(satStr) || isHolidayDate(sunStr);
+      pastWeekends.push({ sat: satStr, sun: sunStr, satDate: sat, sunDate: sun, holiday: holidayName, eventCount: evCount, past: true });
+    }
+    d.setDate(d.getDate() + 7);
+  }
+  return pastWeekends;
 }
 
 function eventOnWeekend(e, satStr, sunStr) {
@@ -1322,17 +1363,27 @@ function eventOnWeekend(e, satStr, sunStr) {
 
 function buildWeekendChips() {
   const container = document.getElementById('weekendChips');
-  const weekends = getUpcomingWeekends(8);
+  const pastWeekends = getPastWeekends();
+  const upcomingWeekends = getUpcomingWeekends(8);
+  const weekends = [...pastWeekends, ...upcomingWeekends];
   const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
 
-  activeWeekend = weekends[0];
+  const currentIdx = pastWeekends.length; // index of first upcoming weekend
+  activeWeekend = weekends[currentIdx];
 
   container.innerHTML = weekends.map((w, i) => {
     const satD = w.satDate;
     const sunD = w.sunDate;
-    const label = i === 0 ? 'הסופ״ש הקרוב' : `עוד ${i} ${i === 1 ? 'שבוע' : 'שבועות'}`;
+    let label;
+    if (w.past) {
+      const weeksAgo = currentIdx - i;
+      label = weeksAgo === 1 ? 'שבוע שעבר' : `לפני ${weeksAgo} שבועות`;
+    } else {
+      const futureIdx = i - currentIdx;
+      label = futureIdx === 0 ? 'הסופ״ש הקרוב' : `עוד ${futureIdx} ${futureIdx === 1 ? 'שבוע' : 'שבועות'}`;
+    }
     const dates = `${satD.getDate()}-${sunD.getDate()} ${hebrewMonths[satD.getMonth()]}`;
-    return `<button class="wk-chip ${i === 0 ? 'active' : ''} ${w.holiday ? 'holiday' : ''}" data-idx="${i}">
+    return `<button class="wk-chip ${i === currentIdx ? 'active' : ''} ${w.holiday ? 'holiday' : ''} ${w.past ? 'past' : ''}" data-idx="${i}">
       <span class="wk-label">${label}</span>
       <span class="wk-dates">${dates}</span>
       ${w.eventCount > 0 ? `<span class="wk-count">${w.eventCount} אירועים</span>` : ''}
@@ -1340,6 +1391,12 @@ function buildWeekendChips() {
     </button>`;
   }).join('');
   container._weekends = weekends;
+
+  // Scroll so the current weekend chip is visible
+  setTimeout(() => {
+    const activeChip = container.querySelector('.wk-chip.active');
+    if (activeChip) activeChip.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+  }, 0);
 }
 
 // ===== FILTER =====
