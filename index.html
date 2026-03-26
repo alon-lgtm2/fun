@@ -1265,83 +1265,67 @@ body {
   background-position: center;
 }
 
-/* ===== BLUR GATE ===== */
+/* ===== AUTH GATE (refined) ===== */
 .event-card.gated .event-body {
   position: relative;
+  padding-bottom: 48px;
 }
 
 .event-card.gated .event-title,
 .event-card.gated .event-desc,
 .event-card.gated .event-footer,
 .event-card.gated .event-actions {
-  filter: blur(6px);
+  filter: blur(5px);
   pointer-events: none;
   user-select: none;
+  opacity: 0.7;
 }
 
-.event-card.gated .gate-overlay {
+.event-card.gated .gate-strip {
   display: flex;
 }
 
-.gate-overlay {
+.gate-strip {
   display: none;
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  top: 40%;
-  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 40%, white 100%);
-  flex-direction: column;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(155, 48, 255, 0.08);
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 20px;
+  gap: 6px;
   z-index: 5;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-light);
 }
 
-.gate-overlay-text {
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  text-align: center;
-}
-
-.gate-overlay-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 20px;
-  border: none;
-  border-radius: 100px;
-  background: var(--gradient);
-  color: white;
-  font-family: 'Heebo', sans-serif;
+.gate-strip .lock-icon {
   font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 3px 12px rgba(155,48,255,0.3);
+  opacity: 0.5;
 }
-
-.gate-overlay-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(155,48,255,0.4); }
-
-.gate-overlay-btn img { width: 16px; height: 16px; }
 
 /* ===== SIGNUP BANNER ===== */
 .signup-banner {
-  background: var(--gradient);
-  color: white;
+  background: rgba(155, 48, 255, 0.05);
+  color: var(--text);
   text-align: center;
-  padding: 14px 20px;
+  padding: 10px 20px;
   font-family: 'Heebo', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   flex-wrap: wrap;
+  border-bottom: 1px solid rgba(155, 48, 255, 0.08);
 }
 
 .signup-banner.hidden { display: none !important; }
@@ -1350,19 +1334,124 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 16px;
-  border: 2px solid white;
+  padding: 5px 14px;
+  border: 1px solid rgba(155, 48, 255, 0.2);
   border-radius: 100px;
-  background: rgba(255,255,255,0.15);
-  color: white;
+  background: white;
+  color: var(--purple);
   font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.signup-banner-btn:hover { background: white; color: var(--purple); }
+.signup-banner-btn:hover { background: var(--purple); color: white; border-color: var(--purple); }
+
+/* ===== SIGN-IN MODAL (floating, delayed) ===== */
+.signin-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.signin-modal-overlay.open {
+  display: flex;
+  animation: fadeIn 0.3s ease;
+}
+
+.signin-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 36px 32px 28px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.35s ease;
+  direction: rtl;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.signin-modal-emoji {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.signin-modal-title {
+  font-family: 'Heebo', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.signin-modal-subtitle {
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.signin-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 100px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(155, 48, 255, 0.25);
+  margin-bottom: 12px;
+}
+
+.signin-modal-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(155, 48, 255, 0.35);
+}
+
+.signin-modal-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.signin-modal-dismiss {
+  display: block;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  margin: 0 auto;
+  padding: 4px 8px;
+}
+
+.signin-modal-dismiss:hover {
+  color: var(--text);
+}
 
 /* ===== PROFILE MODAL ===== */
 .profile-modal-overlay {
@@ -1518,6 +1607,70 @@ body {
 
 .profile-form-signout:hover { color: var(--text-light); }
 
+.profile-form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.profile-form-row .profile-form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.profile-form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color 0.2s;
+  background: white;
+  resize: vertical;
+  min-height: 70px;
+}
+.profile-form-textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+.profile-form-textarea::placeholder { color: var(--text-lighter); }
+
+.profile-form-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+.profile-form-checkbox {
+  margin-top: 3px;
+  min-width: 16px;
+  min-height: 16px;
+  accent-color: var(--purple);
+  cursor: pointer;
+}
+
+.profile-form-gdpr {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-lighter);
+  line-height: 1.5;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+.profile-form-gdpr-link {
+  color: var(--purple);
+  text-decoration: underline;
+}
+.profile-form-gdpr-link:hover { opacity: 0.8; }
+
 /* ===== FACEBOOK BROWSER MODAL ===== */
 .fb-browser-modal-overlay {
   display: none;
@@ -1614,7 +1767,7 @@ body {
 
 <!-- SIGNUP BANNER (shown when not logged in) -->
 <div class="signup-banner" id="signupBanner">
-  רוצים לראות את כל האירועים? התחברו בקליק אחד
+  <span>הצטרפו לקהילה שלנו וגלו את כל הפעילויות</span>
   <button class="signup-banner-btn" onclick="signInWithGoogle()">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:16px;height:16px;">
     התחברו עם Google
@@ -2733,9 +2886,15 @@ loadEvents();
     <div class="profile-modal-title" id="profileModalTitle">השלימו את הפרופיל</div>
     <div class="profile-modal-subtitle" id="profileModalSubtitle">כדי שנוכל להתאים לכם את התוכן הכי רלוונטי</div>
     <form id="profileForm" onsubmit="handleProfileSubmit(event)">
-      <div class="profile-form-group">
-        <label class="profile-form-label">שם</label>
-        <input class="profile-form-input" type="text" id="profileFormName" placeholder="השם שלכם">
+      <div class="profile-form-row">
+        <div class="profile-form-group">
+          <label class="profile-form-label">שם פרטי</label>
+          <input class="profile-form-input" type="text" id="profileFormFirstName" placeholder="שם פרטי">
+        </div>
+        <div class="profile-form-group">
+          <label class="profile-form-label">שם משפחה</label>
+          <input class="profile-form-input" type="text" id="profileFormLastName" placeholder="שם משפחה">
+        </div>
       </div>
       <div class="profile-form-group">
         <label class="profile-form-label">אימייל</label>
@@ -2774,15 +2933,22 @@ loadEvents();
       </div>
       <div class="profile-form-group">
         <label class="profile-form-label">איך שמעתם עלינו?</label>
-        <select class="profile-form-select" id="profileFormHeardFrom">
-          <option value="">לא חובה</option>
-          <option value="facebook">Facebook</option>
-          <option value="whatsapp">WhatsApp</option>
-          <option value="friend">חברים</option>
-          <option value="google">Google</option>
-          <option value="israelis.nl">israelis.nl</option>
-          <option value="other">אחר</option>
-        </select>
+        <input class="profile-form-input" type="text" id="profileFormHeardFrom" placeholder="למשל: פייסבוק, חברים, גוגל... (לא חובה)">
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">מה הייתם רוצים לראות באתר?</label>
+        <textarea class="profile-form-textarea" id="profileFormExpectations" placeholder="שתפו אותנו - מה חשוב לכם? אילו אירועים או תכנים תרצו למצוא כאן?" rows="3"></textarea>
+        <div class="profile-form-hint">אנחנו קוראים הכל ומשתדלים להתאים את האתר אליכם</div>
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-checkbox-label">
+          <input type="checkbox" id="profileFormDisclaimer" class="profile-form-checkbox">
+          <span>אני מבין/ה שהמידע באתר הוא לנוחות בלבד, ואין להסתמך עליו כמקור יחיד. יש לאמת פרטים ישירות מול מקור האירוע.</span>
+        </label>
+      </div>
+      <div class="profile-form-gdpr">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="min-width:14px;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>לפי תקנות ה-GDPR, יש לכם זכות לבקש מחיקת המידע שלכם בכל עת. לפניות: <a href="mailto:info@israelis.nl" class="profile-form-gdpr-link">info@israelis.nl</a></span>
       </div>
       <button type="submit" class="profile-form-submit" id="profileFormSubmit">שמירה</button>
     </form>
@@ -2806,6 +2972,20 @@ loadEvents();
   </div>
 </div>
 
+<!-- Sign-in Modal (floating, delayed) -->
+<div class="signin-modal-overlay" id="signinModal">
+  <div class="signin-modal">
+    <div class="signin-modal-emoji">🎪</div>
+    <div class="signin-modal-title">גלו את כל הפעילויות</div>
+    <div class="signin-modal-subtitle">התחברו כדי לראות מיקום, מחירים, ניווט ועוד</div>
+    <button class="signin-modal-btn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+      התחברו עם Google
+    </button>
+    <button class="signin-modal-dismiss" onclick="dismissSigninModal()">אחר כך</button>
+  </div>
+</div>
+
 <!-- Firebase Auth -->
 <script src="auth.js"></script>
 <script>
@@ -2816,14 +2996,15 @@ function onUserLoggedIn(needsProfileCompletion) {
   document.querySelectorAll('.event-card.gated').forEach(card => {
     card.classList.remove('gated');
   });
-  // Hide signup banner
+  // Hide signup banner and sign-in modal
   const banner = document.getElementById('signupBanner');
   if (banner) banner.classList.add('hidden');
+  dismissSigninModal();
 
   // Update profile name in nav
   const profileName = document.getElementById('profileName');
   if (profileName && currentUser) {
-    profileName.textContent = (currentUser.displayName || '').split(' ')[0] || 'הפרופיל שלי';
+    profileName.textContent = userProfile?.firstName || (currentUser.displayName || '').split(' ')[0] || 'הפרופיל שלי';
   }
 
   // If first-time user, show profile completion modal
@@ -2842,38 +3023,73 @@ function onUserLoggedIn(needsProfileCompletion) {
 }
 
 function onUserLoggedOut() {
-  // Apply blur gate to all event cards
   applyBlurGate();
-  // Show signup banner
   const banner = document.getElementById('signupBanner');
   if (banner) banner.classList.remove('hidden');
+  scheduleSigninModal();
 }
 
+// ===== AUTH GATE (refined) =====
+const TEASER_CARD_COUNT = 2;
+
 function applyBlurGate() {
-  document.querySelectorAll('.event-card').forEach(card => {
+  document.querySelectorAll('.event-card').forEach((card, index) => {
+    // First N cards are teasers — fully visible
+    if (index < TEASER_CARD_COUNT) return;
+
     card.classList.add('gated');
-    // Add gate overlay if not already present
     const body = card.querySelector('.event-body');
-    if (body && !body.querySelector('.gate-overlay')) {
-      const overlay = document.createElement('div');
-      overlay.className = 'gate-overlay';
-      overlay.innerHTML = `
-        <div class="gate-overlay-text">התחברו כדי לראות את כל הפרטים</div>
-        <button class="gate-overlay-btn" onclick="event.stopPropagation(); signInWithGoogle();">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-          התחברו עם Google
-        </button>
-      `;
-      body.appendChild(overlay);
+    if (body && !body.querySelector('.gate-strip')) {
+      const strip = document.createElement('div');
+      strip.className = 'gate-strip';
+      strip.innerHTML = '<span class="lock-icon">🔒</span> התחברו לפרטים';
+      body.appendChild(strip);
     }
   });
+}
+
+// ===== FLOATING SIGN-IN MODAL =====
+let signinModalShown = false;
+let signinModalDismissed = sessionStorage.getItem('signinModalDismissed') === '1';
+let _signinScrollHandler = null;
+
+function scheduleSigninModal() {
+  if (signinModalDismissed || signinModalShown || currentUser) return;
+
+  const timer = setTimeout(showSigninModal, 4000);
+
+  _signinScrollHandler = function() {
+    if (window.scrollY > 400 && !signinModalShown) {
+      clearTimeout(timer);
+      showSigninModal();
+      window.removeEventListener('scroll', _signinScrollHandler);
+    }
+  };
+  window.addEventListener('scroll', _signinScrollHandler, { passive: true });
+}
+
+function showSigninModal() {
+  if (signinModalShown || signinModalDismissed || currentUser) return;
+  signinModalShown = true;
+  const modal = document.getElementById('signinModal');
+  if (modal) modal.classList.add('open');
+}
+
+function dismissSigninModal() {
+  signinModalDismissed = true;
+  signinModalShown = true;
+  const modal = document.getElementById('signinModal');
+  if (modal) modal.classList.remove('open');
+  sessionStorage.setItem('signinModalDismissed', '1');
+  if (_signinScrollHandler) {
+    window.removeEventListener('scroll', _signinScrollHandler);
+  }
 }
 
 // Hook into the render cycle to apply blur gate after cards are rendered
 const _originalRender = render;
 render = function() {
   _originalRender();
-  // Apply blur gate if not logged in
   if (!currentUser) {
     setTimeout(applyBlurGate, 50);
   }
@@ -2899,7 +3115,9 @@ function openProfileModal(isOnboarding) {
 
   // Pre-fill form
   if (currentUser) {
-    document.getElementById('profileFormName').value = userProfile?.name || currentUser.displayName || '';
+    const fullName = userProfile?.name || currentUser.displayName || '';
+    document.getElementById('profileFormFirstName').value = userProfile?.firstName || fullName.split(' ')[0] || '';
+    document.getElementById('profileFormLastName').value = userProfile?.lastName || fullName.split(' ').slice(1).join(' ') || '';
     document.getElementById('profileFormEmail').value = currentUser.email || '';
   }
   if (userProfile) {
@@ -2907,6 +3125,8 @@ function openProfileModal(isOnboarding) {
     document.getElementById('profileFormKids').value = userProfile.kidsAges || '';
     document.getElementById('profileFormWhatsapp').value = userProfile.whatsapp || '';
     document.getElementById('profileFormHeardFrom').value = userProfile.heardFrom || '';
+    document.getElementById('profileFormExpectations').value = userProfile.expectations || '';
+    document.getElementById('profileFormDisclaimer').checked = userProfile.disclaimerAccepted || false;
   }
 }
 
@@ -2921,13 +3141,19 @@ async function handleProfileSubmit(e) {
   submitBtn.disabled = true;
 
   try {
+    const firstName = document.getElementById('profileFormFirstName').value;
+    const lastName = document.getElementById('profileFormLastName').value;
     await saveProfile({
-      name: document.getElementById('profileFormName').value,
+      firstName: firstName,
+      lastName: lastName,
+      name: (firstName + ' ' + lastName).trim(),
       email: document.getElementById('profileFormEmail').value,
       city: document.getElementById('profileFormCity').value,
       kidsAges: document.getElementById('profileFormKids').value,
       whatsapp: document.getElementById('profileFormWhatsapp').value,
       heardFrom: document.getElementById('profileFormHeardFrom').value,
+      expectations: document.getElementById('profileFormExpectations').value,
+      disclaimerAccepted: document.getElementById('profileFormDisclaimer').checked,
       favorites: userProfile?.favorites || JSON.parse(localStorage.getItem('likedEvents') || '[]')
     });
 
@@ -2939,7 +3165,7 @@ async function handleProfileSubmit(e) {
       // Update profile name in nav
       const profileName = document.getElementById('profileName');
       if (profileName) {
-        profileName.textContent = (document.getElementById('profileFormName').value || '').split(' ')[0] || 'הפרופיל שלי';
+        profileName.textContent = document.getElementById('profileFormFirstName').value || 'הפרופיל שלי';
       }
     }, 800);
   } catch (err) {
@@ -2952,6 +3178,11 @@ async function handleProfileSubmit(e) {
 // Close profile modal on backdrop click
 document.getElementById('profileModal').addEventListener('click', function(e) {
   if (e.target === this) closeProfileModal();
+});
+
+// Close sign-in modal on backdrop click
+document.getElementById('signinModal').addEventListener('click', function(e) {
+  if (e.target === this) dismissSigninModal();
 });
 </script>
 </body>
