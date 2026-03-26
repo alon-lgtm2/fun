@@ -711,6 +711,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
 }
 </style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
 </head>
 <body>
 
@@ -1192,6 +1193,17 @@ document.getElementById('placeForm').addEventListener('submit', async (e) => {
   }
 });
 </script>
+
+<!-- FACEBOOK BROWSER MODAL -->
+<div class="fb-browser-modal-overlay" id="fbBrowserModal" onclick="if(event.target===this)closeFacebookBrowserModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+    <div style="font-size:48px;margin-bottom:12px;">🌐</div>
+    <div style="font-family:'Rubik',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px;">פתחו בדפדפן</div>
+    <div style="font-size:14px;color:#5A5A7A;line-height:1.6;margin-bottom:20px;">ההתחברות עם Google לא עובדת בדפדפן של פייסבוק.<br>לחצו למטה כדי לפתוח את האתר בדפדפן הרגיל שלכם.</div>
+    <button onclick="openInSystemBrowser()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#C850C0 0%,#9B30FF 40%,#4158D0 100%);color:white;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">פתחו ב-Chrome / Safari</button>
+    <button onclick="closeFacebookBrowserModal()" style="display:block;margin-top:12px;font-size:13px;color:#9898B0;cursor:pointer;border:none;background:none;font-family:'Heebo',sans-serif;text-decoration:underline;width:100%;">לא עכשיו</button>
+  </div>
+</div>
 
 <!-- Firebase Auth -->
 <script src="auth.js"></script>

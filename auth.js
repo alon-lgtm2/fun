@@ -54,8 +54,47 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
+// ===== IN-APP BROWSER DETECTION =====
+function isFacebookBrowser() {
+  const ua = navigator.userAgent || '';
+  return /FBAN|FBAV|FB_IAB|Instagram/i.test(ua);
+}
+
+function openInSystemBrowser() {
+  const url = window.location.href;
+  const ua = navigator.userAgent || '';
+
+  // Android: try intent to open in Chrome
+  if (/android/i.test(ua)) {
+    window.location.href = 'intent://' + url.replace(/^https?:\/\//, '') +
+      '#Intent;scheme=https;package=com.android.chrome;end';
+    // Fallback after a short delay if intent didn't work
+    setTimeout(() => { window.open(url, '_blank'); }, 500);
+    return;
+  }
+
+  // iOS & other: open in new window (triggers "Open in Safari" on iOS)
+  window.open(url, '_blank');
+}
+
+function showFacebookBrowserModal() {
+  const modal = document.getElementById('fbBrowserModal');
+  if (modal) modal.classList.add('open');
+}
+
+function closeFacebookBrowserModal() {
+  const modal = document.getElementById('fbBrowserModal');
+  if (modal) modal.classList.remove('open');
+}
+
 // ===== SIGN IN =====
 function signInWithGoogle() {
+  // If in Facebook/Instagram in-app browser, redirect to system browser
+  if (isFacebookBrowser()) {
+    showFacebookBrowserModal();
+    return;
+  }
+
   const provider = new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
   auth.signInWithPopup(provider).catch((error) => {

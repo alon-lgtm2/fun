@@ -1270,6 +1270,7 @@ body {
   position: relative;
 }
 
+.event-card.gated .event-title,
 .event-card.gated .event-desc,
 .event-card.gated .event-footer,
 .event-card.gated .event-actions {
@@ -1517,6 +1518,80 @@ body {
 
 .profile-form-signout:hover { color: var(--text-light); }
 
+/* ===== FACEBOOK BROWSER MODAL ===== */
+.fb-browser-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.fb-browser-modal-overlay.open { display: flex; }
+
+.fb-browser-modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.fb-browser-modal-icon { font-size: 48px; margin-bottom: 12px; }
+
+.fb-browser-modal-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.fb-browser-modal-desc {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.fb-browser-modal-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 3px 12px rgba(155,48,255,0.3);
+}
+
+.fb-browser-modal-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.fb-browser-modal-skip {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-lighter);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: 'Heebo', sans-serif;
+  text-decoration: underline;
+}
+
 /* Mobile nav tabs */
 @media (max-width: 700px) {
   .nav-tabs { display: none; }
@@ -1524,6 +1599,7 @@ body {
   .auth-btn { padding: 7px 12px; }
 }
 </style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
 </head>
 <body>
 
@@ -2666,7 +2742,7 @@ loadEvents();
         <input class="profile-form-input" type="email" id="profileFormEmail" dir="ltr" placeholder="email@example.com" readonly style="background:#f8f8fa;">
       </div>
       <div class="profile-form-group">
-        <label class="profile-form-label">עיר / אזור בהולנד *</label>
+        <label class="profile-form-label">עיר / אזור *</label>
         <select class="profile-form-select" id="profileFormCity" required>
           <option value="">בחרו אזור</option>
           <option value="Amsterdam">Amsterdam</option>
@@ -2683,6 +2759,7 @@ loadEvents();
           <option value="Noord-Brabant">Noord-Brabant</option>
           <option value="Gelderland">Gelderland</option>
           <option value="Other">Other</option>
+          <option value="Not in NL">לא גר/ה בהולנד</option>
         </select>
       </div>
       <div class="profile-form-group">
@@ -2710,6 +2787,22 @@ loadEvents();
       <button type="submit" class="profile-form-submit" id="profileFormSubmit">שמירה</button>
     </form>
     <button class="profile-form-signout" id="profileSignout" onclick="signOut(); closeProfileModal();">התנתקות</button>
+  </div>
+</div>
+
+<!-- FACEBOOK BROWSER MODAL -->
+<div class="fb-browser-modal-overlay" id="fbBrowserModal" onclick="if(event.target===this)closeFacebookBrowserModal()">
+  <div class="fb-browser-modal">
+    <div class="fb-browser-modal-icon">🌐</div>
+    <div class="fb-browser-modal-title">פתחו בדפדפן</div>
+    <div class="fb-browser-modal-desc">
+      ההתחברות עם Google לא עובדת בדפדפן של פייסבוק.
+      <br>לחצו למטה כדי לפתוח את האתר בדפדפן הרגיל שלכם.
+    </div>
+    <button class="fb-browser-modal-btn" onclick="openInSystemBrowser()">
+      פתחו ב-Chrome / Safari
+    </button>
+    <button class="fb-browser-modal-skip" onclick="closeFacebookBrowserModal()">לא עכשיו</button>
   </div>
 </div>
 
