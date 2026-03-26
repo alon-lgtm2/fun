@@ -30,6 +30,10 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 :root {
   --purple: #9B30FF;
@@ -1165,6 +1169,360 @@ body {
 .fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(46,204,64,0.45); }
 
 .hidden { display: none !important; }
+
+/* ===== AUTH NAV TABS ===== */
+.nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+.nav-tab {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.nav-tab:hover { background: var(--bg); color: var(--purple); }
+.nav-tab.active { background: var(--gradient); color: white; border-radius: 8px; }
+
+.nav-tab-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 2px;
+}
+
+/* Auth button */
+.auth-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  border: 2px solid var(--purple);
+  border-radius: 100px;
+  background: white;
+  color: var(--purple);
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.auth-btn:hover { background: var(--purple); color: white; }
+
+.auth-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+/* Profile button */
+.profile-btn {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px 4px 6px;
+  border: 2px solid var(--border);
+  border-radius: 100px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.profile-btn:hover { border-color: var(--purple); }
+
+.profile-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== BLUR GATE ===== */
+.event-card.gated .event-body {
+  position: relative;
+}
+
+.event-card.gated .event-desc,
+.event-card.gated .event-footer,
+.event-card.gated .event-actions {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.event-card.gated .gate-overlay {
+  display: flex;
+}
+
+.gate-overlay {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 40%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 40%, white 100%);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  z-index: 5;
+}
+
+.gate-overlay-text {
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+}
+
+.gate-overlay-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 100px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 3px 12px rgba(155,48,255,0.3);
+}
+
+.gate-overlay-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(155,48,255,0.4); }
+
+.gate-overlay-btn img { width: 16px; height: 16px; }
+
+/* ===== SIGNUP BANNER ===== */
+.signup-banner {
+  background: var(--gradient);
+  color: white;
+  text-align: center;
+  padding: 14px 20px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.signup-banner.hidden { display: none !important; }
+
+.signup-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: 2px solid white;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.signup-banner-btn:hover { background: white; color: var(--purple); }
+
+/* ===== PROFILE MODAL ===== */
+.profile-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.profile-modal-overlay.open { display: flex; }
+
+.profile-modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 460px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.profile-modal-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--bg);
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  transition: all 0.2s;
+}
+
+.profile-modal-close:hover { background: var(--border); }
+
+.profile-modal-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 4px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.profile-modal-subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+.profile-form-group {
+  margin-bottom: 14px;
+}
+
+.profile-form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.profile-form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color 0.2s;
+  background: white;
+}
+
+.profile-form-input:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+
+.profile-form-input::placeholder { color: var(--text-lighter); }
+
+.profile-form-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239898B0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 14px center;
+}
+
+.profile-form-select:focus { outline: none; border-color: var(--purple); }
+
+.profile-form-hint {
+  font-size: 11px;
+  color: var(--text-lighter);
+  margin-top: 3px;
+}
+
+.profile-form-submit {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.profile-form-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.profile-form-signout {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-lighter);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: 'Heebo', sans-serif;
+  text-decoration: underline;
+}
+
+.profile-form-signout:hover { color: var(--text-light); }
+
+/* Mobile nav tabs */
+@media (max-width: 700px) {
+  .nav-tabs { display: none; }
+  .auth-btn .auth-btn-text { display: none; }
+  .auth-btn { padding: 7px 12px; }
+}
 </style>
 </head>
 <body>
@@ -1176,6 +1534,15 @@ body {
     <h1 class="hero-title">אז מה עושים היום?</h1>
     <p class="hero-subtitle">פעילויות איכות עם המשפחה בהולנד בסופ״ש</p>
   </div>
+</div>
+
+<!-- SIGNUP BANNER (shown when not logged in) -->
+<div class="signup-banner" id="signupBanner">
+  רוצים לראות את כל האירועים? התחברו בקליק אחד
+  <button class="signup-banner-btn" onclick="signInWithGoogle()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:16px;height:16px;">
+    התחברו עם Google
+  </button>
 </div>
 
 <!-- STICKY NAV -->
@@ -1215,6 +1582,28 @@ body {
       </div>
     </div>
 
+    <!-- Page tabs (visible on desktop) -->
+    <div class="nav-tabs">
+      <a href="index.html" class="nav-tab active">אירועים</a>
+      <div class="nav-tab-divider"></div>
+      <a href="places.html" class="nav-tab">מקומות</a>
+      <div class="nav-tab-divider"></div>
+      <a href="holidays.html" class="nav-tab">חגים</a>
+      <div class="nav-tab-divider"></div>
+      <a href="about.html" class="nav-tab">עלינו</a>
+    </div>
+
+    <!-- Auth / Profile -->
+    <button class="auth-btn" id="authBtn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      <span class="auth-btn-text">התחברו</span>
+    </button>
+    <button class="profile-btn" id="profileBtn" onclick="openProfileModal()">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+      <span id="profileName">הפרופיל שלי</span>
+    </button>
+
+    <!-- Hamburger (mobile - shows tabs + contact) -->
     <div class="nav-menu-wrapper">
       <button class="nav-menu-btn" id="menuBtn" onclick="document.getElementById('navMenu').classList.toggle('open')">☰</button>
       <div class="nav-menu" id="navMenu">
@@ -1222,6 +1611,7 @@ body {
         <a href="holidays.html" class="nav-menu-item">🇳🇱 חגים וחופשות</a>
         <a href="about.html" class="nav-menu-item">🧡 קצת עלינו</a>
         <button class="nav-menu-item" onclick="document.getElementById('navMenu').classList.remove('open'); openSuggestionModal('feedback')">💬 צרו קשר</button>
+        <button class="nav-menu-item" id="authBtnMobile" onclick="document.getElementById('navMenu').classList.remove('open'); signInWithGoogle()">🔑 התחברו עם Google</button>
       </div>
     </div>
   </div>
@@ -2258,6 +2648,218 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 loadEvents();
+</script>
+
+<!-- PROFILE / ONBOARDING MODAL -->
+<div class="profile-modal-overlay" id="profileModal">
+  <div class="profile-modal">
+    <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
+    <div class="profile-modal-title" id="profileModalTitle">השלימו את הפרופיל</div>
+    <div class="profile-modal-subtitle" id="profileModalSubtitle">כדי שנוכל להתאים לכם את התוכן הכי רלוונטי</div>
+    <form id="profileForm" onsubmit="handleProfileSubmit(event)">
+      <div class="profile-form-group">
+        <label class="profile-form-label">שם</label>
+        <input class="profile-form-input" type="text" id="profileFormName" placeholder="השם שלכם">
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">אימייל</label>
+        <input class="profile-form-input" type="email" id="profileFormEmail" dir="ltr" placeholder="email@example.com" readonly style="background:#f8f8fa;">
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">עיר / אזור בהולנד *</label>
+        <select class="profile-form-select" id="profileFormCity" required>
+          <option value="">בחרו אזור</option>
+          <option value="Amsterdam">Amsterdam</option>
+          <option value="Rotterdam">Rotterdam</option>
+          <option value="Den Haag">Den Haag</option>
+          <option value="Utrecht">Utrecht</option>
+          <option value="Eindhoven">Eindhoven</option>
+          <option value="Amstelveen">Amstelveen</option>
+          <option value="Haarlem">Haarlem</option>
+          <option value="Leiden">Leiden</option>
+          <option value="Groningen">Groningen</option>
+          <option value="Noord-Holland">Noord-Holland (other)</option>
+          <option value="Zuid-Holland">Zuid-Holland (other)</option>
+          <option value="Noord-Brabant">Noord-Brabant</option>
+          <option value="Gelderland">Gelderland</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">גילאי ילדים</label>
+        <input class="profile-form-input" type="text" id="profileFormKids" placeholder="למשל: 3, 6 (לא חובה)">
+        <div class="profile-form-hint">כדי שנוכל להתאים אירועים לגילאים שלכם</div>
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">WhatsApp</label>
+        <input class="profile-form-input" type="tel" id="profileFormWhatsapp" dir="ltr" placeholder="+31 6... (לא חובה)">
+        <div class="profile-form-hint">בעתיד נשלח עדכונים שבועיים גם בוואטסאפ</div>
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">איך שמעתם עלינו?</label>
+        <select class="profile-form-select" id="profileFormHeardFrom">
+          <option value="">לא חובה</option>
+          <option value="facebook">Facebook</option>
+          <option value="whatsapp">WhatsApp</option>
+          <option value="friend">חברים</option>
+          <option value="google">Google</option>
+          <option value="israelis.nl">israelis.nl</option>
+          <option value="other">אחר</option>
+        </select>
+      </div>
+      <button type="submit" class="profile-form-submit" id="profileFormSubmit">שמירה</button>
+    </form>
+    <button class="profile-form-signout" id="profileSignout" onclick="signOut(); closeProfileModal();">התנתקות</button>
+  </div>
+</div>
+
+<!-- Firebase Auth -->
+<script src="auth.js"></script>
+<script>
+// ===== AUTH INTEGRATION FOR INDEX PAGE =====
+
+function onUserLoggedIn(needsProfileCompletion) {
+  // Remove blur gate
+  document.querySelectorAll('.event-card.gated').forEach(card => {
+    card.classList.remove('gated');
+  });
+  // Hide signup banner
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.add('hidden');
+
+  // Update profile name in nav
+  const profileName = document.getElementById('profileName');
+  if (profileName && currentUser) {
+    profileName.textContent = (currentUser.displayName || '').split(' ')[0] || 'הפרופיל שלי';
+  }
+
+  // If first-time user, show profile completion modal
+  if (needsProfileCompletion) {
+    openProfileModal(true);
+  }
+
+  // Sync localStorage favorites to Firestore
+  const localLiked = JSON.parse(localStorage.getItem('likedEvents') || '[]');
+  if (localLiked.length > 0 && currentUser) {
+    syncFavorites(localLiked).then(merged => {
+      localStorage.setItem('likedEvents', JSON.stringify(merged));
+      render();
+    });
+  }
+}
+
+function onUserLoggedOut() {
+  // Apply blur gate to all event cards
+  applyBlurGate();
+  // Show signup banner
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.remove('hidden');
+}
+
+function applyBlurGate() {
+  document.querySelectorAll('.event-card').forEach(card => {
+    card.classList.add('gated');
+    // Add gate overlay if not already present
+    const body = card.querySelector('.event-body');
+    if (body && !body.querySelector('.gate-overlay')) {
+      const overlay = document.createElement('div');
+      overlay.className = 'gate-overlay';
+      overlay.innerHTML = `
+        <div class="gate-overlay-text">התחברו כדי לראות את כל הפרטים</div>
+        <button class="gate-overlay-btn" onclick="event.stopPropagation(); signInWithGoogle();">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+          התחברו עם Google
+        </button>
+      `;
+      body.appendChild(overlay);
+    }
+  });
+}
+
+// Hook into the render cycle to apply blur gate after cards are rendered
+const _originalRender = render;
+render = function() {
+  _originalRender();
+  // Apply blur gate if not logged in
+  if (!currentUser) {
+    setTimeout(applyBlurGate, 50);
+  }
+};
+
+function openProfileModal(isOnboarding) {
+  const modal = document.getElementById('profileModal');
+  modal.classList.add('open');
+
+  const title = document.getElementById('profileModalTitle');
+  const subtitle = document.getElementById('profileModalSubtitle');
+  const signoutBtn = document.getElementById('profileSignout');
+
+  if (isOnboarding) {
+    title.textContent = 'ברוכים הבאים!';
+    subtitle.textContent = 'ספרו לנו קצת על עצמכם כדי שנוכל להתאים את התוכן';
+    signoutBtn.style.display = 'none';
+  } else {
+    title.textContent = 'הפרופיל שלי';
+    subtitle.textContent = 'עדכנו את הפרטים שלכם';
+    signoutBtn.style.display = 'block';
+  }
+
+  // Pre-fill form
+  if (currentUser) {
+    document.getElementById('profileFormName').value = userProfile?.name || currentUser.displayName || '';
+    document.getElementById('profileFormEmail').value = currentUser.email || '';
+  }
+  if (userProfile) {
+    document.getElementById('profileFormCity').value = userProfile.city || '';
+    document.getElementById('profileFormKids').value = userProfile.kidsAges || '';
+    document.getElementById('profileFormWhatsapp').value = userProfile.whatsapp || '';
+    document.getElementById('profileFormHeardFrom').value = userProfile.heardFrom || '';
+  }
+}
+
+function closeProfileModal() {
+  document.getElementById('profileModal').classList.remove('open');
+}
+
+async function handleProfileSubmit(e) {
+  e.preventDefault();
+  const submitBtn = document.getElementById('profileFormSubmit');
+  submitBtn.textContent = 'שומר...';
+  submitBtn.disabled = true;
+
+  try {
+    await saveProfile({
+      name: document.getElementById('profileFormName').value,
+      email: document.getElementById('profileFormEmail').value,
+      city: document.getElementById('profileFormCity').value,
+      kidsAges: document.getElementById('profileFormKids').value,
+      whatsapp: document.getElementById('profileFormWhatsapp').value,
+      heardFrom: document.getElementById('profileFormHeardFrom').value,
+      favorites: userProfile?.favorites || JSON.parse(localStorage.getItem('likedEvents') || '[]')
+    });
+
+    submitBtn.textContent = 'נשמר!';
+    setTimeout(() => {
+      closeProfileModal();
+      submitBtn.textContent = 'שמירה';
+      submitBtn.disabled = false;
+      // Update profile name in nav
+      const profileName = document.getElementById('profileName');
+      if (profileName) {
+        profileName.textContent = (document.getElementById('profileFormName').value || '').split(' ')[0] || 'הפרופיל שלי';
+      }
+    }, 800);
+  } catch (err) {
+    console.error('Profile save error:', err);
+    submitBtn.textContent = 'שגיאה - נסו שוב';
+    submitBtn.disabled = false;
+  }
+}
+
+// Close profile modal on backdrop click
+document.getElementById('profileModal').addEventListener('click', function(e) {
+  if (e.target === this) closeProfileModal();
+});
 </script>
 </body>
 </html>
