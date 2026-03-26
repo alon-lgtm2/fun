@@ -30,19 +30,28 @@ auth.onAuthStateChanged(async (user) => {
     const doc = await userRef.get();
     if (doc.exists) {
       userProfile = doc.data();
-      userRef.update({ lastLogin: firebase.firestore.FieldValue.serverTimestamp() });
+      userRef.update({
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+        loginCount: firebase.firestore.FieldValue.increment(1)
+      });
       onAuthReady(true, false);
     } else {
       // First-time user — needs profile completion
       userProfile = {
         name: user.displayName || '',
+        firstName: (user.displayName || '').split(' ')[0] || '',
+        lastName: (user.displayName || '').split(' ').slice(1).join(' ') || '',
         email: user.email || '',
         photoURL: user.photoURL || '',
         city: '',
         kidsAges: '',
         whatsapp: '',
         heardFrom: '',
+        expectations: '',
+        disclaimerAccepted: false,
         favorites: [],
+        loginCount: 1,
+        totalTimeSpent: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         lastLogin: firebase.firestore.FieldValue.serverTimestamp()
       };
@@ -158,6 +167,27 @@ async function removeFavorite(eventId) {
   await db.collection('users').doc(currentUser.uid).update({ favorites: favs });
   userProfile.favorites = favs;
 }
+
+// ===== SESSION TRACKING =====
+let _sessionStart = Date.now();
+
+function _flushSessionTime() {
+  if (!currentUser) return;
+  const elapsed = Math.round((Date.now() - _sessionStart) / 1000); // seconds
+  if (elapsed < 2) return; // skip trivial durations
+  const userRef = db.collection('users').doc(currentUser.uid);
+  // Use sendBeacon-friendly approach: fire-and-forget update
+  userRef.update({
+    totalTimeSpent: firebase.firestore.FieldValue.increment(elapsed)
+  }).catch(() => {});
+  _sessionStart = Date.now(); // reset for next flush
+}
+
+// Flush on page unload
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden') _flushSessionTime();
+});
+window.addEventListener('beforeunload', _flushSessionTime);
 
 // ===== UI HELPERS =====
 // These are called by the page-specific code
