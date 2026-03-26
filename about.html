@@ -22,6 +22,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 :root {
   --purple: #9B30FF;
@@ -148,13 +152,160 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 @media (max-width: 700px) {
   .about-section { grid-template-columns: 1fr; padding: 24px; gap: 20px; }
 }
+
+/* ===== AUTH NAV TABS ===== */
+.hero-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.hero-nav-tab {
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+}
+
+.hero-nav-tab:hover { color: white; background: rgba(255,255,255,0.15); }
+.hero-nav-tab.active { color: white; background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); }
+
+.hero-nav-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.25);
+}
+
+.hero-auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 8px;
+}
+
+.hero-auth-btn:hover { background: rgba(255,255,255,0.25); }
+.hero-auth-btn img { width: 14px; height: 14px; }
+.hero-auth-btn.hidden { display: none; }
+
+.hero-profile-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px 3px 4px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 8px;
+}
+
+.hero-profile-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background-size: cover;
+  background-position: center;
+}
+
+.signup-cta-section {
+  background: var(--gradient);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  text-align: center;
+  color: white;
+  margin-top: 20px;
+}
+
+.signup-cta-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.signup-cta-desc {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 16px;
+}
+
+.signup-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: 2px solid white;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.signup-cta-btn:hover { background: white; color: var(--purple); }
+.signup-cta-btn img { width: 18px; height: 18px; }
+
+.signup-cta-section.hidden { display: none !important; }
+
+@media (max-width: 700px) {
+  .hero-nav-tabs { flex-wrap: wrap; gap: 2px; }
+  .hero-nav-tab { font-size: 12px; padding: 4px 10px; }
+  .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
+}
 </style>
 </head>
 <body>
 
 <div class="hero">
   <div class="hero-content">
-    <a href="index.html" class="hero-back">→ חזרה לאירועים</a>
+    <div class="hero-nav-tabs">
+      <a href="index.html" class="hero-nav-tab">אירועים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="places.html" class="hero-nav-tab">מקומות</a>
+      <div class="hero-nav-divider"></div>
+      <a href="holidays.html" class="hero-nav-tab">חגים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="about.html" class="hero-nav-tab active">עלינו</a>
+      <div class="hero-nav-divider"></div>
+      <button class="hero-auth-btn" id="authBtn" onclick="signInWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+        התחברו
+      </button>
+      <a href="index.html" class="hero-profile-btn" id="profileBtn">
+        <div class="hero-profile-avatar" id="profileAvatar">?</div>
+        <span id="profileName">הפרופיל</span>
+      </a>
+    </div>
     <h1 class="hero-title">קצת עלינו</h1>
     <p class="hero-subtitle">מי אנחנו ומה תמצאו כאן</p>
   </div>
@@ -201,11 +352,34 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
       ⚠️ המידע באתר נאסף ממקורות שונים ומתעדכן באופן שוטף. מומלץ תמיד לבדוק בקישור לאירוע לפני שיוצאים לדרך.
     </div>
   </div>
+
+  <!-- SIGNUP CTA -->
+  <div class="signup-cta-section" id="signupCta">
+    <div class="signup-cta-title">הצטרפו לקהילה שלנו</div>
+    <div class="signup-cta-desc">התחברו כדי לקבל גישה מלאה לאירועים, לשמור מועדפים ולהיות חלק מהקהילה</div>
+    <button class="signup-cta-btn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+      התחברו עם Google
+    </button>
+  </div>
 </div>
 
 <footer>
   <p>נבנה באהבה לקהילה הישראלית בהולנד</p>
   <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
 </footer>
+
+<!-- Firebase Auth -->
+<script src="auth.js"></script>
+<script>
+function onUserLoggedIn() {
+  const cta = document.getElementById('signupCta');
+  if (cta) cta.classList.add('hidden');
+}
+function onUserLoggedOut() {
+  const cta = document.getElementById('signupCta');
+  if (cta) cta.classList.remove('hidden');
+}
+</script>
 </body>
 </html>

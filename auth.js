@@ -1,0 +1,159 @@
+// ===== FIREBASE AUTH & PROFILE MANAGEMENT =====
+// Replace the firebaseConfig values with your Firebase project config
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAa-L7PUiri8B9fKPMzB8QUAPhBN1umgTg",
+  authDomain: "az-ma-7480e.firebaseapp.com",
+  projectId: "az-ma-7480e",
+  storageBucket: "az-ma-7480e.firebasestorage.app",
+  messagingSenderId: "925765602538",
+  appId: "1:925765602538:web:7cd04c790827588dc35b93"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// Keep user signed in across sessions
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+// ===== AUTH STATE =====
+let currentUser = null;
+let userProfile = null;
+
+auth.onAuthStateChanged(async (user) => {
+  currentUser = user;
+  if (user) {
+    // Update last login
+    const userRef = db.collection('users').doc(user.uid);
+    const doc = await userRef.get();
+    if (doc.exists) {
+      userProfile = doc.data();
+      userRef.update({ lastLogin: firebase.firestore.FieldValue.serverTimestamp() });
+      onAuthReady(true, false);
+    } else {
+      // First-time user — needs profile completion
+      userProfile = {
+        name: user.displayName || '',
+        email: user.email || '',
+        photoURL: user.photoURL || '',
+        city: '',
+        kidsAges: '',
+        whatsapp: '',
+        heardFrom: '',
+        favorites: [],
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      onAuthReady(true, true);
+    }
+  } else {
+    userProfile = null;
+    onAuthReady(false, false);
+  }
+});
+
+// ===== SIGN IN =====
+function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  auth.signInWithPopup(provider).catch((error) => {
+    console.error('Sign-in error:', error);
+    if (error.code !== 'auth/popup-closed-by-user') {
+      alert('שגיאה בהתחברות. אנא נסו שנית.');
+    }
+  });
+}
+
+function signOut() {
+  auth.signOut();
+}
+
+// ===== PROFILE =====
+async function saveProfile(profileData) {
+  if (!currentUser) return;
+  const userRef = db.collection('users').doc(currentUser.uid);
+  const data = {
+    ...profileData,
+    name: profileData.name || currentUser.displayName || '',
+    email: profileData.email || currentUser.email || '',
+    photoURL: currentUser.photoURL || '',
+    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  // Check if doc exists
+  const doc = await userRef.get();
+  if (doc.exists) {
+    await userRef.update(data);
+  } else {
+    data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+    await userRef.set(data);
+  }
+  userProfile = { ...userProfile, ...data };
+}
+
+// ===== FAVORITES SYNC =====
+async function syncFavorites(localFavorites) {
+  if (!currentUser || !userProfile) return;
+  // Merge local favorites with cloud favorites
+  const cloudFavs = userProfile.favorites || [];
+  const merged = [...new Set([...cloudFavs, ...localFavorites])];
+  await db.collection('users').doc(currentUser.uid).update({ favorites: merged });
+  userProfile.favorites = merged;
+  return merged;
+}
+
+async function addFavorite(eventId) {
+  if (!currentUser) return;
+  const favs = userProfile.favorites || [];
+  if (!favs.includes(eventId)) {
+    favs.push(eventId);
+    await db.collection('users').doc(currentUser.uid).update({ favorites: favs });
+    userProfile.favorites = favs;
+  }
+}
+
+async function removeFavorite(eventId) {
+  if (!currentUser) return;
+  const favs = (userProfile.favorites || []).filter(id => id !== eventId);
+  await db.collection('users').doc(currentUser.uid).update({ favorites: favs });
+  userProfile.favorites = favs;
+}
+
+// ===== UI HELPERS =====
+// These are called by the page-specific code
+
+function onAuthReady(isLoggedIn, needsProfileCompletion) {
+  // Update nav auth button
+  const authBtn = document.getElementById('authBtn');
+  const profileBtn = document.getElementById('profileBtn');
+  const authBtnMobile = document.getElementById('authBtnMobile');
+
+  if (isLoggedIn) {
+    if (authBtn) authBtn.style.display = 'none';
+    if (authBtnMobile) authBtnMobile.style.display = 'none';
+    if (profileBtn) {
+      profileBtn.style.display = 'flex';
+      const avatar = profileBtn.querySelector('.profile-avatar');
+      if (avatar && currentUser.photoURL) {
+        avatar.style.backgroundImage = `url(${currentUser.photoURL})`;
+        avatar.textContent = '';
+      } else if (avatar) {
+        avatar.textContent = (currentUser.displayName || currentUser.email || '?')[0];
+      }
+    }
+
+    // Page-specific auth callback
+    if (typeof onUserLoggedIn === 'function') {
+      onUserLoggedIn(needsProfileCompletion);
+    }
+  } else {
+    if (authBtn) authBtn.style.display = 'flex';
+    if (authBtnMobile) authBtnMobile.style.display = 'flex';
+    if (profileBtn) profileBtn.style.display = 'none';
+
+    if (typeof onUserLoggedOut === 'function') {
+      onUserLoggedOut();
+    }
+  }
+}

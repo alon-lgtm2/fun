@@ -24,6 +24,10 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 :root {
   --purple: #9B30FF;
@@ -580,6 +584,132 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .content { padding: 10px 16px 40px; }
   .map-container { padding: 10px 16px; }
 }
+
+/* ===== AUTH NAV TABS ===== */
+.hero-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.hero-nav-tab {
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+}
+
+.hero-nav-tab:hover { color: white; background: rgba(255,255,255,0.15); }
+.hero-nav-tab.active { color: white; background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); }
+
+.hero-nav-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.25);
+}
+
+.hero-auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 8px;
+}
+
+.hero-auth-btn:hover { background: rgba(255,255,255,0.25); }
+.hero-auth-btn img { width: 14px; height: 14px; }
+.hero-auth-btn.hidden { display: none; }
+
+.hero-profile-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px 3px 4px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 8px;
+}
+
+.hero-profile-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background-size: cover;
+  background-position: center;
+}
+
+.signup-soft-banner {
+  background: linear-gradient(135deg, rgba(200,80,192,0.06) 0%, rgba(155,48,255,0.06) 100%);
+  border: 1px solid rgba(155,48,255,0.1);
+  border-radius: var(--radius);
+  padding: 16px 24px;
+  margin: 16px auto;
+  max-width: 1400px;
+  text-align: center;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.signup-soft-banner.hidden { display: none !important; }
+
+.signup-soft-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 100px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.signup-soft-banner-btn:hover { opacity: 0.9; }
+.signup-soft-banner-btn img { width: 14px; height: 14px; }
+
+@media (max-width: 700px) {
+  .hero-nav-tabs { flex-wrap: wrap; gap: 2px; }
+  .hero-nav-tab { font-size: 12px; padding: 4px 10px; }
+  .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
+}
 </style>
 </head>
 <body>
@@ -587,10 +717,36 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 <!-- HERO -->
 <div class="hero">
   <div class="hero-content">
-    <a href="index.html" class="hero-back">→ חזרה לאירועים</a>
+    <div class="hero-nav-tabs">
+      <a href="index.html" class="hero-nav-tab">אירועים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="places.html" class="hero-nav-tab active">מקומות</a>
+      <div class="hero-nav-divider"></div>
+      <a href="holidays.html" class="hero-nav-tab">חגים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="about.html" class="hero-nav-tab">עלינו</a>
+      <div class="hero-nav-divider"></div>
+      <button class="hero-auth-btn" id="authBtn" onclick="signInWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+        התחברו
+      </button>
+      <a href="index.html" class="hero-profile-btn" id="profileBtn">
+        <div class="hero-profile-avatar" id="profileAvatar">?</div>
+        <span id="profileName">הפרופיל</span>
+      </a>
+    </div>
     <h1 class="hero-title">📍 מקומות מומלצים</h1>
     <p class="hero-subtitle">מסעדות, מוזיאונים וגני שעשועים שהיינו בהם באופן אישי ואנחנו חותמים עליהם</p>
   </div>
+</div>
+
+<!-- SOFT SIGNUP BANNER -->
+<div class="signup-soft-banner" id="signupBanner">
+  אהבתם? יש לנו גם אירועים לכל סופ״ש
+  <button class="signup-soft-banner-btn" onclick="signInWithGoogle()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+    התחברו לאירועים
+  </button>
 </div>
 
 <!-- STICKY NAV -->
@@ -1035,6 +1191,19 @@ document.getElementById('placeForm').addEventListener('submit', async (e) => {
     btn.textContent = 'שליחה 🚀';
   }
 });
+</script>
+
+<!-- Firebase Auth -->
+<script src="auth.js"></script>
+<script>
+function onUserLoggedIn() {
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.add('hidden');
+}
+function onUserLoggedOut() {
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.remove('hidden');
+}
 </script>
 </body>
 </html>
