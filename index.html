@@ -191,64 +191,6 @@ body {
   flex-wrap: wrap;
 }
 
-.nav-menu-wrapper {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.nav-menu-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 2px solid var(--border);
-  background: white;
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  color: var(--text-light);
-}
-
-.nav-menu-btn:hover { border-color: var(--purple); color: var(--purple); }
-
-.nav-menu {
-  display: none;
-  position: absolute;
-  left: 0;
-  top: calc(100% + 6px);
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  border: 1px solid var(--border);
-  min-width: 180px;
-  z-index: 200;
-  overflow: hidden;
-}
-
-.nav-menu.open { display: block; }
-
-.nav-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  text-decoration: none;
-  border: none;
-  background: none;
-  width: 100%;
-  cursor: pointer;
-  transition: background 0.15s;
-  white-space: nowrap;
-}
-
-.nav-menu-item:hover { background: var(--bg); }
-.nav-menu-item:not(:last-child) { border-bottom: 1px solid var(--border); }
 
 .nav-logo {
   font-family: 'Rubik', sans-serif;
@@ -693,9 +635,6 @@ body {
   line-height: 1.55;
   font-weight: 300;
   margin-bottom: 4px;
-  max-height: 80px;
-  overflow-y: auto;
-  scrollbar-width: thin;
 }
 
 .event-footer {
@@ -2001,14 +1940,6 @@ body {
       <span id="profileName">הפרופיל שלי</span>
     </button>
 
-    <!-- Hamburger (mobile) -->
-    <div class="nav-menu-wrapper">
-      <button class="nav-menu-btn" id="menuBtn" onclick="document.getElementById('navMenu').classList.toggle('open')">☰</button>
-      <div class="nav-menu" id="navMenu">
-        <button class="nav-menu-item" id="authBtnMobile" onclick="document.getElementById('navMenu').classList.remove('open'); signInWithGoogle()">🔑 התחברו עם Google</button>
-      </div>
-    </div>
-
     <div class="filters-row" id="filters">
       <button class="filter-pill active" data-filter="all">הכל</button>
       <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
@@ -3027,11 +2958,6 @@ document.getElementById('filters').addEventListener('click', (e) => {
 
 // Close dropdowns on click outside
 document.addEventListener('click', (e) => {
-  const menu = document.getElementById('navMenu');
-  const menuBtn = document.getElementById('menuBtn');
-  if (menu.classList.contains('open') && !menu.contains(e.target) && !menuBtn.contains(e.target)) {
-    menu.classList.remove('open');
-  }
   const picker = document.getElementById('weekendPicker');
   const wkDropdown = picker.querySelector('.weekend-dropdown');
   if (wkDropdown.classList.contains('open') && !picker.contains(e.target)) {
