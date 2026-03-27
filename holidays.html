@@ -50,6 +50,46 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); }
 
+/* ===== STICKY NAV TABS ===== */
+.sticky-nav {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-tabs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-tabs-row::-webkit-scrollbar { display: none; }
+
+.nav-tab-pill {
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid var(--border);
+  background: white;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-tab-pill:hover { background: var(--bg); color: var(--purple); border-color: var(--purple); }
+.nav-tab-pill.active { background: var(--gradient); color: white; border-color: transparent; }
+
 .hero {
   background: var(--gradient);
   padding: 40px 20px 32px;
@@ -357,6 +397,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .hero-nav-tabs { flex-wrap: wrap; gap: 2px; }
   .hero-nav-tab { font-size: 12px; padding: 4px 10px; }
   .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
+  .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
 }
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
@@ -385,6 +426,16 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
     </div>
     <h1 class="hero-title">🇳🇱 חגים וחופשות בהולנד</h1>
     <p class="hero-subtitle">חגים רשמיים, חופשות בתי ספר ומידע חשוב</p>
+  </div>
+</div>
+
+<!-- STICKY NAV -->
+<div class="sticky-nav">
+  <div class="nav-tabs-row">
+    <a href="index.html" class="nav-tab-pill">אירועים</a>
+    <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
+    <a href="holidays.html" class="nav-tab-pill active">🇳🇱 חגים</a>
+    <a href="about.html" class="nav-tab-pill">🧡 עלינו</a>
   </div>
 </div>
 

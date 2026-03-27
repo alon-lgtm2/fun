@@ -1170,39 +1170,36 @@ body {
 
 .hidden { display: none !important; }
 
-/* ===== AUTH NAV TABS ===== */
-.nav-tabs {
+/* ===== PAGE NAV TABS ROW ===== */
+.nav-tabs-row {
   display: flex;
   align-items: center;
-  gap: 2px;
-  flex-shrink: 0;
-  margin-right: 4px;
+  gap: 6px;
+  padding: 2px 16px 8px;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
+.nav-tabs-row::-webkit-scrollbar { display: none; }
 
-.nav-tab {
-  padding: 6px 14px;
-  border-radius: 8px;
+.nav-tab-pill {
+  padding: 6px 16px;
+  border-radius: 100px;
   font-family: 'Heebo', sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: var(--text-light);
   text-decoration: none;
-  transition: all 0.2s;
   white-space: nowrap;
-  border: none;
-  background: none;
+  border: 1.5px solid var(--border);
+  background: white;
+  transition: all 0.2s;
   cursor: pointer;
 }
-
-.nav-tab:hover { background: var(--bg); color: var(--purple); }
-.nav-tab.active { background: var(--gradient); color: white; border-radius: 8px; }
-
-.nav-tab-divider {
-  width: 1px;
-  height: 18px;
-  background: var(--border);
-  margin: 0 2px;
-}
+.nav-tab-pill:hover { background: var(--bg); color: var(--purple); border-color: var(--purple); }
+.nav-tab-pill.active { background: var(--gradient); color: white; border-color: transparent; }
 
 /* Auth button */
 .auth-btn {
@@ -1820,7 +1817,7 @@ body {
 
 /* Mobile nav tabs */
 @media (max-width: 700px) {
-  .nav-tabs { display: none; }
+  .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
   .auth-btn .auth-btn-text { display: none; }
   .auth-btn { padding: 7px 12px; }
 }
@@ -1884,17 +1881,6 @@ body {
       </div>
     </div>
 
-    <!-- Page tabs (visible on desktop) -->
-    <div class="nav-tabs">
-      <a href="index.html" class="nav-tab active">אירועים</a>
-      <div class="nav-tab-divider"></div>
-      <a href="places.html" class="nav-tab">מקומות</a>
-      <div class="nav-tab-divider"></div>
-      <a href="holidays.html" class="nav-tab">חגים</a>
-      <div class="nav-tab-divider"></div>
-      <a href="about.html" class="nav-tab">עלינו</a>
-    </div>
-
     <!-- Auth / Profile -->
     <button class="auth-btn" id="authBtn" onclick="signInWithGoogle()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
@@ -1909,13 +1895,16 @@ body {
     <div class="nav-menu-wrapper">
       <button class="nav-menu-btn" id="menuBtn" onclick="document.getElementById('navMenu').classList.toggle('open')">☰</button>
       <div class="nav-menu" id="navMenu">
-        <a href="places.html" class="nav-menu-item">📍 מקומות מומלצים</a>
-        <a href="holidays.html" class="nav-menu-item">🇳🇱 חגים וחופשות</a>
-        <a href="about.html" class="nav-menu-item">🧡 קצת עלינו</a>
         <button class="nav-menu-item" onclick="document.getElementById('navMenu').classList.remove('open'); openSuggestionModal('feedback')">💬 צרו קשר</button>
         <button class="nav-menu-item" id="authBtnMobile" onclick="document.getElementById('navMenu').classList.remove('open'); signInWithGoogle()">🔑 התחברו עם Google</button>
       </div>
     </div>
+  </div>
+  <div class="nav-tabs-row">
+    <a href="index.html" class="nav-tab-pill active">אירועים</a>
+    <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
+    <a href="holidays.html" class="nav-tab-pill">🇳🇱 חגים</a>
+    <a href="about.html" class="nav-tab-pill">🧡 עלינו</a>
   </div>
 </nav>
 
