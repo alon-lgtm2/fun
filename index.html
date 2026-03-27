@@ -708,17 +708,13 @@ body {
 
 @media (min-width: 701px) {
   .event-inner { position: relative; }
-  .event-body { padding-left: 230px; }
-  .event-actions {
-    position: absolute;
-    top: 45%;
-    transform: translateY(-50%);
-    left: 20px;
-    right: auto;
-    width: auto;
-    margin: 0;
-    gap: 10px;
-  }
+  .event-body { padding-left: 0; }
+  .event-actions-icons { display: none; }
+  .event-actions { justify-content: flex-start; }
+}
+
+@media (max-width: 700px) {
+  .event-actions-btns { display: none; }
 }
 
 .action-icon {
@@ -2353,7 +2349,7 @@ function cardHTML(e, i) {
         </div>
         <h3 class="event-title">${e.title}</h3>
         <p class="event-desc">${e.desc}</p>
-        <div class="event-actions">
+        <div class="event-actions event-actions-icons">
               <a class="action-icon action-icon-wa" href="https://wa.me/?text=${whatsappText}" target="_blank" title="שיתוף בוואטסאפ">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="">
                 <span class="action-icon-label">שיתוף</span>
@@ -2377,7 +2373,7 @@ function cardHTML(e, i) {
             <span class="event-detail">💰 ${e.price}</span>
             <span class="event-detail event-weather" data-lat="${e.lat}" data-lng="${e.lng}" data-date="${e.date}"></span>
           </div>
-          <div class="event-actions">
+          <div class="event-actions event-actions-btns">
             <div class="like-row ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)">
               <span class="btn-like ${isLiked(e.id) ? 'liked' : ''}">❤️</span>
               <span class="like-count" id="likeCount-${e.id}">${getLikeCountDisplay(e.id)}</span>
