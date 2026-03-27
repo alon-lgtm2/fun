@@ -397,8 +397,8 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 <!-- HERO -->
 <div class="hero">
   <div class="hero-content">
-    <h1 class="hero-title">🌤️ תחזית מזג אוויר לסופ״ש</h1>
-    <p class="hero-subtitle">מה מחכה לנו בהולנד? מה ללבוש ומה לקחת</p>
+    <h1 class="hero-title">אז מה עושים היום?</h1>
+    <p class="hero-subtitle">פעילויות איכות עם המשפחה בהולנד בסופ״ש</p>
   </div>
   <div class="hero-nav-tabs-unified">
     <a href="index.html" class="hero-tab">🏠 עמוד הבית</a>
@@ -701,7 +701,7 @@ function buildWeekendSummary(results, weekend) {
 // ===== BUILD MAP =====
 function buildMap(results, weekend) {
   const nlBounds = L.latLngBounds([50.75, 3.2], [53.55, 7.25]);
-  const map = L.map('weatherMap', {
+  const map = window._weatherMap = L.map('weatherMap', {
     scrollWheelZoom: false,
     maxBounds: nlBounds.pad(0.1),
     minZoom: 7
@@ -817,6 +817,8 @@ async function init() {
 
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('weatherContent').style.display = 'block';
+    // Leaflet needs a size recalc after container becomes visible
+    if (window._weatherMap) setTimeout(() => window._weatherMap.invalidateSize(), 100);
   } catch (err) {
     console.error('Weather load error:', err);
     document.getElementById('loadingState').innerHTML = '❌ שגיאה בטעינת התחזית. נסו שוב מאוחר יותר.';
