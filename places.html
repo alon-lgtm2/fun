@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>מקומות מומלצים - fun.israelis.nl</title>
-<meta name="description" content="מסעדות, מוזיאונים וגני שעשועים מומלצים למשפחות בהולנד">
+<meta name="description" content="מקומות מומלצים למשפחות בהולנד - מסעדות, מוזיאונים ועוד">
 <meta property="og:title" content="מקומות מומלצים">
-<meta property="og:description" content="מסעדות, מוזיאונים וגני שעשועים מומלצים למשפחות בהולנד">
+<meta property="og:description" content="מקומות מומלצים למשפחות בהולנד - מסעדות, מוזיאונים ועוד">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fun.israelis.nl/places.html">
 <meta property="og:site_name" content="fun.israelis.nl">
 <meta property="og:locale" content="he_IL">
-<meta property="og:image" content="https://fun.israelis.nl/images/ogtag.png">
+<meta property="og:image" content="https://fun.israelis.nl/images/og2.png">
 <link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="images/az.png">
@@ -124,6 +124,18 @@ body {
   z-index: 100;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-tabs-row {
@@ -263,6 +275,7 @@ body {
 
 @media (max-width: 700px) {
   #placesMap { height: 350px; }
+  .leaflet-control-zoom { display: none; }
 }
 
 /* ===== PLACE CARDS ===== */
@@ -741,6 +754,18 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
   .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
 }
+
+/* Desktop: larger text for readability */
+@media (min-width: 701px) {
+  .hero-title { font-size: 40px; }
+  .hero-subtitle { font-size: 18px; }
+  .nav-logo { font-size: 17px; }
+  .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
+  .place-name { font-size: 19px; }
+  .place-desc { font-size: 16px; }
+  .place-category { font-size: 14px; }
+  .filter-pill { font-size: 15px; }
+}
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
 </head>
@@ -754,7 +779,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
       <div class="hero-nav-divider"></div>
       <a href="places.html" class="hero-nav-tab active">מקומות</a>
       <div class="hero-nav-divider"></div>
-      <a href="holidays.html" class="hero-nav-tab">חגים</a>
+      <a href="holidays.html" class="hero-nav-tab">מתי חופש?</a>
       <div class="hero-nav-divider"></div>
       <a href="about.html" class="hero-nav-tab">עלינו</a>
       <div class="hero-nav-divider"></div>
@@ -783,10 +808,13 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 
 <!-- STICKY NAV -->
 <div class="sticky-nav">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 16px 0;max-width:1400px;margin:0 auto;">
+    <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
+  </div>
   <div class="nav-tabs-row">
     <a href="index.html" class="nav-tab-pill">אירועים</a>
     <a href="places.html" class="nav-tab-pill active">📍 מקומות</a>
-    <a href="holidays.html" class="nav-tab-pill">🇳🇱 חגים</a>
+    <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
     <a href="about.html" class="nav-tab-pill">🧡 עלינו</a>
   </div>
   <div class="nav-inner">
@@ -1248,6 +1276,7 @@ document.getElementById('placeForm').addEventListener('submit', async (e) => {
 function onUserLoggedIn() {
   const banner = document.getElementById('signupBanner');
   if (banner) banner.classList.add('hidden');
+  window.location.href = 'index.html';
 }
 function onUserLoggedOut() {
   const banner = document.getElementById('signupBanner');

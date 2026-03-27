@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>אז מה עושים היום? -fun.israelis.nl</title>
-<meta name="description" content="פעילויות שוות בסופ&quot;ש למשפחות בהולנד">
+<meta name="description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
 <meta property="og:title" content="אז מה עושים היום">
-<meta property="og:description" content="פעילויות שוות בסופ&quot;ש למשפחות בהולנד">
+<meta property="og:description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fun.israelis.nl">
 <meta property="og:site_name" content="fun.israelis.nl">
 <meta property="og:locale" content="he_IL">
-<meta property="og:image" content="https://fun.israelis.nl/images/ogtag.png">
+<meta property="og:image" content="https://fun.israelis.nl/images/og2.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="אז מה עושים היום">
-<meta name="twitter:description" content="פעילויות שוות בסופ&quot;ש למשפחות בהולנד">
-<meta name="twitter:image" content="https://fun.israelis.nl/images/ogtag.png">
+<meta name="twitter:description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
+<meta name="twitter:image" content="https://fun.israelis.nl/images/og2.png">
 <link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="images/az.png">
@@ -572,6 +572,7 @@ body {
   .etag { font-size: 9px; padding: 2px 6px; }
   .popup-link { padding: 10px 14px !important; font-size: 14px !important; }
   .map-mini-actions .btn-s { padding: 10px 14px; }
+  .leaflet-control-zoom { display: none; }
 }
 
 .event-img-placeholder {
@@ -1821,6 +1822,28 @@ body {
   .auth-btn .auth-btn-text { display: none; }
   .auth-btn { padding: 7px 12px; }
 }
+
+/* Desktop: larger text for readability */
+@media (min-width: 701px) {
+  .hero-title { font-size: 48px; }
+  .hero-subtitle { font-size: 20px; }
+  .hero-badge { font-size: 15px; }
+  .hero-desc { font-size: 17px; }
+  .nav-logo { font-size: 17px; }
+  .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
+  .event-title { font-size: 19px; }
+  .event-desc { font-size: 15px; }
+  .event-details { font-size: 13px; }
+  .etag { font-size: 12px; }
+  .filter-pill { font-size: 13px; }
+  .results-count { font-size: 15px; }
+  .results-weekend-label { font-size: 16px; }
+  .loading-text { font-size: 16px; }
+  .footer { font-size: 14px; }
+  .popup-title { font-size: 16px; }
+  .popup-desc { font-size: 14px; }
+  .popup-meta { font-size: 14px; }
+}
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
 </head>
@@ -1848,7 +1871,7 @@ body {
 <nav class="sticky-nav">
   <div class="nav-bar-outer">
     <div class="nav-bar">
-      <div class="nav-logo">🎪 אז מה עושים?</div>
+      <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
 
       <div class="weekend-picker" id="weekendPicker">
         <button class="weekend-active-btn" id="weekendActiveBtn">
@@ -1903,7 +1926,7 @@ body {
   <div class="nav-tabs-row">
     <a href="index.html" class="nav-tab-pill active">אירועים</a>
     <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
-    <a href="holidays.html" class="nav-tab-pill">🇳🇱 חגים</a>
+    <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
     <a href="about.html" class="nav-tab-pill">🧡 עלינו</a>
   </div>
 </nav>
@@ -1944,7 +1967,7 @@ body {
       <button class="request-option" onclick="openSuggestionModal('event')">🎪 הוסיפו אירוע</button>
       <button class="request-option" onclick="openSuggestionModal('feedback')">💭 פידבק</button>
       <a href="places.html" class="request-option" style="text-decoration:none">📍 מקומות מומלצים</a>
-      <a href="holidays.html" class="request-option" style="text-decoration:none">🇳🇱 חגים וחופשות</a>
+      <a href="holidays.html" class="request-option" style="text-decoration:none">📅 מתי חופש?</a>
     </div>
   </div>
 
@@ -1956,8 +1979,6 @@ body {
   <p>נבנה באהבה לקהילה הישראלית בהולנד 🧡</p>
   <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
 </footer>
-
-<button class="fab" onclick="openSuggestionModal('event')"><span style="font-size:22px">💬</span> בואו נדבר</button>
 
 <!-- SUGGESTION MODAL -->
 <div class="modal-overlay" id="suggestionModal">
