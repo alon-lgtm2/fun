@@ -388,10 +388,10 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
     <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
   </div>
   <div class="nav-tabs-row">
-    <a href="index.html" class="nav-tab-pill">אירועים</a>
-    <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
+    <a href="index.html" class="nav-tab-pill">🏠 עמוד הבית</a>
+    <a href="places.html" class="nav-tab-pill">📍 מקומות מומלצים</a>
     <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
-    <a href="about.html" class="nav-tab-pill active">🧡 עלינו</a>
+    <a href="about.html" class="nav-tab-pill active">🤝 נעים להכיר</a>
   </div>
 </div>
 
@@ -467,10 +467,10 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 <!-- Firebase Auth -->
 <script src="auth.js"></script>
 <script>
-function onUserLoggedIn() {
+function onUserLoggedIn(needsProfile, isFreshLogin) {
   const cta = document.getElementById('signupCta');
   if (cta) cta.classList.add('hidden');
-  window.location.href = 'index.html';
+  if (isFreshLogin) window.location.href = 'index.html';
 }
 function onUserLoggedOut() {
   const cta = document.getElementById('signupCta');

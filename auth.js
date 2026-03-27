@@ -21,8 +21,11 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 // ===== AUTH STATE =====
 let currentUser = null;
 let userProfile = null;
+let _authCheckedOnce = false; // tracks if this is the initial auth check vs a fresh login
 
 auth.onAuthStateChanged(async (user) => {
+  const isFreshLogin = _authCheckedOnce && !currentUser && !!user;
+  _authCheckedOnce = true;
   currentUser = user;
   if (user) {
     // Update last login
@@ -34,7 +37,7 @@ auth.onAuthStateChanged(async (user) => {
         lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
         loginCount: firebase.firestore.FieldValue.increment(1)
       });
-      onAuthReady(true, false);
+      onAuthReady(true, false, isFreshLogin);
     } else {
       // First-time user — needs profile completion
       userProfile = {
@@ -55,11 +58,11 @@ auth.onAuthStateChanged(async (user) => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         lastLogin: firebase.firestore.FieldValue.serverTimestamp()
       };
-      onAuthReady(true, true);
+      onAuthReady(true, true, isFreshLogin);
     }
   } else {
     userProfile = null;
-    onAuthReady(false, false);
+    onAuthReady(false, false, false);
   }
 });
 
@@ -192,7 +195,7 @@ window.addEventListener('beforeunload', _flushSessionTime);
 // ===== UI HELPERS =====
 // These are called by the page-specific code
 
-function onAuthReady(isLoggedIn, needsProfileCompletion) {
+function onAuthReady(isLoggedIn, needsProfileCompletion, isFreshLogin) {
   // Update nav auth button
   const authBtn = document.getElementById('authBtn');
   const profileBtn = document.getElementById('profileBtn');
@@ -214,7 +217,7 @@ function onAuthReady(isLoggedIn, needsProfileCompletion) {
 
     // Page-specific auth callback
     if (typeof onUserLoggedIn === 'function') {
-      onUserLoggedIn(needsProfileCompletion);
+      onUserLoggedIn(needsProfileCompletion, isFreshLogin);
     }
   } else {
     if (authBtn) authBtn.style.display = 'flex';
