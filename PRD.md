@@ -1,80 +1,88 @@
 # PRD — fun.israelis.nl
 
 ## Product Overview
-A Hebrew-language web app for Israeli families living in the Netherlands to discover weekend events and activities for kids. Not general attractions — specific, time-bound, local events.
+A Hebrew-language web app for Israeli families living in the Netherlands to discover weekend events and activities. Curated, time-bound, local events — not general attractions.
 
 ## Target Audience
 - Israeli parents with kids, living in the Netherlands
 
-## Current State (v3 prototype)
-- Single HTML file with hardcoded event data (12 sample events)
-- 3 views: List, Calendar, Map (Leaflet)
-- Weekend selector (upcoming 8 weekends)
-- Category filters: outdoor, indoor, music, theater, markets, workshops, sport, free
-- WhatsApp sharing per event
-- Hebrew RTL layout, mobile-friendly
-- Hosted on GitHub Pages (stage branch)
+## Current State (Live)
+- Single HTML file (`index.html`) — no build step
+- Data fetched from a published Google Sheet on each page load
+- Two views: List (calendar-grouped) and Map (Leaflet)
+- Weekend selector (upcoming 8 weekends) with auto-advance on scroll
+- Category filters with automatic disable for empty categories
+- Like button with community counter (localStorage-based)
+- Weather display per event (Open-Meteo API)
+- WhatsApp sharing with site footer branding
+- Feedback form with tabs (add event / feedback) via Formspree
+- Empty "add event" card at end of event list
+- Hebrew RTL layout, mobile-friendly with fat-finger CTAs
+- Hosted on GitHub Pages with custom domain
+- Umami analytics
 
 ## Data Source
-- Events are manually curated (AI-assisted research + manual editing)
-- Currently published as Facebook posts
-- Need a simple submission workflow to get the same data into the website
-- No automated scraping for now
-- Only admin (you) submits events — no public submissions needed for now
-- **Backend: Google Sheet** — published as a data source, site fetches on load
-  - Add a row = add an event
-  - No deploy needed for content changes
+- Events manually curated in a Google Sheet
+- Published as CSV, fetched client-side on load
+- Add a row = add an event (no deploy needed)
+- Event images stored in `/images` folder in the repo
 
-## V1 Features
+## Features
 
-### Core (from prototype)
-- List view with event cards
-- Calendar view (grouped by day)
-- Map view (Leaflet, interactive pins)
-- Weekend selector (upcoming weekends)
-- Category filters (outdoor, indoor, music, theater, markets, workshops, sport, free)
-- Mobile-first, responsive design
-- Hebrew RTL
+### Views
+- **List view** — events grouped by day within selected weekend
+- **Map view** — Leaflet map with category-icon pins, full event description in popups, event sidebar
 
-### New for v1
-- **Enhanced map experience**:
-  - Category icons on map pins (outdoor, theater, music, etc.) — already in prototype
-  - Clicking a pin shows event details with action buttons
-  - Map as primary discovery tool for spatial orientation
-  - _(Future: city/zip code input for distance sorting)_
-- **Facebook sharing**: Add share-to-Facebook button alongside WhatsApp
-- **Navigation link**: Each event card has a "navigate" button (Google Maps / Waze link)
-- **Original event link**: Each card links to the source website for more info
-- **Formspree contact form**: Replace the alert with a real form for event suggestions
-- **Google Sheet data source**: Fetch events from a published Google Sheet instead of hardcoded JS
-- **Umami analytics**: Track page views and interactions
-- **Image hosting**: Event images in `/images` folder in the repo
+### Filters & Navigation
+- Weekend selector (8 upcoming weekends, holiday badges)
+- Category filters: outdoor, indoor, music, theater, markets, workshops, sport, free, Museumkaart
+- Liked events filter (❤️ אהבתי)
+- Unavailable filters automatically grayed out
+- Toggle filters off by clicking again
+- Auto-advance to next weekend on scroll past events
 
-### Not in v1 (maybe later)
-- Search / text filter
-- Save / favorite events
-- Push notifications
-- Multi-language support
-- Public event submissions with approval flow
-- City/zip code based distance sorting
+### Event Cards
+- Image from Google Sheet or gradient fallback
+- Tags: area, type, free, Museumkaart, age range
+- Weather (temperature range from Open-Meteo)
+- Like button with community counter ("X אהבו")
+- Action buttons: like, WhatsApp share, more details, navigation
+- Mobile-optimized touch targets
+
+### Sharing
+- WhatsApp share per event with formatted text
+- Footer text on all shares: "לפעילויות נוספות בקרו ב'אז מה עושים היום?' https://fun.israelis.nl"
+
+### Community Feedback
+- "שתפו את דעתכם" section with two options: add event, feedback
+- Modal form with tab switching between event/feedback types
+- Optional name, email, phone fields
+- Submitted via Formspree
+- Empty card at end of event list invites submissions
+
+### SEO & Branding
+- Open Graph meta tags with cover image
+- Purple button SVG favicon
+- Umami analytics tracking
 
 ## Architecture
 
 ### Tech Stack
 - **Frontend**: Vanilla HTML/CSS/JS (no framework, no build step)
 - **Maps**: Leaflet.js with CARTO tiles
-- **Data**: Google Sheets (published as CSV/JSON) → fetched client-side
-- **Images**: Stored in `/images` in the repo, referenced by filename in the Sheet
-- **Forms**: Formspree (event suggestions from community)
+- **Weather**: Open-Meteo API (free, no key needed)
+- **Data**: Google Sheets (published as CSV) → fetched client-side
+- **Images**: Stored in `/images` in the repo, referenced by path in the Sheet
+- **Forms**: Formspree
 - **Analytics**: Umami
-- **Hosting**: GitHub Pages (stage branch for staging, main for production)
-- **Domain**: fun.israelis.nl (custom subdomain → GitHub Pages)
+- **Hosting**: GitHub Pages (`stage` for staging, `main` for production)
+- **Domain**: fun.israelis.nl (CNAME → alon-lgtm2.github.io)
 
 ### Google Sheet Schema
 | Column | Field | Example |
 |--------|-------|---------|
-| A | title | פסטיבל האור — Glow Eindhoven |
-| B | desc | מיצבי אור ענקיים ברחבי מרכז העיר... |
+| A | title | פסטיבל האור - Glow Eindhoven |
+| B | desc | מיצבי אור ענקיים ברחבי מרכז העיר |
 | C | type | outdoor / indoor / music / theater / market / workshop / sport |
 | D | area | אמסטרדם |
 | E | ages | כל הגילאים / 3-7 / 5+ |
@@ -83,64 +91,36 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 | H | date | 2026-03-21 |
 | I | endDate | 2026-03-22 (optional) |
 | J | time | 18:00-23:00 |
-| K | image | glow-eindhoven.jpg |
+| K | image | /images/glow.png |
 | L | link | https://gloweindhoven.nl |
 | M | location | מרכז איינדהובן |
 | N | lat | 51.4416 |
 | O | lng | 5.4697 |
+| P | Museumkaart | TRUE / FALSE |
 
 ### File Structure
 ```
 fun/
-├── index.html          # Main app (renamed from fun-israelis-nl-v3.html)
-├── images/             # Event images
-├── PRD.md              # This file
-├── DEPLOY-INSTRUCTIONS.md
-└── src/                # Original prototype
-    └── fun-israelis-nl-v3.html
+├── index.html              # Main app (single file)
+├── CNAME                   # Custom domain config
+├── images/                 # Event images
+│   ├── Button-Purple.svg   # Favicon
+│   └── og-cover.png        # OG image
+├── PRD.md                  # This file
+└── DEPLOY-INSTRUCTIONS.md  # Deploy guide
 ```
 
-## Implementation Phases
-
-### Phase 1 — Go Live (this week)
-1. Set up Google Sheet with the schema above
-2. Update the HTML to fetch data from the published Sheet
-3. Replace hardcoded events with Sheet data
-4. Add navigation links (Google Maps) to event cards
-5. Add Facebook share button
-6. Wire up Formspree for the "suggest event" form
-7. Add Umami tracking script
-8. Move file to `index.html` at root
-9. Set up fun.israelis.nl DNS → GitHub Pages
-10. Deploy to production
-
-### Phase 2 — Polish
-- Improve map UX (clustering for nearby events, better popups)
-- Add city/zip code proximity sorting
-- SEO meta tags and Open Graph for social sharing previews
-- Offline/PWA support
-- Performance optimization (lazy load images)
-
-### Phase 3 — Growth
+## Future Ideas
 - Search / text filter
-- Save / favorite events (localStorage)
 - Push notifications for new events
-- Multi-editor support for the Google Sheet
+- City/zip code proximity sorting
+- Map marker clustering
+- Offline/PWA support
+- Lazy load images
 - Public event submission with approval workflow
-
-## Decisions Log
-1. Data source: Manual curation with a submission flow (not CMS, not scraping)
-2. Submission: Admin-only (single user) — no public submissions for v1
-3. Data backend: Google Sheet (published as CSV/JSON, fetched by the frontend)
-4. Domain: **fun.israelis.nl** (custom subdomain, pointed to GitHub Pages)
-5. Language: Hebrew only
-6. Community suggestions: **Formspree** form — users can submit event recommendations via an embedded form
-7. Images: Uploaded to `/images` folder in the GitHub repo, referenced by filename in the Google Sheet
-8. Analytics: **Umami** (privacy-friendly)
-9. Tech stack: **Vanilla HTML/CSS/JS** — no framework, no build step, Leaflet for maps
-10. Proximity: Map-based orientation for v1. City/zip distance sorting deferred to v2
-11. Timeline: **ASAP — launch this week**
+- Multi-language support
 
 ## Service Credentials
 - **Umami**: `<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>`
 - **Formspree**: `https://formspree.io/f/mnjgwgzn`
+- **Google Sheet CSV**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=0&single=true&output=csv`

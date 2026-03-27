@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>קצת עלינו - fun.israelis.nl</title>
+<meta name="description" content="על האתר - אירועים ופעילויות למשפחות בהולנד">
+<meta property="og:title" content="קצת עלינו - fun.israelis.nl">
+<meta property="og:description" content="על האתר - אירועים ופעילויות למשפחות בהולנד">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fun.israelis.nl/about.html">
+<meta property="og:site_name" content="fun.israelis.nl">
+<meta property="og:locale" content="he_IL">
+<meta property="og:image" content="https://fun.israelis.nl/images/ogtag.png">
+<link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="images/az.png">
+<meta name="theme-color" content="#9B30FF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="מה עושים?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+:root {
+  --purple: #9B30FF;
+  --purple-dark: #7B22CC;
+  --magenta: #C850C0;
+  --blue: #4158D0;
+  --green: #2ECC40;
+  --green-dark: #27AE35;
+  --gradient: linear-gradient(135deg, var(--magenta) 0%, var(--purple) 40%, var(--blue) 100%);
+  --bg: #F0EFF4;
+  --card-bg: #FFFFFF;
+  --text: #1A1A2E;
+  --text-light: #5A5A7A;
+  --text-lighter: #9898B0;
+  --border: #EEEEF4;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 2px 16px rgba(155,48,255,0.06);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); }
+
+/* ===== STICKY NAV TABS ===== */
+.sticky-nav {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-tabs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-tabs-row::-webkit-scrollbar { display: none; }
+
+.nav-tab-pill {
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid var(--border);
+  background: white;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-tab-pill:hover { background: var(--bg); color: var(--purple); border-color: var(--purple); }
+.nav-tab-pill.active { background: var(--gradient); color: white; border-color: transparent; }
+
+.hero {
+  background: var(--gradient);
+  padding: 40px 20px 32px;
+  text-align: center;
+  color: white;
+  position: relative;
+}
+
+.hero-content { max-width: 700px; margin: 0 auto; }
+.hero-title { font-family: 'Rubik', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+.hero-subtitle { font-size: 15px; opacity: 0.9; }
+
+.hero-back {
+  display: inline-block;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.15);
+  transition: background 0.2s;
+}
+.hero-back:hover { background: rgba(255,255,255,0.25); }
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.about-section {
+  background: white;
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.about-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  grid-column: 1 / -1;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.about-block {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+}
+
+.about-block-icon { font-size: 28px; margin-bottom: 8px; }
+
+.about-block-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.about-text {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.8;
+  font-weight: 400;
+}
+
+.about-text strong { font-weight: 600; color: var(--text); }
+
+.about-note {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: var(--text-lighter);
+  line-height: 1.6;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+footer {
+  text-align: center;
+  padding: 24px 20px;
+  color: var(--text-lighter);
+  font-size: 13px;
+}
+footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
+
+@media (max-width: 700px) {
+  .about-section { grid-template-columns: 1fr; padding: 24px; gap: 20px; }
+}
+
+/* ===== AUTH NAV TABS ===== */
+.hero-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.hero-nav-tab {
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+}
+
+.hero-nav-tab:hover { color: white; background: rgba(255,255,255,0.15); }
+.hero-nav-tab.active { color: white; background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); }
+
+.hero-nav-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.25);
+}
+
+.hero-auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 8px;
+}
+
+.hero-auth-btn:hover { background: rgba(255,255,255,0.25); }
+.hero-auth-btn img { width: 14px; height: 14px; }
+.hero-auth-btn.hidden { display: none; }
+
+.hero-profile-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px 3px 4px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 8px;
+}
+
+.hero-profile-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background-size: cover;
+  background-position: center;
+}
+
+.signup-cta-section {
+  background: var(--gradient);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  text-align: center;
+  color: white;
+  margin-top: 20px;
+}
+
+.signup-cta-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.signup-cta-desc {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 16px;
+}
+
+.signup-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: 2px solid white;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.signup-cta-btn:hover { background: white; color: var(--purple); }
+.signup-cta-btn img { width: 18px; height: 18px; }
+
+.signup-cta-section.hidden { display: none !important; }
+
+@media (max-width: 700px) {
+  .hero-nav-tabs { flex-wrap: wrap; gap: 2px; }
+  .hero-nav-tab { font-size: 12px; padding: 4px 10px; }
+  .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
+  .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
+}
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-nav-tabs">
+      <a href="index.html" class="hero-nav-tab">אירועים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="places.html" class="hero-nav-tab">מקומות</a>
+      <div class="hero-nav-divider"></div>
+      <a href="holidays.html" class="hero-nav-tab">חגים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="about.html" class="hero-nav-tab active">עלינו</a>
+      <div class="hero-nav-divider"></div>
+      <button class="hero-auth-btn" id="authBtn" onclick="signInWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+        התחברו
+      </button>
+      <a href="index.html" class="hero-profile-btn" id="profileBtn">
+        <div class="hero-profile-avatar" id="profileAvatar">?</div>
+        <span id="profileName">הפרופיל</span>
+      </a>
+    </div>
+    <h1 class="hero-title">קצת עלינו</h1>
+    <p class="hero-subtitle">מי אנחנו ומה תמצאו כאן</p>
+  </div>
+</div>
+
+<!-- STICKY NAV -->
+<div class="sticky-nav">
+  <div class="nav-tabs-row">
+    <a href="index.html" class="nav-tab-pill">אירועים</a>
+    <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
+    <a href="holidays.html" class="nav-tab-pill">🇳🇱 חגים</a>
+    <a href="about.html" class="nav-tab-pill active">🧡 עלינו</a>
+  </div>
+</div>
+
+<div class="content">
+  <div class="about-section">
+    <div class="about-title">קצת עלינו</div>
+
+    <div class="about-block">
+      <div class="about-block-icon">🎯</div>
+      <div class="about-block-title">מה תמצאו כאן?</div>
+      <div class="about-text">
+        אירועים <strong>מקומיים וייחודיים</strong> לילדים ומשפחות בהולנד - לא אטרקציות כלליות, אלא דברים שקורים במקום מסוים, בתאריך ספציפי, ומתאימים למשפחות.
+      </div>
+    </div>
+
+    <div class="about-block">
+      <div class="about-block-icon">🔍</div>
+      <div class="about-block-title">איך זה עובד?</div>
+      <div class="about-text">
+        התכנים מסוקרים ונאספים באופן ידני כדי להביא לכם את הדברים הכי שווים שקורים ברחבי המדינה. כל אירוע נבדק ומתעדכן.
+      </div>
+    </div>
+
+    <div class="about-block">
+      <div class="about-block-icon">🧡</div>
+      <div class="about-block-title">מי אנחנו?</div>
+      <div class="about-text">
+        האתר הוא חלק מ-<a href="https://israelis.nl" target="_blank" style="color:var(--purple);text-decoration:none;font-weight:600;">israelis.nl</a> - פלטפורמה לקהילה הישראלית בהולנד. נבנה מאהבה, בשבילכם.
+      </div>
+    </div>
+
+    <div class="about-block">
+      <div class="about-block-icon">💡</div>
+      <div class="about-block-title">יש לכם המלצה?</div>
+      <div class="about-text">
+        יודעים על אירוע שווה שלא מופיע כאן? <a href="index.html" style="cursor:pointer;color:var(--purple);font-weight:600;text-decoration:none;">שלחו לנו המלצה</a> ונוסיף אותו!
+        <br>ובינתיים, בקרו ב<a href="places.html" style="color:var(--purple);font-weight:600;text-decoration:none;">מקומות שאנחנו ממליצים</a> 📍
+      </div>
+    </div>
+
+    <div class="about-note">
+      ⚠️ המידע באתר נאסף ממקורות שונים ומתעדכן באופן שוטף. מומלץ תמיד לבדוק בקישור לאירוע לפני שיוצאים לדרך.
+    </div>
+  </div>
+
+  <!-- SIGNUP CTA -->
+  <div class="signup-cta-section" id="signupCta">
+    <div class="signup-cta-title">הצטרפו לקהילה שלנו</div>
+    <div class="signup-cta-desc">התחברו כדי לקבל גישה מלאה לאירועים, לשמור מועדפים ולהיות חלק מהקהילה</div>
+    <button class="signup-cta-btn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+      התחברו עם Google
+    </button>
+  </div>
+</div>
+
+<footer>
+  <p>נבנה באהבה לקהילה הישראלית בהולנד</p>
+  <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
+</footer>
+
+<!-- FACEBOOK BROWSER MODAL -->
+<div class="fb-browser-modal-overlay" id="fbBrowserModal" onclick="if(event.target===this)closeFacebookBrowserModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+    <div style="font-size:48px;margin-bottom:12px;">🌐</div>
+    <div style="font-family:'Rubik',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px;">פתחו בדפדפן</div>
+    <div style="font-size:14px;color:#5A5A7A;line-height:1.6;margin-bottom:20px;">ההתחברות עם Google לא עובדת בדפדפן של פייסבוק.<br>לחצו למטה כדי לפתוח את האתר בדפדפן הרגיל שלכם.</div>
+    <button onclick="openInSystemBrowser()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#C850C0 0%,#9B30FF 40%,#4158D0 100%);color:white;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">פתחו ב-Chrome / Safari</button>
+    <button onclick="closeFacebookBrowserModal()" style="display:block;margin-top:12px;font-size:13px;color:#9898B0;cursor:pointer;border:none;background:none;font-family:'Heebo',sans-serif;text-decoration:underline;width:100%;">לא עכשיו</button>
+  </div>
+</div>
+
+<!-- Firebase Auth -->
+<script src="auth.js"></script>
+<script>
+function onUserLoggedIn() {
+  const cta = document.getElementById('signupCta');
+  if (cta) cta.classList.add('hidden');
+}
+function onUserLoggedOut() {
+  const cta = document.getElementById('signupCta');
+  if (cta) cta.classList.remove('hidden');
+}
+</script>
+</body>
+</html>

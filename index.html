@@ -4,26 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>אז מה עושים היום? -fun.israelis.nl</title>
-<meta name="description" content="אירועים מקומיים, ייחודיים וחד-פעמיים למשפחות ישראליות בהולנד. לא אטרקציות כלליות -דברים שקורים עכשיו.">
-<meta property="og:title" content="אז מה עושים היום? - fun.israelis.nl">
-<meta property="og:description" content="אירועים מקומיים לילדים ומשפחות ישראליות בהולנד. לא אטרקציות כלליות - דברים שקורים עכשיו, במקום ספציפי, בתאריך ספציפי.">
+<meta name="description" content="פעילויות שוות בסופ&quot;ש למשפחות בהולנד">
+<meta property="og:title" content="אז מה עושים היום">
+<meta property="og:description" content="פעילויות שוות בסופ&quot;ש למשפחות בהולנד">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fun.israelis.nl">
 <meta property="og:site_name" content="fun.israelis.nl">
 <meta property="og:locale" content="he_IL">
-<meta property="og:image" content="https://fun.israelis.nl/images/og-cover.png">
+<meta property="og:image" content="https://fun.israelis.nl/images/ogtag.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="אז מה עושים היום? - fun.israelis.nl">
-<meta name="twitter:description" content="אירועים מקומיים לילדים ומשפחות ישראליות בהולנד">
-<meta name="twitter:image" content="https://fun.israelis.nl/images/og-cover.png">
+<meta name="twitter:title" content="אז מה עושים היום">
+<meta name="twitter:description" content="פעילויות שוות בסופ&quot;ש למשפחות בהולנד">
+<meta name="twitter:image" content="https://fun.israelis.nl/images/ogtag.png">
 <link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="images/az.png">
+<meta name="theme-color" content="#9B30FF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="מה עושים?">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 :root {
   --purple: #9B30FF;
@@ -34,7 +44,7 @@
   --green-dark: #27AE35;
   --gradient: linear-gradient(135deg, var(--magenta) 0%, var(--purple) 40%, var(--blue) 100%);
   --gradient-soft: linear-gradient(135deg, rgba(200,80,192,0.08) 0%, rgba(155,48,255,0.08) 40%, rgba(65,88,208,0.06) 100%);
-  --bg: #FAFAFC;
+  --bg: #F0EFF4;
   --card-bg: #FFFFFF;
   --text: #1A1A2E;
   --text-light: #5A5A7A;
@@ -47,6 +57,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Heebo', sans-serif;
@@ -129,14 +140,85 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
-.nav-row {
-  max-width: 1400px;
-  margin: 0 auto;
+.nav-bar-outer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 8px 16px;
+  gap: 10px;
 }
+
+.nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-bar::-webkit-scrollbar { display: none; }
+
+.nav-menu-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.nav-menu-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--text-light);
+}
+
+.nav-menu-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+.nav-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  border: 1px solid var(--border);
+  min-width: 180px;
+  z-index: 200;
+  overflow: hidden;
+}
+
+.nav-menu.open { display: block; }
+
+.nav-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.nav-menu-item:hover { background: var(--bg); }
+.nav-menu-item:not(:last-child) { border-bottom: 1px solid var(--border); }
 
 .nav-logo {
   font-family: 'Rubik', sans-serif;
@@ -146,29 +228,94 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.liked-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+
+.liked-toggle:hover {
+  background: #fff5f6;
+}
+
+.liked-toggle.active {
+  background: #e74c7a;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(231,76,122,0.3);
+}
+
+.liked-toggle-icon {
+  font-size: 16px;
+  filter: grayscale(1) opacity(0.5);
+  transition: all 0.25s;
+}
+
+.liked-toggle:hover .liked-toggle-icon,
+.liked-toggle.active .liked-toggle-icon {
+  filter: grayscale(0) opacity(1) brightness(10);
+}
+
+.liked-toggle-count {
+  font-size: 11px;
+  background: rgba(155,48,255,0.1);
+  color: var(--purple);
+  padding: 1px 7px;
+  border-radius: 100px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.liked-toggle-count:empty { display: none; }
+
+.liked-toggle.active .liked-toggle-count {
+  background: rgba(255,255,255,0.3);
+  color: white;
 }
 
 .view-toggles {
   display: flex;
-  gap: 4px;
+  gap: 0;
   background: var(--bg);
-  border-radius: 12px;
-  padding: 4px;
+  border-radius: 10px;
+  padding: 2px;
   border: 2px solid var(--purple-light);
+  position: relative;
+  flex-shrink: 0;
 }
 
 .view-btn {
-  padding: 8px 20px;
+  padding: 4px 14px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   font-family: 'Heebo', sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
   background: transparent;
   color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
+
+.view-btn .view-icon { font-size: 16px; }
 
 .view-btn.active {
   background: var(--purple);
@@ -177,51 +324,97 @@ body {
   font-weight: 700;
 }
 
-/* Weekend Chips */
-.weekend-nav {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 10px 24px 4px;
+/* Weekend Picker */
+.weekend-picker {
+  position: relative;
+  flex-shrink: 0;
 }
+
+.weekend-active-btn {
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: var(--gradient);
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s;
+  font-family: 'Heebo', sans-serif;
+}
+
+.weekend-active-btn:hover { opacity: 0.9; }
+.weekend-active-btn .wk-dates { font-size: 13px; font-weight: 700; line-height: 1; margin: 0; }
+.weekend-active-btn .wk-count {
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.25);
+  color: white;
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+.weekend-active-btn .wk-arrow { font-size: 10px; opacity: 0.8; transition: transform 0.2s; }
+.weekend-picker.open .wk-arrow { transform: rotate(180deg); }
+
+.weekend-dropdown {
+  display: none;
+  position: fixed;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  border: 1px solid var(--border);
+  z-index: 300;
+  min-width: 220px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.weekend-dropdown.open { display: block; }
 
 .weekend-chips {
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 4px;
+  flex-direction: column;
+  gap: 2px;
 }
-
-.weekend-chips::-webkit-scrollbar { display: none; }
 
 .wk-chip {
   white-space: nowrap;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
-  border: 2px solid var(--border);
-  background: white;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
   font-family: 'Heebo', sans-serif;
-  min-width: 90px;
-  position: relative;
+  width: 100%;
 }
 
-.wk-chip:hover { border-color: var(--purple); }
+.wk-chip:hover:not(.wk-empty) { background: var(--bg); }
+
+.wk-chip.wk-empty {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
 
 .wk-chip.active {
   background: var(--gradient);
-  border-color: transparent;
   color: white;
+  border-radius: 8px;
 }
 
-.wk-chip.holiday { border-color: rgba(255,107,53,0.4); }
+.wk-chip.holiday .wk-holiday-tag { display: inline-block; }
 
-.wk-label { font-size: 10px; font-weight: 400; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.3px; }
-.wk-dates { font-size: 15px; font-weight: 700; line-height: 1.3; margin: 2px 0; }
+.wk-label { font-size: 11px; font-weight: 400; opacity: 0.6; min-width: 75px; }
+.wk-dates { font-size: 13px; font-weight: 700; line-height: 1; margin: 0; }
 .wk-count {
   font-size: 10px;
   font-weight: 600;
@@ -229,11 +422,9 @@ body {
   color: var(--green-dark);
   padding: 1px 6px;
   border-radius: 100px;
-  margin-top: 3px;
+  margin-right: auto;
 }
 
-.wk-chip.active .wk-label,
-.wk-chip.active .wk-dates { opacity: 1; }
 .wk-chip.active .wk-count { background: rgba(255,255,255,0.25); color: white; }
 
 .wk-holiday-tag {
@@ -242,43 +433,48 @@ body {
   color: #E06520;
   padding: 1px 6px;
   border-radius: 100px;
-  margin-top: 2px;
   font-weight: 600;
   display: none;
 }
 
 .wk-chip.active .wk-holiday-tag { background: rgba(255,255,255,0.2); color: white; }
 
-/* Filters */
+.wk-chip.active .wk-holiday-tag { background: rgba(255,255,255,0.2); color: white; }
+
+/* Filters - inline scrollable */
 .filters-row {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 8px 24px 10px;
   display: flex;
-  gap: 6px;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
+  padding: 0;
+  justify-content: flex-start;
 }
 
 .filters-row::-webkit-scrollbar { display: none; }
 
 .filter-pill {
   white-space: nowrap;
-  padding: 5px 13px;
+  padding: 4px 10px;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   background: white;
   font-family: 'Heebo', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-light);
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .filter-pill:hover:not(.disabled) { border-color: var(--purple); color: var(--purple); }
-.filter-pill.active { background: var(--purple); color: white; border-color: var(--purple); }
+.filter-pill.active { background: var(--purple); color: white !important; border-color: var(--purple); -webkit-text-fill-color: white; }
 .filter-pill.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+.liked-filter-count { font-size: 10px; font-weight: 700; }
+.liked-filter-count:empty { display: none; }
 
 /* ===== CONTENT ===== */
 .content {
@@ -328,15 +524,15 @@ body {
 .loading-text { font-size: 14px; }
 
 /* ===== EVENT CARDS ===== */
-.events-list { display: flex; flex-direction: column; gap: 12px; }
+.events-list { display: flex; flex-direction: column; gap: 32px; }
 
 .event-card {
   background: var(--card-bg);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 20px rgba(155,48,255,0.08);
   transition: all 0.25s ease;
-  border: 1px solid transparent;
+  border: 1px solid rgba(155,48,255,0.06);
   animation: slideUp 0.35s ease backwards;
 }
 
@@ -354,8 +550,8 @@ body {
 .event-inner { display: flex; }
 
 .event-img {
-  width: 120px;
-  min-height: 140px;
+  width: 220px;
+  min-height: 200px;
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
@@ -381,15 +577,41 @@ body {
   font-size: 40px;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .event-inner { flex-direction: column; }
-  .event-img { width: 100%; min-height: 150px; }
+  .event-img { width: 100%; min-height: 200px; max-height: 220px; border-radius: 0 0 var(--radius) var(--radius); order: -1; }
   .btn-s { padding: 10px 16px; font-size: 14px; border-radius: 10px; }
-  .like-row { padding: 8px 16px; }
-  .like-count { font-size: 14px; }
-  .btn-like { font-size: 20px; }
+  .event-footer { flex-direction: column; align-items: flex-start; }
+  .event-actions { position: static; flex-direction: row; width: auto; transform: none; gap: 12px; left: auto; top: auto; justify-content: flex-end; align-self: flex-end; }
+  .action-icon { width: 42px; height: 42px; font-size: 20px; }
+  .action-icon-wa img { width: 24px; height: 24px; }
+  .action-icon-label { font-size: 11px; }
+  .event-tags { gap: 4px; }
+  .etag { font-size: 9px; padding: 2px 6px; }
   .popup-link { padding: 10px 14px !important; font-size: 14px !important; }
   .map-mini-actions .btn-s { padding: 10px 14px; }
+}
+
+.event-img-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.placeholder-emoji {
+  font-size: 44px;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+  line-height: 1;
+}
+
+.placeholder-area {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  letter-spacing: 0.5px;
 }
 
 .event-day-badge {
@@ -408,10 +630,11 @@ body {
 }
 
 .event-body {
-  padding: 14px;
+  padding: 16px 20px;
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .event-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
@@ -465,44 +688,100 @@ body {
 
 .event-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-  margin-top: 6px;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+  width: 100%;
+  flex-wrap: nowrap;
 }
 
-.like-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1px solid #e0e0e0;
-  background: #fafafa;
-  transition: all 0.2s;
+@media (max-width: 700px) {
+  .event-actions {
+    justify-content: flex-end;
+    padding: 12px 0 24px;
+    margin: 8px 0;
+    border-top: 1px solid rgba(155,48,255,0.06);
+    border-bottom: 1px solid rgba(155,48,255,0.06);
+  }
 }
 
-.like-row:hover { border-color: #ccc; background: #f5f5f5; }
-.like-row.liked { border-color: #f0c0c8; background: #fff5f6; }
+@media (min-width: 701px) {
+  .event-inner { position: relative; }
+  .event-body { padding-left: 230px; }
+  .event-actions {
+    position: absolute;
+    top: 45%;
+    transform: translateY(-50%);
+    left: 20px;
+    right: auto;
+    width: auto;
+    margin: 0;
+    gap: 10px;
+  }
+}
 
-.btn-like {
-  background: none;
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
-  font-size: 16px;
-  padding: 0;
-  line-height: 1;
-  transition: transform 0.2s;
-  filter: grayscale(1) opacity(0.4);
-  pointer-events: none;
+  transition: all 0.2s;
+  text-decoration: none;
+  font-size: 20px;
+  position: relative;
 }
 
-.like-row:hover .btn-like { filter: grayscale(0) opacity(0.7); }
+.action-icon:hover {
+  transform: translateY(-2px);
+}
 
-.like-row.liked .btn-like {
-  filter: grayscale(0) opacity(1);
+.action-icon-wa {
+  background: #25D366;
+  box-shadow: 0 3px 10px rgba(37,211,102,0.3);
+}
+.action-icon-wa:hover { box-shadow: 0 5px 16px rgba(37,211,102,0.4); }
+.action-icon-wa img { width: 22px; height: 22px; filter: brightness(0) invert(1); }
+
+.action-icon-like {
+  background: #fff;
+  border: 2px solid #e8e0f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.action-icon-like:hover { border-color: #f0a0b0; background: #fff5f6; }
+.action-icon-like.liked {
+  background: #ffe0e6;
+  border-color: #e74c7a;
   animation: popLike 0.3s ease;
+}
+
+.action-icon-info {
+  background: linear-gradient(135deg, #f5f0ff, #ece5ff);
+  border: 2px solid rgba(155,48,255,0.2);
+  box-shadow: 0 2px 8px rgba(155,48,255,0.1);
+}
+.action-icon-info:hover { border-color: var(--purple); box-shadow: 0 4px 12px rgba(155,48,255,0.2); }
+
+.action-icon-nav {
+  background: linear-gradient(135deg, #4285F4, #1a6dff);
+  box-shadow: 0 3px 10px rgba(66,133,244,0.3);
+  color: white;
+}
+.action-icon-nav:hover { box-shadow: 0 5px 16px rgba(66,133,244,0.4); }
+
+.action-icon-label {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 500;
+  color: var(--text-lighter);
+  white-space: nowrap;
 }
 
 @keyframes popLike {
@@ -521,11 +800,11 @@ body {
 .btn-s {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 5px 10px;
-  border-radius: 7px;
+  gap: 7px;
+  padding: 10px 20px;
+  border-radius: 22px;
   font-family: 'Heebo', sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -533,8 +812,8 @@ body {
   text-decoration: none;
 }
 
-.btn-wa { background: #25D366; color: white; }
-.btn-wa:hover { background: #20BD5A; }
+.btn-wa { background: linear-gradient(135deg, #25D366, #20BD5A); color: white; box-shadow: 0 2px 6px rgba(37,211,102,0.25); }
+.btn-wa:hover { background: linear-gradient(135deg, #20BD5A, #1aab4e); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(37,211,102,0.35); }
 .btn-fb { background: #1877F2; color: white; }
 .btn-fb:hover { background: #1565C0; }
 .btn-nav { background: #4285F4; color: white; }
@@ -546,7 +825,7 @@ body {
 .view-panel { display: none; }
 .view-panel.active { display: block; }
 
-.cal-day-group { margin-bottom: 22px; }
+.cal-day-group { margin-bottom: 32px; }
 
 .cal-day-header {
   display: flex;
@@ -738,6 +1017,12 @@ body {
 .add-event-card-text { font-family: 'Rubik', sans-serif; font-weight: 600; font-size: 15px; color: var(--purple); }
 .add-event-card-sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
 
+.add-event-card.between-weekends {
+  margin: 32px 0;
+  background: linear-gradient(135deg, #f0e6ff 0%, #e6f0ff 100%);
+  border-color: rgba(155,48,255,0.15);
+}
+
 /* ===== SUGGESTION MODAL ===== */
 .modal-overlay {
   display: none;
@@ -857,67 +1142,7 @@ body {
 .form-success-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
 
 /* ===== ABOUT ===== */
-.about-section {
-  background: white;
-  border-radius: var(--radius);
-  padding: 32px;
-  margin-top: 24px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
-}
-
-@media (max-width: 700px) {
-  .about-section { grid-template-columns: 1fr; padding: 24px; gap: 20px; }
-}
-
-.about-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  grid-column: 1 / -1;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.about-block {
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  padding: 20px;
-}
-
-.about-block-icon {
-  font-size: 28px;
-  margin-bottom: 8px;
-}
-
-.about-block-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: var(--text);
-}
-
-.about-text {
-  font-size: 14px;
-  color: var(--text-light);
-  line-height: 1.8;
-  font-weight: 400;
-}
-
-.about-text strong { font-weight: 600; color: var(--text); }
-
 .about-note {
-  grid-column: 1 / -1;
   font-size: 12px;
   color: var(--text-lighter);
   line-height: 1.6;
@@ -925,6 +1150,7 @@ body {
   border-top: 1px solid var(--border);
   text-align: center;
 }
+
 
 .footer {
   text-align: center;
@@ -961,7 +1187,660 @@ body {
 .fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(46,204,64,0.45); }
 
 .hidden { display: none !important; }
+
+/* ===== PAGE NAV TABS ROW ===== */
+.nav-tabs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 16px 8px;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-tabs-row::-webkit-scrollbar { display: none; }
+
+.nav-tab-pill {
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid var(--border);
+  background: white;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-tab-pill:hover { background: var(--bg); color: var(--purple); border-color: var(--purple); }
+.nav-tab-pill.active { background: var(--gradient); color: white; border-color: transparent; }
+
+/* Auth button */
+.auth-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  border: 2px solid var(--purple);
+  border-radius: 100px;
+  background: white;
+  color: var(--purple);
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.auth-btn:hover { background: var(--purple); color: white; }
+
+.auth-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+/* Profile button */
+.profile-btn {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px 4px 6px;
+  border: 2px solid var(--border);
+  border-radius: 100px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.profile-btn:hover { border-color: var(--purple); }
+
+.profile-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== AUTH GATE (refined) ===== */
+.event-card.gated {
+  cursor: default;
+}
+
+.event-card.gated .event-inner {
+  pointer-events: none;
+}
+
+.event-card.gated .gate-strip {
+  pointer-events: auto;
+}
+
+.event-card.gated .event-body {
+  position: relative;
+  padding-bottom: 48px;
+}
+
+.event-card.gated .event-title,
+.event-card.gated .event-desc,
+.event-card.gated .event-footer,
+.event-card.gated .event-actions {
+  filter: blur(5px);
+  user-select: none;
+  opacity: 0.7;
+}
+
+.event-card.gated .gate-strip {
+  display: flex;
+}
+
+.gate-strip {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(155, 48, 255, 0.08);
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  z-index: 5;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+.gate-strip .lock-icon {
+  font-size: 13px;
+  opacity: 0.5;
+}
+
+/* ===== SIGNUP BANNER ===== */
+.signup-banner {
+  background: rgba(155, 48, 255, 0.05);
+  color: var(--text);
+  text-align: center;
+  padding: 10px 20px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(155, 48, 255, 0.08);
+}
+
+.signup-banner.hidden { display: none !important; }
+
+.signup-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1px solid rgba(155, 48, 255, 0.2);
+  border-radius: 100px;
+  background: white;
+  color: var(--purple);
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.signup-banner-btn:hover { background: var(--purple); color: white; border-color: var(--purple); }
+
+/* ===== SIGN-IN MODAL (floating, delayed) ===== */
+.signin-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.signin-modal-overlay.open {
+  display: flex;
+  animation: fadeIn 0.3s ease;
+}
+
+.signin-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 36px 32px 28px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.35s ease;
+  direction: rtl;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.signin-modal-emoji {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.signin-modal-title {
+  font-family: 'Heebo', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.signin-modal-subtitle {
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.signin-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 100px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(155, 48, 255, 0.25);
+  margin-bottom: 12px;
+}
+
+.signin-modal-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(155, 48, 255, 0.35);
+}
+
+.signin-modal-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.signin-modal-dismiss {
+  display: block;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  margin: 0 auto;
+  padding: 4px 8px;
+}
+
+.signin-modal-dismiss:hover {
+  color: var(--text);
+}
+
+/* ===== STICKY SIGN-IN BAR (shown after modal dismiss) ===== */
+.signin-sticky-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: white;
+  border-top: 1px solid rgba(155, 48, 255, 0.1);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  padding: 12px 20px;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-family: 'Heebo', sans-serif;
+  animation: slideUpBar 0.3s ease;
+}
+
+.signin-sticky-bar.visible {
+  display: flex;
+}
+
+@keyframes slideUpBar {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.signin-sticky-bar-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.signin-sticky-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 22px;
+  border: none;
+  border-radius: 100px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 3px 12px rgba(155, 48, 255, 0.25);
+  white-space: nowrap;
+}
+
+.signin-sticky-bar-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(155, 48, 255, 0.35);
+}
+
+.signin-sticky-bar-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+/* ===== PROFILE MODAL ===== */
+.profile-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.profile-modal-overlay.open { display: flex; }
+
+.profile-modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 460px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.profile-modal-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--bg);
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  transition: all 0.2s;
+}
+
+.profile-modal-close:hover { background: var(--border); }
+
+.profile-modal-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 4px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.profile-modal-subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+.profile-form-group {
+  margin-bottom: 14px;
+}
+
+.profile-form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.profile-form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color 0.2s;
+  background: white;
+}
+
+.profile-form-input:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+
+.profile-form-input::placeholder { color: var(--text-lighter); }
+
+.profile-form-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239898B0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 14px center;
+}
+
+.profile-form-select:focus { outline: none; border-color: var(--purple); }
+
+.profile-form-hint {
+  font-size: 11px;
+  color: var(--text-lighter);
+  margin-top: 3px;
+}
+
+.profile-form-submit {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.profile-form-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.profile-form-signout {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-lighter);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: 'Heebo', sans-serif;
+  text-decoration: underline;
+}
+
+.profile-form-signout:hover { color: var(--text-light); }
+
+.profile-form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.profile-form-row .profile-form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.profile-form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color 0.2s;
+  background: white;
+  resize: vertical;
+  min-height: 70px;
+}
+.profile-form-textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+.profile-form-textarea::placeholder { color: var(--text-lighter); }
+
+.profile-form-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+.profile-form-checkbox {
+  margin-top: 3px;
+  min-width: 16px;
+  min-height: 16px;
+  accent-color: var(--purple);
+  cursor: pointer;
+}
+
+.profile-form-gdpr {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-lighter);
+  line-height: 1.5;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+.profile-form-gdpr-link {
+  color: var(--purple);
+  text-decoration: underline;
+}
+.profile-form-gdpr-link:hover { opacity: 0.8; }
+
+/* ===== FACEBOOK BROWSER MODAL ===== */
+.fb-browser-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.fb-browser-modal-overlay.open { display: flex; }
+
+.fb-browser-modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.fb-browser-modal-icon { font-size: 48px; margin-bottom: 12px; }
+
+.fb-browser-modal-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.fb-browser-modal-desc {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.fb-browser-modal-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 3px 12px rgba(155,48,255,0.3);
+}
+
+.fb-browser-modal-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.fb-browser-modal-skip {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-lighter);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: 'Heebo', sans-serif;
+  text-decoration: underline;
+}
+
+/* Mobile nav tabs */
+@media (max-width: 700px) {
+  .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
+  .auth-btn .auth-btn-text { display: none; }
+  .auth-btn { padding: 7px 12px; }
+}
 </style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
 </head>
 <body>
 
@@ -974,32 +1853,76 @@ body {
   </div>
 </div>
 
+<!-- SIGNUP BANNER (shown when not logged in) -->
+<div class="signup-banner" id="signupBanner">
+  <span>הצטרפו לקהילה שלנו וגלו את כל הפעילויות</span>
+  <button class="signup-banner-btn" onclick="signInWithGoogle()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:16px;height:16px;">
+    התחברו עם Google
+  </button>
+</div>
+
 <!-- STICKY NAV -->
 <nav class="sticky-nav">
-  <div class="nav-row">
-    <div class="nav-logo">🎪 אז מה עושים?</div>
-    <div class="view-toggles">
-      <button class="view-btn active" data-view="calendar">📋 רשימה</button>
-      <button class="view-btn" data-view="map">🗺️ מפה</button>
+  <div class="nav-bar-outer">
+    <div class="nav-bar">
+      <div class="nav-logo">🎪 אז מה עושים?</div>
+
+      <div class="weekend-picker" id="weekendPicker">
+        <button class="weekend-active-btn" id="weekendActiveBtn">
+          <span class="wk-dates" id="weekendActiveDates"></span>
+          <span class="wk-count" id="weekendActiveCount"></span>
+          <span class="wk-arrow">▼</span>
+        </button>
+        <div class="weekend-dropdown">
+          <div class="weekend-chips" id="weekendChips"></div>
+        </div>
+      </div>
+
+      <div class="filters-row" id="filters">
+        <button class="filter-pill active" data-filter="all">הכל</button>
+        <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
+        <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
+        <button class="filter-pill" data-filter="free">🆓 חינם</button>
+        <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
+        <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
+        <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
+        <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
+        <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
+        <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
+        <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
+      </div>
+
+      <div class="view-toggles">
+        <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
+        <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
+      </div>
+    </div>
+
+    <!-- Auth / Profile -->
+    <button class="auth-btn" id="authBtn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      <span class="auth-btn-text">התחברו</span>
+    </button>
+    <button class="profile-btn" id="profileBtn" onclick="openProfileModal()">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+      <span id="profileName">הפרופיל שלי</span>
+    </button>
+
+    <!-- Hamburger (mobile - shows tabs + contact) -->
+    <div class="nav-menu-wrapper">
+      <button class="nav-menu-btn" id="menuBtn" onclick="document.getElementById('navMenu').classList.toggle('open')">☰</button>
+      <div class="nav-menu" id="navMenu">
+        <button class="nav-menu-item" onclick="document.getElementById('navMenu').classList.remove('open'); openSuggestionModal('feedback')">💬 צרו קשר</button>
+        <button class="nav-menu-item" id="authBtnMobile" onclick="document.getElementById('navMenu').classList.remove('open'); signInWithGoogle()">🔑 התחברו עם Google</button>
+      </div>
     </div>
   </div>
-
-  <div class="weekend-nav">
-    <div class="weekend-chips" id="weekendChips"></div>
-  </div>
-
-  <div class="filters-row" id="filters">
-    <button class="filter-pill active" data-filter="all">הכל</button>
-    <button class="filter-pill" data-filter="liked">❤️ אהבתי</button>
-    <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
-    <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
-    <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
-    <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
-    <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
-    <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
-    <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
-    <button class="filter-pill" data-filter="free">🆓 חינם</button>
-    <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
+  <div class="nav-tabs-row">
+    <a href="index.html" class="nav-tab-pill active">אירועים</a>
+    <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
+    <a href="holidays.html" class="nav-tab-pill">🇳🇱 חגים</a>
+    <a href="about.html" class="nav-tab-pill">🧡 עלינו</a>
   </div>
 </nav>
 
@@ -1033,24 +1956,17 @@ body {
   </div>
 
   <div class="request-section">
-    <div class="request-title">💬 שתפו את דעתכם</div>
+    <div class="request-title">💬 מה דעתכם?</div>
     <div class="request-desc">יש לכם מה לשתף? נשמח לשמוע!</div>
     <div class="request-options">
       <button class="request-option" onclick="openSuggestionModal('event')">🎪 הוסיפו אירוע</button>
       <button class="request-option" onclick="openSuggestionModal('feedback')">💭 פידבק</button>
+      <a href="places.html" class="request-option" style="text-decoration:none">📍 מקומות מומלצים</a>
+      <a href="holidays.html" class="request-option" style="text-decoration:none">🇳🇱 חגים וחופשות</a>
     </div>
   </div>
 
-  <div class="about-section">
-    <div class="about-title">קצת עלינו</div>
 
-    <div class="about-block">
-      <div class="about-block-icon">🎯</div>
-      <div class="about-block-title">מה תמצאו כאן?</div>
-      <div class="about-text">
-        אירועים <strong>מקומיים וייחודיים</strong> לילדים ומשפחות בהולנד - לא אטרקציות כלליות, אלא דברים שקורים במקום מסוים, בתאריך ספציפי, ומתאימים למשפחות.
-      </div>
-    </div>
 
     <div class="about-block">
       <div class="about-block-icon">🔍</div>
@@ -1090,14 +2006,14 @@ body {
   <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
 </footer>
 
-<button class="fab" onclick="openSuggestionModal('event')">💬 שתפו אותנו</button>
+<button class="fab" onclick="openSuggestionModal('event')"><span style="font-size:22px">💬</span> בואו נדבר</button>
 
 <!-- SUGGESTION MODAL -->
 <div class="modal-overlay" id="suggestionModal">
   <div class="modal">
     <button class="modal-close" onclick="closeSuggestionModal()">&times;</button>
     <div id="suggestionFormContainer">
-      <div class="modal-title" id="modalTitle">💬 שתפו את דעתכם</div>
+      <div class="modal-title" id="modalTitle">💬 מה דעתכם?</div>
       <div class="modal-subtitle" id="modalSubtitle"></div>
       <div class="form-type-selector" id="formTypeSelector">
         <button class="form-type-btn active" data-type="event" onclick="switchFormType('event')">🎪 הוסיפו אירוע</button>
@@ -1186,7 +2102,7 @@ function isHolidayDate(dateStr) {
 
 // ===== STATE =====
 let events = [];
-let activeFilter = 'all';
+let activeFilters = new Set(); // empty = show all
 let activeWeekend = null;
 let activeView = 'calendar';
 let map = null;
@@ -1206,7 +2122,7 @@ function parseCSV(text) {
     const values = parseCSVLine(line);
     const obj = {};
     headers.forEach((h, idx) => {
-      obj[h.trim()] = (values[idx] || '').trim();
+      obj[h.trim().toLowerCase()] = (values[idx] || '').trim();
     });
     results.push(obj);
   }
@@ -1247,11 +2163,14 @@ function parseCSVLine(line) {
 }
 
 function rowToEvent(row, id) {
+  const rawType = (row.type || '').toLowerCase();
+  const types = rawType.split(',').map(t => t.trim()).filter(Boolean);
   return {
     id: id,
     title: row.title || '',
     desc: row.desc || '',
-    type: row.type || '',
+    type: types.length ? types[0] : '',
+    types: types,
     area: row.area || '',
     ages: row.ages || '',
     price: row.price || '',
@@ -1270,8 +2189,11 @@ function rowToEvent(row, id) {
 
 function getImageURL(image) {
   if (!image) return '';
-  if (image.startsWith('http') || image.startsWith('/') || image.startsWith('images/')) return image;
-  return 'images/' + image;
+  // Strip path-only values like "/images/" or "images/" with no actual filename
+  const stripped = image.replace(/^\/?(images\/?)$/, '');
+  if (!stripped) return '';
+  if (stripped.startsWith('http') || stripped.startsWith('/') || stripped.startsWith('images/')) return stripped;
+  return 'images/' + stripped;
 }
 
 async function loadEvents() {
@@ -1306,8 +2228,8 @@ function getUpcomingWeekends(count) {
     const sun = new Date(d);
     sun.setDate(sun.getDate() + 1);
 
-    const satStr = sat.toISOString().split('T')[0];
-    const sunStr = sun.toISOString().split('T')[0];
+    const satStr = `${sat.getFullYear()}-${String(sat.getMonth()+1).padStart(2,'0')}-${String(sat.getDate()).padStart(2,'0')}`;
+    const sunStr = `${sun.getFullYear()}-${String(sun.getMonth()+1).padStart(2,'0')}-${String(sun.getDate()).padStart(2,'0')}`;
 
     const holidayName = isHolidayDate(satStr) || isHolidayDate(sunStr);
     const evCount = events.filter(e => eventOnWeekend(e, satStr, sunStr)).length;
@@ -1328,34 +2250,57 @@ function buildWeekendChips() {
   const weekends = getUpcomingWeekends(8);
   const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
 
-  activeWeekend = weekends[0];
+  const firstWithEvents = weekends.findIndex(w => w.eventCount > 0);
+  const defaultIdx = firstWithEvents >= 0 ? firstWithEvents : 0;
+  activeWeekend = weekends[defaultIdx];
 
   container.innerHTML = weekends.map((w, i) => {
     const satD = w.satDate;
     const sunD = w.sunDate;
     const label = i === 0 ? 'הסופ״ש הקרוב' : `עוד ${i} ${i === 1 ? 'שבוע' : 'שבועות'}`;
     const dates = `${satD.getDate()}-${sunD.getDate()} ${hebrewMonths[satD.getMonth()]}`;
-    return `<button class="wk-chip ${i === 0 ? 'active' : ''} ${w.holiday ? 'holiday' : ''}" data-idx="${i}">
+    const isEmpty = w.eventCount === 0;
+    const isActive = i === defaultIdx;
+    return `<button class="wk-chip ${isActive ? 'active' : ''} ${w.holiday ? 'holiday' : ''} ${isEmpty ? 'wk-empty' : ''}" data-idx="${i}">
       <span class="wk-label">${label}</span>
       <span class="wk-dates">${dates}</span>
-      ${w.eventCount > 0 ? `<span class="wk-count">${w.eventCount} אירועים</span>` : ''}
+      ${w.eventCount > 0 ? `<span class="wk-count">${w.eventCount} אירועים</span>` : '<span class="wk-count" style="background:rgba(0,0,0,0.06);color:#aaa;">אין אירועים</span>'}
       ${w.holiday ? `<span class="wk-holiday-tag">🎉 ${w.holiday}</span>` : ''}
     </button>`;
   }).join('');
   container._weekends = weekends;
+  updateWeekendActiveBtn();
+}
+
+function updateWeekendActiveBtn() {
+  if (!activeWeekend) return;
+  const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
+  const satD = activeWeekend.satDate;
+  const sunD = activeWeekend.sunDate;
+  const dates = `${satD.getDate()}-${sunD.getDate()} ${hebrewMonths[satD.getMonth()]}`;
+  document.getElementById('weekendActiveDates').textContent = dates;
+  const countEl = document.getElementById('weekendActiveCount');
+  countEl.textContent = `${activeWeekend.eventCount} אירועים`;
 }
 
 // ===== FILTER =====
+function eventMatchesFilters(e) {
+  if (activeFilters.size === 0) return true;
+  for (const f of activeFilters) {
+    if (f === 'free' && !e.free) return false;
+    if (f === 'museumkaart' && !e.museumkaart) return false;
+    if (f === 'liked' && !isLiked(e.id)) return false;
+    if (['outdoor','indoor','music','theater','market','workshop','sport'].includes(f) && !e.types.includes(f)) return false;
+  }
+  return true;
+}
+
 function getFilteredEvents() {
   if (!activeWeekend) return [];
   const { sat, sun } = activeWeekend;
   return events.filter(e => {
     if (!eventOnWeekend(e, sat, sun)) return false;
-    if (activeFilter === 'all') return true;
-    if (activeFilter === 'free') return e.free;
-    if (activeFilter === 'museumkaart') return e.museumkaart;
-    if (activeFilter === 'liked') return isLiked(e.id);
-    return e.type === activeFilter;
+    return eventMatchesFilters(e);
   });
 }
 
@@ -1376,16 +2321,35 @@ function cardHTML(e, i) {
         ${!imgUrl ? `<span>${typeEmoji(e.type)}</span>` : ''}
         <div class="event-day-badge">${fmtDay(e.date)} ${e.time}</div>
       </div>
+      ${e.link ? '</a>' : ''}
       <div class="event-body">
         <div class="event-tags">
           <span class="etag etag-area">📍 ${e.area}</span>
-          <span class="etag etag-type">${typeEmoji(e.type)} ${typeLabel(e.type)}</span>
+          ${e.types.map(t => `<span class="etag etag-type">${typeEmoji(t)} ${typeLabel(t)}</span>`).join('')}
           ${e.free ? '<span class="etag etag-free">🆓 חינם</span>' : ''}
           ${e.museumkaart ? '<span class="etag etag-museum">🏛️ Museumkaart</span>' : ''}
           <span class="etag etag-age">👶 ${e.ages}</span>
         </div>
         <h3 class="event-title">${e.title}</h3>
         <p class="event-desc">${e.desc}</p>
+        <div class="event-actions">
+              <a class="action-icon action-icon-wa" href="https://wa.me/?text=${whatsappText}" target="_blank" title="שיתוף בוואטסאפ">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="">
+                <span class="action-icon-label">שיתוף</span>
+              </a>
+              <div class="action-icon action-icon-like ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)" title="לייק">
+                <span>${isLiked(e.id) ? '❤️' : '🤍'}</span>
+                <span class="action-icon-label">לייק</span>
+              </div>
+              ${e.link ? `<a class="action-icon action-icon-info" href="${e.link}" target="_blank" title="לפרטים נוספים">
+                <span>ℹ️</span>
+                <span class="action-icon-label">פרטים</span>
+              </a>` : ''}
+              ${navUrl ? `<a class="action-icon action-icon-nav" href="${navUrl}" target="_blank" title="נסענו!">
+                <span>🧭</span>
+                <span class="action-icon-label">ניווט</span>
+              </a>` : ''}
+        </div>
         <div class="event-footer">
           <div class="event-details">
             <span class="event-detail">📍 ${e.location}</span>
@@ -1419,36 +2383,73 @@ function renderList() {
 
 function renderCalendar() {
   const el = document.getElementById('calendarPanel');
-  const filtered = getFilteredEvents();
-  updateResultsBar(filtered);
-  if (!filtered.length) { el.innerHTML = ''; return; }
+  const weekends = document.getElementById('weekendChips')._weekends;
+  if (!weekends) { el.innerHTML = ''; return; }
 
-  const groups = {};
-  filtered.forEach(e => {
-    const dates = getEventDates(e, activeWeekend.sat, activeWeekend.sun);
-    dates.forEach(ds => {
-      if (!groups[ds]) groups[ds] = [];
-      if (!groups[ds].find(x => x.id === e.id)) groups[ds].push(e);
+  // Get all weekends with events, starting from active
+  const activeIdx = weekends.indexOf(activeWeekend);
+  const relevantWeekends = weekends.filter((w, i) => i >= activeIdx && w.eventCount > 0);
+
+  if (!relevantWeekends.length) {
+    updateResultsBar([]);
+    el.innerHTML = '';
+    return;
+  }
+
+  // Update results bar for active weekend only
+  const activeFiltered = getFilteredEvents();
+  updateResultsBar(activeFiltered);
+
+  let html = '';
+  let idx = 0;
+
+  relevantWeekends.forEach((w, wIdx) => {
+    const weekendEvents = events.filter(e => eventOnWeekend(e, w.sat, w.sun));
+    const filtered = weekendEvents.filter(e => eventMatchesFilters(e));
+
+    if (!filtered.length) return;
+
+    const groups = {};
+    filtered.forEach(e => {
+      const dates = getEventDates(e, w.sat, w.sun);
+      dates.forEach(ds => {
+        if (!groups[ds]) groups[ds] = [];
+        if (!groups[ds].find(x => x.id === e.id)) groups[ds].push(e);
+      });
     });
+
+    const sorted = Object.keys(groups).sort();
+    html += sorted.map(date => `
+      <div class="cal-day-group" data-weekend-sat="${w.sat}" data-weekend-sun="${w.sun}">
+        <div class="cal-day-header">
+          <span class="cal-day-name">${fmtDayFull(date)}</span>
+          <span class="cal-day-date">${fmtLong(date)}</span>
+          <span class="cal-day-count">${groups[date].length} אירועים</span>
+        </div>
+        <div class="cal-events">${groups[date].map(e => cardHTML(e, idx++)).join('')}</div>
+      </div>
+    `).join('');
+
+    // Add recommendation card between weekends
+    if (wIdx < relevantWeekends.length - 1) {
+      html += `
+        <div class="add-event-card between-weekends" onclick="openSuggestionModal('event')">
+          <div class="add-event-card-icon">💡</div>
+          <div class="add-event-card-text">יודעים על אירוע בסופ״ש הבא? ספרו לנו!</div>
+          <div class="add-event-card-sub">מה דעתכם? נוסיף אותו לרשימה</div>
+        </div>`;
+    }
   });
 
-  const sorted = Object.keys(groups).sort();
-  let idx = 0;
-  el.innerHTML = sorted.map(date => `
-    <div class="cal-day-group">
-      <div class="cal-day-header">
-        <span class="cal-day-name">${fmtDayFull(date)}</span>
-        <span class="cal-day-date">${fmtLong(date)}</span>
-        <span class="cal-day-count">${groups[date].length} אירועים</span>
-      </div>
-      <div class="cal-events">${groups[date].map(e => cardHTML(e, idx++)).join('')}</div>
-    </div>
-  `).join('') + `
+  // Final recommendation card
+  html += `
     <div class="add-event-card" onclick="openSuggestionModal('event')">
       <div class="add-event-card-icon">➕</div>
-      <div class="add-event-card-text">יודעים על אירוע נוסף?</div>
-      <div class="add-event-card-sub">שתפו אותנו ונוסיף אותו לרשימה</div>
+      <div class="add-event-card-text">מתכננים אירוע? רוצים להמליץ על אירוע שעומד להתקיים? ספרו לנו</div>
+      <div class="add-event-card-sub">מה דעתכם? נוסיף אותו לרשימה</div>
     </div>`;
+
+  el.innerHTML = html;
 }
 
 function renderMap() {
@@ -1555,23 +2556,75 @@ function render() {
   else if (activeView === 'map') renderMap();
   fetchWeather();
   updateFilterAvailability();
+  updateLikedToggleCount();
+  retryFailedImages();
+}
+
+// Retry loading failed background images
+function retryFailedImages() {
+  document.querySelectorAll('.event-img:not(.event-img-placeholder)').forEach(el => {
+    const bg = el.style.backgroundImage;
+    const match = bg && bg.match(/url\(['"]?(.+?)['"]?\)/);
+    if (!match) return;
+    const url = match[1];
+    const img = new Image();
+    img.onload = () => { el.style.backgroundImage = `url('${url}')`; };
+    img.onerror = () => {
+      let retries = parseInt(el.dataset.retries || '0');
+      if (retries >= 3) return;
+      el.dataset.retries = ++retries;
+      setTimeout(() => {
+        const retry = new Image();
+        retry.onload = () => { el.style.backgroundImage = `url('${url}')`; };
+        retry.onerror = () => {
+          if (retries < 3) {
+            el.dataset.retries = retries;
+            setTimeout(() => retryFailedImages(), 3000 * retries);
+          }
+        };
+        retry.src = url + (url.includes('?') ? '&' : '?') + '_r=' + retries;
+      }, 2000 * retries);
+    };
+    img.src = url;
+  });
 }
 
 function updateFilterAvailability() {
   if (!activeWeekend) return;
   const { sat, sun } = activeWeekend;
-  const weekendEvents = events.filter(e => eventOnWeekend(e, sat, sun));
+  // Get all weekend events across all rendered weekends
+  const weekends = document.getElementById('weekendChips')._weekends;
+  const activeIdx = weekends ? weekends.indexOf(activeWeekend) : 0;
+  const relevantWeekends = weekends ? weekends.filter((w, i) => i >= activeIdx && w.eventCount > 0) : [activeWeekend];
+
+  let allWeekendEvents = [];
+  relevantWeekends.forEach(w => {
+    allWeekendEvents = allWeekendEvents.concat(events.filter(e => eventOnWeekend(e, w.sat, w.sun)));
+  });
+  // Deduplicate
+  const seen = new Set();
+  allWeekendEvents = allWeekendEvents.filter(e => { if (seen.has(e.id)) return false; seen.add(e.id); return true; });
+
+  // Current filtered set (events matching ALL active filters)
+  const currentFiltered = allWeekendEvents.filter(e => eventMatchesFilters(e));
 
   document.querySelectorAll('.filter-pill').forEach(pill => {
     const f = pill.dataset.filter;
     if (f === 'all') return; // always available
-    let hasMatch = false;
-    if (f === 'free') hasMatch = weekendEvents.some(e => e.free);
-    else if (f === 'museumkaart') hasMatch = weekendEvents.some(e => e.museumkaart);
-    else if (f === 'liked') hasMatch = weekendEvents.some(e => isLiked(e.id));
-    else hasMatch = weekendEvents.some(e => e.type === f);
+    if (activeFilters.has(f)) return; // already active, keep it
 
-    if (hasMatch) pill.classList.remove('disabled');
+    // Check: if we ADD this filter, would any events still match?
+    const testFilters = new Set(activeFilters);
+    testFilters.add(f);
+
+    const wouldMatch = currentFiltered.some(e => {
+      if (f === 'free') return e.free;
+      if (f === 'museumkaart') return e.museumkaart;
+      if (f === 'liked') return isLiked(e.id);
+      return e.types.includes(f);
+    });
+
+    if (wouldMatch) pill.classList.remove('disabled');
     else pill.classList.add('disabled');
   });
 }
@@ -1614,7 +2667,7 @@ async function fetchWeather() {
 }
 
 // ===== LIKES =====
-// Personal likes (for filtering)
+// Personal likes (stored in localStorage per user)
 function getLikes() {
   try { return JSON.parse(localStorage.getItem('fun_likes') || '{}'); } catch { return {}; }
 }
@@ -1623,64 +2676,38 @@ function saveLikes(likes) {
   localStorage.setItem('fun_likes', JSON.stringify(likes));
 }
 
-// Community counts (local simulation - seeded per event)
-function getCounts() {
-  try { return JSON.parse(localStorage.getItem('fun_like_counts') || '{}'); } catch { return {}; }
-}
-
-function saveCounts(counts) {
-  localStorage.setItem('fun_like_counts', JSON.stringify(counts));
-}
-
-function seedCount(id) {
-  const counts = getCounts();
-  if (counts[id] === undefined) {
-    // Seed with a small base number for community feel
-    counts[id] = Math.floor(Math.random() * 8) + 2;
-    saveCounts(counts);
-  }
-  return counts[id];
-}
-
 function isLiked(id) {
   return !!getLikes()[id];
 }
 
-function getLikeCountDisplay(id) {
-  const count = seedCount(id);
-  if (count === 0) return '';
-  return count === 1 ? 'אחד אהבו' : `${count} אהבו`;
-}
-
-function toggleLike(id, row) {
+function toggleLike(id, el) {
   const likes = getLikes();
-  const counts = getCounts();
-  seedCount(id);
 
   if (likes[id]) {
     delete likes[id];
-    counts[id] = Math.max(0, (counts[id] || 1) - 1);
-    row.classList.remove('liked');
-    row.querySelector('.btn-like').classList.remove('liked');
   } else {
     likes[id] = true;
-    counts[id] = (counts[id] || 0) + 1;
-    row.classList.add('liked');
-    row.querySelector('.btn-like').classList.add('liked');
   }
   saveLikes(likes);
-  saveCounts(counts);
+  updateLikedToggleCount();
 
-  // Update all count displays
-  const display = counts[id] === 0 ? '' : counts[id] === 1 ? 'אחד אהבו' : `${counts[id]} אהבו`;
-  document.querySelectorAll(`[id="likeCount-${id}"]`).forEach(el => {
-    el.textContent = display;
+  // Sync all like icons for this event
+  document.querySelectorAll(`.action-icon-like[data-event-id="${id}"]`).forEach(r => {
+    if (likes[id]) {
+      r.classList.add('liked');
+      r.querySelector('span').textContent = '❤️';
+    } else {
+      r.classList.remove('liked');
+      r.querySelector('span').textContent = '🤍';
+    }
   });
-  // Sync all like-rows for this event
-  document.querySelectorAll(`.like-row[data-event-id="${id}"]`).forEach(r => {
-    if (likes[id]) { r.classList.add('liked'); r.querySelector('.btn-like').classList.add('liked'); }
-    else { r.classList.remove('liked'); r.querySelector('.btn-like').classList.remove('liked'); }
-  });
+}
+
+function updateLikedToggleCount() {
+  const likes = getLikes();
+  const count = Object.keys(likes).length;
+  const el = document.getElementById('likedToggleCount');
+  el.textContent = count > 0 ? count : '';
 }
 
 // ===== HELPERS =====
@@ -1715,13 +2742,17 @@ function fmtDayFull(s) {
   return (d.getDay()===6?'🟣 ':'🔵 ')+'יום '+days[d.getDay()];
 }
 
+function localDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 function getEventDates(e, minDate, maxDate) {
   const dates = [];
   if (e.endDate) {
-    let d = new Date(Math.max(new Date(e.date), new Date(minDate)));
-    const end = new Date(Math.min(new Date(e.endDate), new Date(maxDate)));
+    let d = new Date(Math.max(new Date(e.date+'T00:00:00'), new Date(minDate+'T00:00:00')));
+    const end = new Date(Math.min(new Date(e.endDate+'T00:00:00'), new Date(maxDate+'T00:00:00')));
     while (d <= end) {
-      dates.push(d.toISOString().split('T')[0]);
+      dates.push(localDateStr(d));
       d.setDate(d.getDate() + 1);
     }
   } else {
@@ -1805,62 +2836,140 @@ document.querySelectorAll('.view-btn').forEach(btn => {
   });
 });
 
-// Weekend chips
+// Weekend picker toggle
+document.getElementById('weekendActiveBtn').addEventListener('click', () => {
+  const picker = document.getElementById('weekendPicker');
+  const dropdown = picker.querySelector('.weekend-dropdown');
+  const isOpen = dropdown.classList.contains('open');
+  if (isOpen) {
+    dropdown.classList.remove('open');
+    picker.classList.remove('open');
+  } else {
+    const btn = document.getElementById('weekendActiveBtn');
+    const rect = btn.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + 6) + 'px';
+    dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+    dropdown.classList.add('open');
+    picker.classList.add('open');
+  }
+});
+
+// Weekend chip selection
 document.getElementById('weekendChips').addEventListener('click', (e) => {
   const chip = e.target.closest('.wk-chip');
-  if (!chip) return;
+  if (!chip || chip.classList.contains('wk-empty')) return;
+  const weekends = document.getElementById('weekendChips')._weekends;
+  const clickedWeekend = weekends[parseInt(chip.dataset.idx)];
   document.querySelectorAll('.wk-chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
-  activeWeekend = document.getElementById('weekendChips')._weekends[parseInt(chip.dataset.idx)];
+  activeWeekend = clickedWeekend;
+  updateWeekendActiveBtn();
+  document.getElementById('weekendPicker').classList.remove('open');
+  document.querySelector('.weekend-dropdown').classList.remove('open');
+
+  // Try to scroll to that weekend's section
+  const target = document.querySelector(`.cal-day-group[data-weekend-sat="${clickedWeekend.sat}"]`);
+  if (target) {
+    const navHeight = document.querySelector('.sticky-nav').offsetHeight;
+    const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 10;
+    window.scrollTo({ top, behavior: 'smooth' });
+  } else {
+    render();
+  }
+});
+
+// Filter pills - multi-select
+document.getElementById('filters').addEventListener('click', (e) => {
+  const pill = e.target.closest('.filter-pill');
+  if (!pill || pill.classList.contains('disabled')) return;
+  const filter = pill.dataset.filter;
+
+  if (filter === 'all') {
+    // Reset all filters
+    activeFilters.clear();
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+  } else {
+    // Toggle this filter
+    document.querySelector('.filter-pill[data-filter="all"]').classList.remove('active');
+    if (activeFilters.has(filter)) {
+      activeFilters.delete(filter);
+      pill.classList.remove('active');
+      // If nothing selected, go back to all
+      if (activeFilters.size === 0) {
+        document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
+      }
+    } else {
+      activeFilters.add(filter);
+      pill.classList.add('active');
+    }
+  }
+  updateFilterAvailability();
   render();
 });
 
-// Filter pills
-document.getElementById('filters').addEventListener('click', (e) => {
-  const pill = e.target.closest('.filter-pill');
-  if (!pill) return;
-  const wasActive = pill.classList.contains('active');
-  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-  if (wasActive && pill.dataset.filter !== 'all') {
-    // Unclick: go back to "all"
-    document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
-    activeFilter = 'all';
-  } else {
-    pill.classList.add('active');
-    activeFilter = pill.dataset.filter;
+// Close dropdowns on click outside
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('navMenu');
+  const menuBtn = document.getElementById('menuBtn');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !menuBtn.contains(e.target)) {
+    menu.classList.remove('open');
   }
-  render();
+  const picker = document.getElementById('weekendPicker');
+  const wkDropdown = picker.querySelector('.weekend-dropdown');
+  if (wkDropdown.classList.contains('open') && !picker.contains(e.target)) {
+    wkDropdown.classList.remove('open');
+    picker.classList.remove('open');
+  }
 });
 
 // ===== SCROLL-BASED WEEKEND AUTO-ADVANCE =====
-let scrollTimeout;
+let scrollRaf = null;
+let isCompact = false;
+let heroThreshold = 0;
+// Cache hero bottom position once
 window.addEventListener('scroll', () => {
-  clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => {
+  if (scrollRaf) return;
+  scrollRaf = requestAnimationFrame(() => {
+    scrollRaf = null;
+    const stickyNav = document.querySelector('.sticky-nav');
+
+    // Update active weekend chip based on visible day groups
     if (activeView !== 'calendar') return;
     const panel = document.getElementById('calendarPanel');
-    const groups = panel.querySelectorAll('.cal-day-group');
+    const groups = panel.querySelectorAll('.cal-day-group[data-weekend-sat]');
     if (!groups.length) return;
 
-    // Check if we scrolled past all events
-    const lastGroup = groups[groups.length - 1];
-    const lastRect = lastGroup.getBoundingClientRect();
-    if (lastRect.bottom < window.innerHeight * 0.3) {
-      // Auto-advance to next weekend
-      const chips = document.querySelectorAll('.wk-chip');
-      const weekends = document.getElementById('weekendChips')._weekends;
-      const currentIdx = weekends.indexOf(activeWeekend);
-      if (currentIdx < weekends.length - 1) {
-        chips.forEach(c => c.classList.remove('active'));
-        chips[currentIdx + 1].classList.add('active');
-        activeWeekend = weekends[currentIdx + 1];
-        render();
-        // Scroll the chip into view
-        chips[currentIdx + 1].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    const weekends = document.getElementById('weekendChips')._weekends;
+    if (!weekends) return;
+    const chips = document.querySelectorAll('.wk-chip');
+    const navHeight = stickyNav ? stickyNav.offsetHeight : 0;
+
+    // Find the first visible day group
+    let visibleSat = null;
+    for (const g of groups) {
+      const rect = g.getBoundingClientRect();
+      if (rect.bottom > navHeight + 50) {
+        visibleSat = g.dataset.weekendSat;
+        break;
       }
     }
-  }, 150);
-});
+
+    if (visibleSat) {
+      const matchIdx = weekends.findIndex(w => w.sat === visibleSat);
+      if (matchIdx >= 0 && weekends[matchIdx] !== activeWeekend) {
+        activeWeekend = weekends[matchIdx];
+        chips.forEach(c => c.classList.remove('active'));
+        if (chips[matchIdx]) {
+          chips[matchIdx].classList.add('active');
+        }
+        updateResultsBar(getFilteredEvents());
+        updateWeekendActiveBtn();
+      }
+    }
+  });
+}, { passive: true });
+
 
 // ===== LAZY LOADING IMAGES =====
 const imgObserver = new IntersectionObserver((entries) => {
@@ -1908,7 +3017,341 @@ const _origRenderCalendar = renderCalendar;
 renderCalendar = function() { _origRenderCalendar(); observeImages(); };
 
 // ===== INIT =====
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
 loadEvents();
+</script>
+
+<!-- PROFILE / ONBOARDING MODAL -->
+<div class="profile-modal-overlay" id="profileModal">
+  <div class="profile-modal">
+    <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
+    <div class="profile-modal-title" id="profileModalTitle">השלימו את הפרופיל</div>
+    <div class="profile-modal-subtitle" id="profileModalSubtitle">כדי שנוכל להתאים לכם את התוכן הכי רלוונטי</div>
+    <form id="profileForm" onsubmit="handleProfileSubmit(event)">
+      <div class="profile-form-row">
+        <div class="profile-form-group">
+          <label class="profile-form-label">שם פרטי</label>
+          <input class="profile-form-input" type="text" id="profileFormFirstName" placeholder="שם פרטי">
+        </div>
+        <div class="profile-form-group">
+          <label class="profile-form-label">שם משפחה</label>
+          <input class="profile-form-input" type="text" id="profileFormLastName" placeholder="שם משפחה">
+        </div>
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">אימייל</label>
+        <input class="profile-form-input" type="email" id="profileFormEmail" dir="ltr" placeholder="email@example.com" readonly style="background:#f8f8fa;">
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">עיר / אזור *</label>
+        <select class="profile-form-select" id="profileFormCity" required>
+          <option value="">בחרו אזור</option>
+          <option value="Amsterdam">Amsterdam</option>
+          <option value="Rotterdam">Rotterdam</option>
+          <option value="Den Haag">Den Haag</option>
+          <option value="Utrecht">Utrecht</option>
+          <option value="Eindhoven">Eindhoven</option>
+          <option value="Amstelveen">Amstelveen</option>
+          <option value="Haarlem">Haarlem</option>
+          <option value="Leiden">Leiden</option>
+          <option value="Groningen">Groningen</option>
+          <option value="Noord-Holland">Noord-Holland (other)</option>
+          <option value="Zuid-Holland">Zuid-Holland (other)</option>
+          <option value="Noord-Brabant">Noord-Brabant</option>
+          <option value="Gelderland">Gelderland</option>
+          <option value="Other">Other</option>
+          <option value="Not in NL">לא גר/ה בהולנד</option>
+        </select>
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">גילאי ילדים</label>
+        <input class="profile-form-input" type="text" id="profileFormKids" placeholder="למשל: 3, 6 (לא חובה)">
+        <div class="profile-form-hint">כדי שנוכל להתאים אירועים לגילאים שלכם</div>
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">WhatsApp</label>
+        <input class="profile-form-input" type="tel" id="profileFormWhatsapp" dir="ltr" placeholder="+31 6... (לא חובה)">
+        <div class="profile-form-hint">בעתיד נשלח עדכונים שבועיים גם בוואטסאפ</div>
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">איך שמעתם עלינו?</label>
+        <input class="profile-form-input" type="text" id="profileFormHeardFrom" placeholder="למשל: פייסבוק, חברים, גוגל... (לא חובה)">
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-label">מה הייתם רוצים לראות באתר?</label>
+        <textarea class="profile-form-textarea" id="profileFormExpectations" placeholder="שתפו אותנו - מה חשוב לכם? אילו אירועים או תכנים תרצו למצוא כאן?" rows="3"></textarea>
+        <div class="profile-form-hint">אנחנו קוראים הכל ומשתדלים להתאים את האתר אליכם</div>
+      </div>
+      <div class="profile-form-group">
+        <label class="profile-form-checkbox-label">
+          <input type="checkbox" id="profileFormDisclaimer" class="profile-form-checkbox">
+          <span>אני מבין/ה שהמידע באתר הוא לנוחות בלבד, ואין להסתמך עליו כמקור יחיד. יש לאמת פרטים ישירות מול מקור האירוע.</span>
+        </label>
+      </div>
+      <div class="profile-form-gdpr">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="min-width:14px;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>לפי תקנות ה-GDPR, יש לכם זכות לבקש מחיקת המידע שלכם בכל עת. לפניות: <a href="mailto:info@israelis.nl" class="profile-form-gdpr-link">info@israelis.nl</a></span>
+      </div>
+      <button type="submit" class="profile-form-submit" id="profileFormSubmit">שמירה</button>
+    </form>
+    <button class="profile-form-signout" id="profileSignout" onclick="signOut(); closeProfileModal();">התנתקות</button>
+  </div>
+</div>
+
+<!-- FACEBOOK BROWSER MODAL -->
+<div class="fb-browser-modal-overlay" id="fbBrowserModal" onclick="if(event.target===this)closeFacebookBrowserModal()">
+  <div class="fb-browser-modal">
+    <div class="fb-browser-modal-icon">🌐</div>
+    <div class="fb-browser-modal-title">פתחו בדפדפן</div>
+    <div class="fb-browser-modal-desc">
+      ההתחברות עם Google לא עובדת בדפדפן של פייסבוק.
+      <br>לחצו למטה כדי לפתוח את האתר בדפדפן הרגיל שלכם.
+    </div>
+    <button class="fb-browser-modal-btn" onclick="openInSystemBrowser()">
+      פתחו ב-Chrome / Safari
+    </button>
+    <button class="fb-browser-modal-skip" onclick="closeFacebookBrowserModal()">לא עכשיו</button>
+  </div>
+</div>
+
+<!-- Sign-in Modal (floating, delayed) -->
+<div class="signin-modal-overlay" id="signinModal">
+  <div class="signin-modal">
+    <div class="signin-modal-emoji">🎪</div>
+    <div class="signin-modal-title">גלו את כל הפעילויות</div>
+    <div class="signin-modal-subtitle">התחברו כדי לראות מיקום, מחירים, ניווט ועוד</div>
+    <button class="signin-modal-btn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+      התחברו עם Google
+    </button>
+    <button class="signin-modal-dismiss" onclick="dismissSigninModal()">אחר כך</button>
+  </div>
+</div>
+
+<!-- Sticky sign-in bar (shown after modal dismiss) -->
+<div class="signin-sticky-bar" id="signinStickyBar">
+  <span class="signin-sticky-bar-text">🔒 רוצים לראות הכל?</span>
+  <button class="signin-sticky-bar-btn" onclick="signInWithGoogle()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+    התחברו עם Google
+  </button>
+</div>
+
+<!-- Firebase Auth -->
+<script src="auth.js"></script>
+<script>
+// ===== AUTH INTEGRATION FOR INDEX PAGE =====
+
+function onUserLoggedIn(needsProfileCompletion) {
+  // Remove blur gate
+  document.querySelectorAll('.event-card.gated').forEach(card => {
+    card.classList.remove('gated');
+  });
+  // Hide signup banner, sign-in modal, and sticky bar
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.add('hidden');
+  dismissSigninModal();
+  const stickyBar = document.getElementById('signinStickyBar');
+  if (stickyBar) stickyBar.classList.remove('visible');
+
+  // Update profile name in nav
+  const profileName = document.getElementById('profileName');
+  if (profileName && currentUser) {
+    profileName.textContent = userProfile?.firstName || (currentUser.displayName || '').split(' ')[0] || 'הפרופיל שלי';
+  }
+
+  // If first-time user, show profile completion modal
+  if (needsProfileCompletion) {
+    openProfileModal(true);
+  }
+
+  // Sync localStorage favorites to Firestore
+  const localLiked = JSON.parse(localStorage.getItem('likedEvents') || '[]');
+  if (localLiked.length > 0 && currentUser) {
+    syncFavorites(localLiked).then(merged => {
+      localStorage.setItem('likedEvents', JSON.stringify(merged));
+      render();
+    });
+  }
+}
+
+function onUserLoggedOut() {
+  applyBlurGate();
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.remove('hidden');
+  // If modal was already dismissed this session, show sticky bar directly
+  if (signinModalDismissed) {
+    const bar = document.getElementById('signinStickyBar');
+    if (bar) bar.classList.add('visible');
+  } else {
+    scheduleSigninModal();
+  }
+}
+
+// ===== AUTH GATE (refined) =====
+const TEASER_CARD_COUNT = 2;
+
+function applyBlurGate() {
+  document.querySelectorAll('.event-card').forEach((card, index) => {
+    // First N cards are teasers — fully visible
+    if (index < TEASER_CARD_COUNT) return;
+
+    card.classList.add('gated');
+    const body = card.querySelector('.event-body');
+    if (body && !body.querySelector('.gate-strip')) {
+      const strip = document.createElement('div');
+      strip.className = 'gate-strip';
+      strip.innerHTML = '<span class="lock-icon">🔒</span> התחברו לפרטים';
+      strip.style.cursor = 'pointer';
+      strip.onclick = function(ev) { ev.stopPropagation(); signInWithGoogle(); };
+      body.appendChild(strip);
+    }
+  });
+}
+
+// ===== FLOATING SIGN-IN MODAL =====
+let signinModalShown = false;
+let signinModalDismissed = sessionStorage.getItem('signinModalDismissed') === '1';
+let _signinScrollHandler = null;
+
+function scheduleSigninModal() {
+  if (signinModalDismissed || signinModalShown || currentUser) return;
+
+  const timer = setTimeout(showSigninModal, 4000);
+
+  _signinScrollHandler = function() {
+    if (window.scrollY > 400 && !signinModalShown) {
+      clearTimeout(timer);
+      showSigninModal();
+      window.removeEventListener('scroll', _signinScrollHandler);
+    }
+  };
+  window.addEventListener('scroll', _signinScrollHandler, { passive: true });
+}
+
+function showSigninModal() {
+  if (signinModalShown || signinModalDismissed || currentUser) return;
+  signinModalShown = true;
+  const modal = document.getElementById('signinModal');
+  if (modal) modal.classList.add('open');
+}
+
+function dismissSigninModal() {
+  signinModalDismissed = true;
+  signinModalShown = true;
+  const modal = document.getElementById('signinModal');
+  if (modal) modal.classList.remove('open');
+  sessionStorage.setItem('signinModalDismissed', '1');
+  if (_signinScrollHandler) {
+    window.removeEventListener('scroll', _signinScrollHandler);
+  }
+  // Show sticky bar as persistent CTA (only if not logged in)
+  if (!currentUser) {
+    const bar = document.getElementById('signinStickyBar');
+    if (bar) bar.classList.add('visible');
+  }
+}
+
+// Hook into the render cycle to apply blur gate after cards are rendered
+const _originalRender = render;
+render = function() {
+  _originalRender();
+  if (!currentUser) {
+    setTimeout(applyBlurGate, 50);
+  }
+};
+
+function openProfileModal(isOnboarding) {
+  const modal = document.getElementById('profileModal');
+  modal.classList.add('open');
+
+  const title = document.getElementById('profileModalTitle');
+  const subtitle = document.getElementById('profileModalSubtitle');
+  const signoutBtn = document.getElementById('profileSignout');
+
+  if (isOnboarding) {
+    title.textContent = 'ברוכים הבאים!';
+    subtitle.textContent = 'ספרו לנו קצת על עצמכם כדי שנוכל להתאים את התוכן';
+    signoutBtn.style.display = 'none';
+  } else {
+    title.textContent = 'הפרופיל שלי';
+    subtitle.textContent = 'עדכנו את הפרטים שלכם';
+    signoutBtn.style.display = 'block';
+  }
+
+  // Pre-fill form
+  if (currentUser) {
+    const fullName = userProfile?.name || currentUser.displayName || '';
+    document.getElementById('profileFormFirstName').value = userProfile?.firstName || fullName.split(' ')[0] || '';
+    document.getElementById('profileFormLastName').value = userProfile?.lastName || fullName.split(' ').slice(1).join(' ') || '';
+    document.getElementById('profileFormEmail').value = currentUser.email || '';
+  }
+  if (userProfile) {
+    document.getElementById('profileFormCity').value = userProfile.city || '';
+    document.getElementById('profileFormKids').value = userProfile.kidsAges || '';
+    document.getElementById('profileFormWhatsapp').value = userProfile.whatsapp || '';
+    document.getElementById('profileFormHeardFrom').value = userProfile.heardFrom || '';
+    document.getElementById('profileFormExpectations').value = userProfile.expectations || '';
+    document.getElementById('profileFormDisclaimer').checked = userProfile.disclaimerAccepted || false;
+  }
+}
+
+function closeProfileModal() {
+  document.getElementById('profileModal').classList.remove('open');
+}
+
+async function handleProfileSubmit(e) {
+  e.preventDefault();
+  const submitBtn = document.getElementById('profileFormSubmit');
+  submitBtn.textContent = 'שומר...';
+  submitBtn.disabled = true;
+
+  try {
+    const firstName = document.getElementById('profileFormFirstName').value;
+    const lastName = document.getElementById('profileFormLastName').value;
+    await saveProfile({
+      firstName: firstName,
+      lastName: lastName,
+      name: (firstName + ' ' + lastName).trim(),
+      email: document.getElementById('profileFormEmail').value,
+      city: document.getElementById('profileFormCity').value,
+      kidsAges: document.getElementById('profileFormKids').value,
+      whatsapp: document.getElementById('profileFormWhatsapp').value,
+      heardFrom: document.getElementById('profileFormHeardFrom').value,
+      expectations: document.getElementById('profileFormExpectations').value,
+      disclaimerAccepted: document.getElementById('profileFormDisclaimer').checked,
+      favorites: userProfile?.favorites || JSON.parse(localStorage.getItem('likedEvents') || '[]')
+    });
+
+    submitBtn.textContent = 'נשמר!';
+    setTimeout(() => {
+      closeProfileModal();
+      submitBtn.textContent = 'שמירה';
+      submitBtn.disabled = false;
+      // Update profile name in nav
+      const profileName = document.getElementById('profileName');
+      if (profileName) {
+        profileName.textContent = document.getElementById('profileFormFirstName').value || 'הפרופיל שלי';
+      }
+    }, 800);
+  } catch (err) {
+    console.error('Profile save error:', err);
+    submitBtn.textContent = 'שגיאה - נסו שוב';
+    submitBtn.disabled = false;
+  }
+}
+
+// Close profile modal on backdrop click
+document.getElementById('profileModal').addEventListener('click', function(e) {
+  if (e.target === this) closeProfileModal();
+});
+
+// Close sign-in modal on backdrop click
+document.getElementById('signinModal').addEventListener('click', function(e) {
+  if (e.target === this) dismissSigninModal();
+});
 </script>
 </body>
 </html>
