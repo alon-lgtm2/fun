@@ -2697,6 +2697,10 @@ function saveLikes(likes) {
   localStorage.setItem('fun_likes', JSON.stringify(likes));
 }
 
+function getLikeCountDisplay(id) {
+  return '';
+}
+
 function isLiked(id) {
   return !!getLikes()[id];
 }
