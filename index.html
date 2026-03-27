@@ -6,7 +6,7 @@
 <title>אז מה עושים היום? -fun.israelis.nl</title>
 <meta name="description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
 <meta property="og:title" content="אז מה עושים היום">
-<meta property="og:description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
+<meta property="og:description" content="אירועים ופעילויות נבחרות בהולנד לכל המשפחה – כל סופ״ש מתעדכן">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fun.israelis.nl">
 <meta property="og:site_name" content="fun.israelis.nl">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="אז מה עושים היום">
-<meta name="twitter:description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
+<meta name="twitter:description" content="אירועים ופעילויות נבחרות בהולנד לכל המשפחה – כל סופ״ש מתעדכן">
 <meta name="twitter:image" content="https://fun.israelis.nl/images/og2.png">
 <link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
 <link rel="manifest" href="manifest.json">
@@ -690,10 +690,9 @@ body {
 .event-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 10px;
   margin-top: 4px;
-  width: 100%;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 700px) {
@@ -701,6 +700,7 @@ body {
     justify-content: flex-end;
     padding: 12px 0 24px;
     margin: 8px 0;
+    width: 100%;
     border-top: 1px solid rgba(155,48,255,0.06);
     border-bottom: 1px solid rgba(155,48,255,0.06);
   }
@@ -710,7 +710,7 @@ body {
   .event-inner { position: relative; }
   .event-body { padding-left: 0; }
   .event-actions-icons { display: none; }
-  .event-actions { justify-content: flex-start; }
+  .event-actions-btns { width: 100%; justify-content: flex-end; }
 }
 
 @media (max-width: 700px) {
@@ -797,16 +797,17 @@ body {
 .btn-s {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 10px 20px;
+  gap: 6px;
+  padding: 8px 14px;
   border-radius: 22px;
   font-family: 'Heebo', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   border: none;
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .btn-wa { background: linear-gradient(135deg, #25D366, #20BD5A); color: white; box-shadow: 0 2px 6px rgba(37,211,102,0.25); }
@@ -817,6 +818,25 @@ body {
 .btn-nav:hover { background: #3367D6; }
 .btn-lnk { background: var(--gradient-soft); color: var(--purple); border: 1px solid rgba(155,48,255,0.15); }
 .btn-lnk:hover { border-color: var(--purple); }
+
+.like-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  border-radius: 22px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: 2px solid #e8e0f0;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.like-row:hover { border-color: #f0a0b0; background: #fff5f6; }
+.like-row.liked { background: #ffe0e6; border-color: #e74c7a; }
+.like-row .btn-like { font-size: 15px; line-height: 1; }
+.like-row .like-count { font-size: 12px; color: var(--text-lighter); pointer-events: none; }
 
 /* ===== CALENDAR VIEW ===== */
 .view-panel { display: none; }
@@ -1839,17 +1859,17 @@ body {
 
 /* Desktop: larger text for readability */
 @media (min-width: 701px) {
-  .hero-title { font-size: 48px; }
-  .hero-subtitle { font-size: 20px; }
+  .hero-title { font-size: 52px; }
+  .hero-subtitle { font-size: 22px; }
   .hero-badge { font-size: 15px; }
   .hero-desc { font-size: 17px; }
   .nav-logo { font-size: 17px; }
-  .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
-  .event-title { font-size: 19px; }
-  .event-desc { font-size: 15px; }
-  .event-details { font-size: 13px; }
-  .etag { font-size: 12px; }
-  .filter-pill { font-size: 13px; }
+  .nav-tab-pill { font-size: 17px; padding: 7px 18px; }
+  .event-title { font-size: 22px; }
+  .event-desc { font-size: 17px; }
+  .event-details { font-size: 15px; }
+  .etag { font-size: 14px; }
+  .filter-pill { font-size: 15px; }
   .results-count { font-size: 15px; }
   .results-weekend-label { font-size: 16px; }
   .loading-text { font-size: 16px; }
