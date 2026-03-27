@@ -292,10 +292,44 @@ body {
 }
 
 /* ===== MAP ===== */
-.map-container {
+/* ===== INTRO ===== */
+.places-intro {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 14px 24px;
+  padding: 16px 24px 0;
+  text-align: center;
+}
+.places-intro-text {
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-light);
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 16px 24px;
+  border: 1px solid var(--border);
+}
+.places-intro-text a {
+  color: var(--purple);
+  font-weight: 700;
+  text-decoration: none;
+}
+.places-intro-text a:hover { text-decoration: underline; }
+
+/* ===== SIDE-BY-SIDE LAYOUT ===== */
+.places-layout {
+  display: flex;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 24px 40px;
+  align-items: flex-start;
+}
+
+.places-map-col {
+  flex: 0 0 45%;
+  position: sticky;
+  top: 70px;
 }
 
 #placesMap {
@@ -307,8 +341,20 @@ body {
   z-index: 1;
 }
 
-@media (max-width: 700px) {
-  #placesMap { height: 350px; }
+.places-list-col {
+  flex: 1;
+  min-width: 0;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-left: 4px;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 900px) {
+  .places-layout { flex-direction: column; }
+  .places-map-col { flex: none; width: 100%; position: static; }
+  #placesMap { height: 300px; }
+  .places-list-col { max-height: none; overflow-y: visible; }
   .leaflet-control-zoom { display: none; }
 }
 
@@ -334,12 +380,8 @@ body {
 
 .places-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-}
-
-@media (max-width: 700px) {
-  .places-grid { grid-template-columns: 1fr; }
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
 .place-card {
@@ -830,18 +872,17 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   </button>
 </div>
 
-<!-- STICKY NAV -->
+<!-- INTRO -->
+<div class="places-intro">
+  <p class="places-intro-text">
+    ✨ כל המקומות כאן נבחרו בקפידה – היינו בהם באופן אישי, בדקנו אותם עם המשפחה, ואנחנו חותמים עליהם בשמחה.
+    <br>רוצים להציע מקום? יש לכם שאלה? <a href="#" onclick="event.preventDefault(); openSuggestionModal('feedback')">צרו איתנו קשר</a> 💬
+  </p>
+</div>
+
+<!-- FILTERS -->
 <div class="sticky-nav">
   <div class="nav-inner">
-    <div class="nav-top" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
-      <div class="view-toggle-row">
-        <button class="view-btn active" data-view="map" onclick="switchView('map')"><span class="view-icon">🗺️</span> מפה</button>
-        <button class="view-btn" data-view="list" onclick="switchView('list')"><span class="view-icon">📋</span> רשימה</button>
-      </div>
-      <div class="search-row">
-        <input type="text" class="search-input" id="searchInput" placeholder="🔍 חיפוש מקום..." oninput="filterPlaces()">
-      </div>
-    </div>
     <div class="filters-row">
       <button class="filter-pill active" data-cat="all" onclick="toggleFilter('all')">הכל <span class="filter-count" id="countAll"></span></button>
       <button class="filter-pill" data-cat="restaurant" onclick="toggleFilter('restaurant')"><span class="filter-dot" style="background:var(--restaurant)"></span> 🍽️ מסעדות עם ילדים <span class="filter-count" id="countRestaurant"></span></button>
@@ -851,16 +892,12 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   </div>
 </div>
 
-<!-- MAP VIEW -->
-<div class="view-panel active" id="mapView">
-  <div class="map-container">
+<!-- SIDE-BY-SIDE: MAP + LIST -->
+<div class="places-layout">
+  <div class="places-map-col">
     <div id="placesMap"></div>
   </div>
-</div>
-
-<!-- LIST VIEW -->
-<div class="view-panel" id="listView">
-  <div class="content">
+  <div class="places-list-col" id="placesListCol">
     <div class="results-bar">
       <span class="results-count" id="resultsCount"></span>
     </div>
@@ -868,12 +905,12 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   </div>
 </div>
 
-<!-- LIST BELOW MAP (always visible in map mode) -->
-<div class="content" id="mapListContent">
-  <div class="results-bar">
-    <span class="results-count" id="resultsCountMap"></span>
-  </div>
+<!-- Hidden elements kept for compatibility -->
+<div style="display:none" id="mapView"></div>
+<div style="display:none" id="listView"></div>
+<div style="display:none" id="mapListContent">
   <div class="places-grid" id="placesGridMap"></div>
+  <span id="resultsCountMap"></span>
 </div>
 
 <!-- SUGGEST -->
@@ -1040,7 +1077,12 @@ function updateCounts() {
 
 // ===== MAP =====
 function initMap() {
-  map = L.map('placesMap', { scrollWheelZoom: true }).setView([52.3, 4.9], 8);
+  const nlBounds = L.latLngBounds([50.75, 3.2], [53.55, 7.25]);
+  map = L.map('placesMap', {
+    scrollWheelZoom: true,
+    maxBounds: nlBounds.pad(0.1),
+    minZoom: 7
+  }).setView([52.2, 5.1], 8);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
@@ -1098,10 +1140,10 @@ function addMarkers() {
     markers.push(marker);
   });
 
-  // Fit bounds if markers exist
+  // Fit bounds if markers exist, but keep within Netherlands
   if (markers.length > 0) {
     const group = L.featureGroup(markers);
-    map.fitBounds(group.getBounds().pad(0.1));
+    map.fitBounds(group.getBounds().pad(0.1), { maxZoom: 12 });
   }
 }
 
@@ -1133,10 +1175,10 @@ function toggleFilter(cat) {
 }
 
 function filterPlaces() {
-  searchTerm = document.getElementById('searchInput').value.trim();
+  const searchEl = document.getElementById('searchInput');
+  searchTerm = searchEl ? searchEl.value.trim() : '';
 
   addMarkers();
-  renderCards('placesGridMap');
   renderCards('placesGrid');
 }
 
@@ -1145,11 +1187,8 @@ function renderCards(containerId) {
   const container = document.getElementById(containerId);
   const filtered = getFilteredPlaces();
 
-  const countEl = containerId === 'placesGrid'
-    ? document.getElementById('resultsCount')
-    : document.getElementById('resultsCountMap');
-
-  countEl.textContent = `${filtered.length} מקומות`;
+  const countEl = document.getElementById('resultsCount');
+  if (countEl) countEl.textContent = `${filtered.length} מקומות`;
 
   if (filtered.length === 0) {
     container.innerHTML = `
