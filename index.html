@@ -175,10 +175,11 @@ body {
 .nav-bar-outer {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 8px 16px;
-  gap: 10px;
+  padding: 8px 16px 0;
+  gap: 6px;
 }
 
 .nav-bar {
@@ -187,11 +188,8 @@ body {
   gap: 10px;
   flex: 1;
   min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
+  flex-wrap: wrap;
 }
-
-.nav-bar::-webkit-scrollbar { display: none; }
 
 .nav-menu-wrapper {
   position: relative;
@@ -477,15 +475,11 @@ body {
 .filters-row {
   display: flex;
   gap: 5px;
-  flex: 1;
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding: 0;
+  width: 100%;
+  flex-wrap: wrap;
+  padding: 4px 16px 6px;
   justify-content: flex-start;
 }
-
-.filters-row::-webkit-scrollbar { display: none; }
 
 .filter-pill {
   white-space: nowrap;
@@ -499,7 +493,6 @@ body {
   color: var(--text-light);
   cursor: pointer;
   transition: all 0.2s;
-  flex-shrink: 0;
 }
 
 .filter-pill:hover:not(.disabled) { border-color: var(--purple); color: var(--purple); }
@@ -1918,6 +1911,10 @@ body {
   .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
   .auth-btn .auth-btn-text { display: none; }
   .auth-btn { padding: 7px 12px; }
+  .filters-row { gap: 4px; }
+  .filter-pill { padding: 3px 8px; font-size: 10px; }
+  .weekend-active-btn .wk-dates { font-size: 11px; }
+  .weekend-active-btn .wk-count { font-size: 9px; }
 }
 
 /* Desktop: larger text for readability */
@@ -1979,28 +1976,13 @@ body {
       <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
 
       <div class="weekend-picker" id="weekendPicker">
-        <button class="weekend-active-btn" id="weekendActiveBtn">
+        <div class="weekend-active-btn" id="weekendActiveBtn" style="cursor:default;">
           <span class="wk-dates" id="weekendActiveDates"></span>
           <span class="wk-count" id="weekendActiveCount"></span>
-          <span class="wk-arrow">▼</span>
-        </button>
-        <div class="weekend-dropdown">
+        </div>
+        <div class="weekend-dropdown" style="display:none;">
           <div class="weekend-chips" id="weekendChips"></div>
         </div>
-      </div>
-
-      <div class="filters-row" id="filters">
-        <button class="filter-pill active" data-filter="all">הכל</button>
-        <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
-        <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
-        <button class="filter-pill" data-filter="free">🆓 חינם</button>
-        <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
-        <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
-        <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
-        <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
-        <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
-        <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
-        <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
       </div>
 
       <div class="view-toggles">
@@ -2025,6 +2007,20 @@ body {
       <div class="nav-menu" id="navMenu">
         <button class="nav-menu-item" id="authBtnMobile" onclick="document.getElementById('navMenu').classList.remove('open'); signInWithGoogle()">🔑 התחברו עם Google</button>
       </div>
+    </div>
+
+    <div class="filters-row" id="filters">
+      <button class="filter-pill active" data-filter="all">הכל</button>
+      <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
+      <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
+      <button class="filter-pill" data-filter="free">🆓 חינם</button>
+      <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
+      <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
+      <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
+      <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
+      <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
+      <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
+      <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
     </div>
   </div>
 </nav>
@@ -2348,7 +2344,7 @@ function eventOnWeekend(e, satStr, sunStr) {
 
 function buildWeekendChips() {
   const container = document.getElementById('weekendChips');
-  const weekends = getUpcomingWeekends(8);
+  const weekends = getUpcomingWeekends(1);
   const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
 
   const firstWithEvents = weekends.findIndex(w => w.eventCount > 0);
