@@ -92,6 +92,34 @@ body {
 
 .hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
 
+.hero-nav-tabs-unified {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px 0;
+  max-width: 1000px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+}
+.hero-tab {
+  padding: 7px 16px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.hero-tab:hover { background: rgba(255,255,255,0.25); color: white; border-color: rgba(255,255,255,0.5); }
+.hero-tab.active { background: white; color: var(--purple); border-color: white; font-weight: 700; }
+
 .hero-back {
   display: inline-flex;
   align-items: center;
@@ -780,26 +808,16 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 <!-- HERO -->
 <div class="hero">
   <div class="hero-content">
-    <div class="hero-nav-tabs">
-      <a href="index.html" class="hero-nav-tab">אירועים</a>
-      <div class="hero-nav-divider"></div>
-      <a href="places.html" class="hero-nav-tab active">מקומות</a>
-      <div class="hero-nav-divider"></div>
-      <a href="holidays.html" class="hero-nav-tab">מתי חופש?</a>
-      <div class="hero-nav-divider"></div>
-      <a href="about.html" class="hero-nav-tab">עלינו</a>
-      <div class="hero-nav-divider"></div>
-      <button class="hero-auth-btn" id="authBtn" onclick="signInWithGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-        התחברו
-      </button>
-      <a href="index.html" class="hero-profile-btn" id="profileBtn">
-        <div class="hero-profile-avatar" id="profileAvatar">?</div>
-        <span id="profileName">הפרופיל</span>
-      </a>
-    </div>
     <h1 class="hero-title">📍 מקומות מומלצים</h1>
     <p class="hero-subtitle">מסעדות, מוזיאונים וגני שעשועים שהיינו בהם באופן אישי ואנחנו חותמים עליהם</p>
+  </div>
+  <div class="hero-nav-tabs-unified">
+    <a href="index.html" class="hero-tab">🏠 עמוד הבית</a>
+    <a href="places.html" class="hero-tab active">📍 מקומות מומלצים</a>
+    <a href="holidays.html" class="hero-tab">📅 מתי חופש?</a>
+    <a href="https://www.buienradar.nl/weer/weerbericht" target="_blank" class="hero-tab">🌤️ תחזית מזג אוויר</a>
+    <a href="about.html" class="hero-tab">🤝 נעים להכיר</a>
+    <a href="#" class="hero-tab" onclick="event.preventDefault(); openSuggestionModal('feedback')">💬 צרו קשר</a>
   </div>
 </div>
 
@@ -814,15 +832,6 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 
 <!-- STICKY NAV -->
 <div class="sticky-nav">
-  <div style="display:flex;align-items:center;gap:12px;padding:8px 16px 0;max-width:1400px;margin:0 auto;">
-    <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
-  </div>
-  <div class="nav-tabs-row">
-    <a href="index.html" class="nav-tab-pill">🏠 עמוד הבית</a>
-    <a href="places.html" class="nav-tab-pill active">📍 מקומות מומלצים</a>
-    <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
-    <a href="about.html" class="nav-tab-pill">🤝 נעים להכיר</a>
-  </div>
   <div class="nav-inner">
     <div class="nav-top" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
       <div class="view-toggle-row">
