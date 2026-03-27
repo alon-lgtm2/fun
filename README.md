@@ -48,12 +48,14 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 ## Key Features
 
 ### index.html (Home)
-- **Sticky navigation bar** — single compact inline bar with logo, weekend picker, filter pills, and hamburger menu
+- **Sticky navigation bar** — single compact inline bar with logo (links home), weekend picker, filter pills, and hamburger menu
 - **Weekend picker** — dropdown to select and browse upcoming weekends
 - **Hamburger menu** — links to Places, Holidays, About, and Contact
-- **Event cards** — clickable images linking to event details, with action icons (share, navigate, info)
+- **Event cards** — clickable images linking to event details, with action icons (share, navigate, info, like)
 - **Image retry** — automatically retries failed background images up to 3 times with cache-busting
 - **CSV data loading** — events fetched from Google Sheets on page load
+- **Desktop readability** — larger font sizes on screens wider than 700px for improved readability
+- **Auth redirect** — users who authenticate from sub-pages are redirected to the home page
 
 ### places.html (Recommended Places)
 - **Leaflet interactive map** — markers for all places with category-colored pins
@@ -63,13 +65,14 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 - **Share button** — share the places page URL
 - **Dynamic data** — places loaded from Google Sheets CSV (gid=993728456)
 
-### holidays.html (Holidays & Vacations)
+### holidays.html (מתי חופש? — Holidays & Vacations)
 - **Three tabs** — official holidays, school vacations by region, important info
 - Self-contained tab-switching JS
+- Navigation label: "📅 מתי חופש?"
 
 ### about.html (About)
 - **2-column grid** with 4 info blocks + disclaimer
-- Back navigation to home page
+- Prominent home link in sticky nav
 
 ## Tech Stack
 
@@ -85,11 +88,13 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 ## Local Development
 
 ```bash
-# Serve locally on port 8000
+# Serve locally (via npx serve or Python)
+npx serve .
+# or
 python -m http.server 8000
 ```
 
-Then open [http://localhost:8000](http://localhost:8000).
+Then open [http://localhost:3000](http://localhost:3000) (serve) or [http://localhost:8000](http://localhost:8000) (Python).
 
 ## Deployment
 
@@ -116,7 +121,8 @@ fun/
 ├── images/             # Event images, icons, OG tags
 │   ├── Button-Purple.svg
 │   ├── az.png          # App icon
-│   ├── ogtag.png       # Open Graph image
+│   ├── og2.png         # Open Graph image (current)
+│   ├── ogtag.png       # Open Graph image (legacy)
 │   └── ...             # Event images
 └── .claude/
     └── launch.json     # Dev server config

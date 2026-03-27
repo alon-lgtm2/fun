@@ -4,22 +4,27 @@
 A Hebrew-language web app for Israeli families living in the Netherlands to discover weekend events and activities. Curated, time-bound, local events — not general attractions.
 
 ## Target Audience
-- Israeli parents with kids, living in the Netherlands
+- Israeli families living in the Netherlands (not limited to children — quality activities for all family members)
 
 ## Current State (Live)
-- Single HTML file (`index.html`) — no build step
+- Four HTML pages (`index.html`, `places.html`, `holidays.html`, `about.html`) — no build step
 - Data fetched from a published Google Sheet on each page load
 - Two views: List (calendar-grouped) and Map (Leaflet)
 - Weekend selector (upcoming 8 weekends) with auto-advance on scroll
 - Category filters with automatic disable for empty categories
-- Like button with community counter (localStorage-based)
+- Like button (localStorage-based)
 - Weather display per event (Open-Meteo API)
 - WhatsApp sharing with site footer branding
 - Feedback form with tabs (add event / feedback) via Formspree
 - Empty "add event" card at end of event list
 - Hebrew RTL layout, mobile-friendly with fat-finger CTAs
+- Desktop-optimized font sizes for readability (min-width: 701px)
+- Prominent home navigation ("🎪 אז מה עושים?") on all sub-pages
+- Auth redirect to home page when users authenticate from sub-pages
+- Map zoom controls hidden on mobile to prevent card overlap
 - Hosted on GitHub Pages with custom domain
 - Umami analytics
+- Firebase authentication (Google sign-in)
 
 ## Data Source
 - Events manually curated in a Google Sheet
@@ -61,9 +66,15 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 - Empty card at end of event list invites submissions
 
 ### SEO & Branding
-- Open Graph meta tags with cover image
+- Open Graph meta tags with `og2.png` image — positioned as quality family activities
+- OG description: "פעילויות איכות עם המשפחה בהולנד בסופ״ש"
 - Purple button SVG favicon
 - Umami analytics tracking
+
+### Navigation
+- Sticky nav bar with home logo link on all pages
+- Tab pills: אירועים, 📍 מקומות, 📅 מתי חופש?, 🧡 עלינו
+- Holidays section branded as "מתי חופש?" (catchy phrasing instead of generic "חגים")
 
 ## Architecture
 
@@ -101,11 +112,17 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 ### File Structure
 ```
 fun/
-├── index.html              # Main app (single file)
+├── index.html              # Home page — weekend events
+├── places.html             # Recommended places map
+├── holidays.html           # Holidays & vacations (מתי חופש?)
+├── about.html              # About page
 ├── CNAME                   # Custom domain config
+├── manifest.json           # PWA manifest
+├── sw.js                   # Service worker
 ├── images/                 # Event images
 │   ├── Button-Purple.svg   # Favicon
-│   └── og-cover.png        # OG image
+│   ├── og2.png             # OG image (current)
+│   └── ogtag.png           # OG image (legacy)
 ├── PRD.md                  # This file
 └── DEPLOY-INSTRUCTIONS.md  # Deploy guide
 ```
