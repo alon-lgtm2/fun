@@ -74,7 +74,7 @@ body {
 .hero {
   background: var(--gradient);
   color: white;
-  padding: 24px 20px 16px;
+  padding: 20px 20px 12px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -136,8 +136,8 @@ body {
 
 .hero-title {
   font-family: 'Rubik', sans-serif;
-  font-size: 36px;
-  font-weight: 900;
+  font-size: 32px;
+  font-weight: 800;
   letter-spacing: -0.5px;
   margin-bottom: 6px;
   text-shadow: 2px 3px 8px rgba(0,0,0,0.15);
@@ -147,7 +147,6 @@ body {
 .hero-subtitle {
   font-size: 16px;
   opacity: 0.9;
-  font-weight: 300;
 }
 
 /* ===== STICKY NAV ===== */
@@ -347,6 +346,41 @@ body {
 }
 .drive-pill:hover { border-color: var(--blue); color: var(--blue); }
 .drive-pill.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+.duration-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.duration-label {
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.duration-pills {
+  display: flex;
+  gap: 4px;
+}
+
+.duration-pill {
+  padding: 4px 12px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.duration-pill:hover { border-color: #E08F00; color: #E08F00; }
+.duration-pill.active { background: #E08F00; color: white; border-color: #E08F00; }
 
 /* ===== PLACE META (distance + duration badges) ===== */
 .place-meta {
@@ -815,6 +849,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 @media (max-width: 900px) {
   .location-row { flex-direction: column; gap: 8px; }
   .drive-pills { flex-wrap: wrap; justify-content: center; }
+  .duration-pills { flex-wrap: wrap; justify-content: center; }
 }
 
 @media (max-width: 700px) {
@@ -829,7 +864,8 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .map-container { padding: 10px 16px; }
   .location-select { font-size: 12px; padding: 5px 10px; }
   .drive-pill { font-size: 11px; padding: 3px 8px; }
-  .drive-label, .location-label { font-size: 12px; }
+  .duration-pill { font-size: 11px; padding: 3px 8px; }
+  .drive-label, .location-label, .duration-label { font-size: 12px; }
 }
 
 /* ===== AUTH NAV TABS ===== */
@@ -957,11 +993,13 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .hero-nav-tab { font-size: 12px; padding: 4px 10px; }
   .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
   .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
+  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
+  .hero-tab { font-size: 12px; padding: 5px 10px; }
 }
 
 /* Desktop: larger text for readability */
 @media (min-width: 701px) {
-  .hero-title { font-size: 40px; }
+  .hero-title { font-size: 36px; }
   .hero-subtitle { font-size: 18px; }
   .nav-logo { font-size: 17px; }
   .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
@@ -986,6 +1024,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
     <a href="places.html" class="hero-tab active">📍 מקומות מומלצים</a>
     <a href="holidays.html" class="hero-tab">📅 מתי חופש?</a>
     <a href="weather.html" class="hero-tab">🌤️ תחזית מזג אוויר</a>
+    <a href="articles.html" class="hero-tab">📝 כתבות</a>
     <a href="about.html" class="hero-tab">🤝 נעים להכיר</a>
     <a href="#" class="hero-tab" onclick="event.preventDefault(); openSuggestionModal('feedback')">💬 צרו קשר</a>
   </div>
@@ -1033,6 +1072,16 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
           <button class="drive-pill" data-minutes="30" onclick="setMaxDrive(30)">30 דק׳</button>
           <button class="drive-pill" data-minutes="45" onclick="setMaxDrive(45)">45 דק׳</button>
           <button class="drive-pill" data-minutes="60" onclick="setMaxDrive(60)">שעה</button>
+        </div>
+      </div>
+      <div class="duration-filter" id="durationFilter">
+        <span class="duration-label">⏱️ משך הבילוי:</span>
+        <div class="duration-pills" id="durationPills">
+          <button class="duration-pill active" data-hours="" onclick="setMaxDuration(null)">הכל</button>
+          <button class="duration-pill" data-hours="1" onclick="setMaxDuration(1)">עד שעה</button>
+          <button class="duration-pill" data-hours="2" onclick="setMaxDuration(2)">עד שעתיים</button>
+          <button class="duration-pill" data-hours="3" onclick="setMaxDuration(3)">עד 3 שעות</button>
+          <button class="duration-pill" data-hours="4" onclick="setMaxDuration(4)">חצי יום</button>
         </div>
       </div>
     </div>
@@ -1185,7 +1234,7 @@ async function loadPlaces() {
       cat: r.cat || 'restaurant',
       lat: parseFloat(r.lat),
       lng: parseFloat(r.lng),
-      duration: r.duration || null,
+      duration: r.duration ? parseFloat(r.duration) : null,
     }));
   } catch (err) {
     console.error('Error loading places:', err);
@@ -1208,6 +1257,7 @@ let searchTerm = '';
 let userLat = null;
 let userLng = null;
 let maxDriveMinutes = null;
+let maxDurationHours = null;
 let distanceCircle = null;
 
 // ===== DUTCH CITIES =====
@@ -1378,6 +1428,28 @@ function initCityFromProfile() {
   recomputeDistances();
 }
 
+// ===== DURATION UTILITIES =====
+function formatDuration(hours) {
+  if (hours == null || isNaN(hours)) return null;
+  if (hours <= 0.5) return 'עד חצי שעה';
+  if (hours <= 0.75) return 'כ-45 דק׳';
+  if (hours === 1) return 'כשעה';
+  if (hours === 1.5) return 'שעה וחצי';
+  if (hours === 2) return 'כשעתיים';
+  if (hours === 2.5) return 'שעתיים וחצי';
+  if (hours === 3) return 'כ-3 שעות';
+  if (hours <= 4) return `כ-${hours} שעות`;
+  return 'חצי יום+';
+}
+
+function setMaxDuration(hours) {
+  maxDurationHours = hours;
+  document.querySelectorAll('.duration-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.hours === String(hours || ''));
+  });
+  filterPlaces();
+}
+
 // ===== CATEGORY CONFIG =====
 const CAT_CONFIG = {
   restaurant: { color: '#0288D1', emoji: '🍽️', label: 'מסעדה' },
@@ -1468,7 +1540,7 @@ function addMarkers() {
 
     const metaParts = [];
     if (place._driveMin != null) metaParts.push(`🚗 ${place._driveMin} דק׳ (${place._distKm} ק״מ)`);
-    if (place.duration) metaParts.push(`⏱️ ${place.duration}`);
+    if (place.duration) metaParts.push(`⏱️ ${formatDuration(place.duration)}`);
 
     const popupHtml = `
       <div class="place-popup">
@@ -1510,6 +1582,10 @@ function getFilteredPlaces() {
   // Drive time filter
   if (maxDriveMinutes != null && userLat != null) {
     filtered = filtered.filter(p => p._driveMin != null && p._driveMin <= maxDriveMinutes);
+  }
+  // Duration filter
+  if (maxDurationHours != null) {
+    filtered = filtered.filter(p => p.duration != null && p.duration <= maxDurationHours);
   }
   // Sort by distance when location is set
   if (userLat != null && userLng != null) {
@@ -1571,7 +1647,7 @@ function renderCards(containerId) {
         <span class="place-category ${place.cat}">${config.emoji} ${config.label}</span>
         ${(place._driveMin != null || place.duration) ? `<div class="place-meta">
           ${place._driveMin != null ? `<span class="place-drive-badge">🚗 ${place._driveMin} דק׳ (${place._distKm} ק״מ)</span>` : ''}
-          ${place.duration ? `<span class="place-duration-badge">⏱️ ${place.duration}</span>` : ''}
+          ${place.duration ? `<span class="place-duration-badge">⏱️ ${formatDuration(place.duration)}</span>` : ''}
         </div>` : ''}
         ${place.desc
           ? `<div class="place-desc">${place.desc}</div>`
