@@ -87,7 +87,7 @@ body {
   pointer-events: none;
 }
 
-.hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+.hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; padding-top: 18px; }
 
 .hero-badge {
   display: inline-flex;
@@ -102,7 +102,7 @@ body {
   font-size: 13px;
   box-shadow: 0 3px 12px rgba(46,204,64,0.3);
   position: absolute;
-  top: -6px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%) rotate(-2deg);
   z-index: 3;
@@ -194,17 +194,6 @@ body {
 }
 
 
-.nav-logo {
-  font-family: 'Rubik', sans-serif;
-  font-weight: 800;
-  font-size: 15px;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
 
 .liked-toggle {
   display: flex;
@@ -304,33 +293,6 @@ body {
   flex-shrink: 0;
 }
 
-.weekend-active-btn {
-  white-space: nowrap;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 14px;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background: var(--gradient);
-  color: white;
-  cursor: pointer;
-  transition: all 0.25s;
-  font-family: 'Heebo', sans-serif;
-}
-
-.weekend-active-btn:hover { opacity: 0.9; }
-.weekend-active-btn .wk-dates { font-size: 13px; font-weight: 700; line-height: 1; margin: 0; }
-.weekend-active-btn .wk-count {
-  font-size: 10px;
-  font-weight: 600;
-  background: rgba(255,255,255,0.25);
-  color: white;
-  padding: 1px 6px;
-  border-radius: 100px;
-}
-.weekend-active-btn .wk-arrow { font-size: 10px; opacity: 0.8; transition: transform 0.2s; }
 .weekend-picker.open .wk-arrow { transform: rotate(180deg); }
 
 .weekend-dropdown {
@@ -2071,8 +2033,6 @@ body {
   .auth-btn { padding: 7px 12px; }
   .filters-row { gap: 4px; }
   .filter-pill { padding: 3px 8px; font-size: 10px; }
-  .weekend-active-btn .wk-dates { font-size: 11px; }
-  .weekend-active-btn .wk-count { font-size: 9px; }
 }
 
 /* Desktop: larger text for readability */
@@ -2080,8 +2040,7 @@ body {
   .hero-title { font-size: 36px; }
   .hero-subtitle { font-size: 18px; }
   .hero-badge { font-size: 15px; }
-  .nav-logo { font-size: 17px; }
-  .nav-tab-pill { font-size: 17px; padding: 7px 18px; }
+.nav-tab-pill { font-size: 17px; padding: 7px 18px; }
   .event-title { font-size: 22px; }
   .event-desc { font-size: 17px; }
   .event-details { font-size: 15px; }
@@ -2110,7 +2069,7 @@ body {
   <div class="hero-nav-tabs-unified">
     <a href="index.html" class="hero-tab active">🏠 עמוד הבית</a>
     <a href="places.html" class="hero-tab">📍 מקומות מומלצים</a>
-    <a href="holidays.html" class="hero-tab">📅 מתי חופש?</a>
+    <a href="holidays.html" class="hero-tab">📅 לוח חופשות</a>
     <a href="weather.html" class="hero-tab">🌤️ תחזית מזג אוויר</a>
     <a href="articles.html" class="hero-tab">📝 כתבות</a>
     <a href="about.html" class="hero-tab">🤝 נעים להכיר</a>
@@ -2131,21 +2090,10 @@ body {
 <nav class="sticky-nav">
   <div class="nav-bar-outer">
     <div class="nav-bar">
-      <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
-
       <div class="weekend-picker" id="weekendPicker">
-        <div class="weekend-active-btn" id="weekendActiveBtn" style="cursor:default;">
-          <span class="wk-dates" id="weekendActiveDates"></span>
-          <span class="wk-count" id="weekendActiveCount"></span>
-        </div>
         <div class="weekend-dropdown" style="display:none;">
           <div class="weekend-chips" id="weekendChips"></div>
         </div>
-      </div>
-
-      <div class="view-toggles">
-        <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
-        <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
       </div>
     </div>
 
@@ -2175,34 +2123,38 @@ body {
     <div class="location-row" id="locationRow">
       <div class="filter-group" title="בחרו עיר לחישוב מרחק נסיעה">
         <span class="filter-group-icon">📍</span>
-        <span class="filter-group-label">מיקום</span>
+        <span class="filter-group-label">אנחנו יוצאים מ</span>
         <select class="location-select" id="citySelect" onchange="setUserCity(this.value)" title="בחרו את העיר שלכם"></select>
         <button class="location-detect-btn" onclick="detectLocation()" title="זיהוי מיקום אוטומטי">📡</button>
       </div>
       <div class="filter-group-divider"></div>
       <div class="filter-group" title="סננו לפי זמן נסיעה מהעיר שנבחרה">
         <span class="filter-group-icon">🚗</span>
-        <span class="filter-group-label">נסיעה</span>
+        <span class="filter-group-label">נשמח לנסוע לא יותר מ</span>
         <div class="drive-pills">
-          <button class="drive-pill active" data-minutes="" onclick="setMaxDrive(null)" title="הצגת כל האירועים">הכל</button>
           <button class="drive-pill" data-minutes="15" onclick="setMaxDrive(15)" title="עד 15 דקות נסיעה">15׳</button>
           <button class="drive-pill" data-minutes="20" onclick="setMaxDrive(20)" title="עד 20 דקות נסיעה">20׳</button>
           <button class="drive-pill" data-minutes="30" onclick="setMaxDrive(30)" title="עד 30 דקות נסיעה">30׳</button>
           <button class="drive-pill" data-minutes="45" onclick="setMaxDrive(45)" title="עד 45 דקות נסיעה">45׳</button>
-          <button class="drive-pill" data-minutes="60" onclick="setMaxDrive(60)" title="עד שעה נסיעה">60׳</button>
+          <button class="drive-pill" data-minutes="60" onclick="setMaxDrive(60)" title="עד שעה נסיעה">שעה</button>
+          <button class="drive-pill active" data-minutes="" onclick="setMaxDrive(null)" title="לא משנה כמה רחוק">זורמים</button>
         </div>
       </div>
       <div class="filter-group-divider"></div>
       <div class="filter-group" title="סננו לפי משך הפעילות">
         <span class="filter-group-icon">⏱️</span>
-        <span class="filter-group-label">משך</span>
+        <span class="filter-group-label">מינימום זמן שנדרש לבילוי כזה</span>
         <div class="duration-pills">
-          <button class="duration-pill active" data-hours="" onclick="setMaxDuration(null)" title="הצגת כל האירועים">הכל</button>
-          <button class="duration-pill" data-hours="1" onclick="setMaxDuration(1)" title="פעילויות עד שעה">עד שעה</button>
-          <button class="duration-pill" data-hours="2" onclick="setMaxDuration(2)" title="פעילויות עד שעתיים">עד 2</button>
-          <button class="duration-pill" data-hours="3" onclick="setMaxDuration(3)" title="פעילויות עד 3 שעות">עד 3</button>
+          <button class="duration-pill" data-hours="1" onclick="setMaxDuration(1)" title="פעילויות עד שעה">שעה</button>
+          <button class="duration-pill" data-hours="2" onclick="setMaxDuration(2)" title="פעילויות עד שעתיים">שעתיים</button>
+          <button class="duration-pill" data-hours="3" onclick="setMaxDuration(3)" title="פעילויות עד 3 שעות">שלוש</button>
           <button class="duration-pill" data-hours="4" onclick="setMaxDuration(4)" title="פעילויות עד חצי יום">חצי יום</button>
         </div>
+      </div>
+      <div class="filter-group-divider"></div>
+      <div class="view-toggles">
+        <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
+        <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
       </div>
     </div>
   </div>
@@ -2244,7 +2196,7 @@ body {
       <button class="request-option" onclick="openSuggestionModal('event')">🎪 הוסיפו אירוע</button>
       <button class="request-option" onclick="openSuggestionModal('feedback')">💭 פידבק</button>
       <a href="places.html" class="request-option" style="text-decoration:none">📍 מקומות מומלצים</a>
-      <a href="holidays.html" class="request-option" style="text-decoration:none">📅 מתי חופש?</a>
+      <a href="holidays.html" class="request-option" style="text-decoration:none">📅 לוח חופשות</a>
     </div>
   </div>
 
@@ -2697,13 +2649,15 @@ function buildWeekendChips() {
 
 function updateWeekendActiveBtn() {
   if (!activeWeekend) return;
+  const datesEl = document.getElementById('weekendActiveDates');
+  const countEl = document.getElementById('weekendActiveCount');
+  if (!datesEl) return;
   const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
   const satD = activeWeekend.satDate;
   const sunD = activeWeekend.sunDate;
   const dates = `${satD.getDate()}-${sunD.getDate()} ${hebrewMonths[satD.getMonth()]}`;
-  document.getElementById('weekendActiveDates').textContent = dates;
-  const countEl = document.getElementById('weekendActiveCount');
-  countEl.textContent = `${activeWeekend.eventCount} אירועים`;
+  datesEl.textContent = dates;
+  if (countEl) countEl.textContent = `${activeWeekend.eventCount} אירועים`;
 }
 
 // ===== FILTER =====
@@ -3298,22 +3252,24 @@ document.querySelectorAll('.view-btn').forEach(btn => {
 });
 
 // Weekend picker toggle
-document.getElementById('weekendActiveBtn').addEventListener('click', () => {
-  const picker = document.getElementById('weekendPicker');
-  const dropdown = picker.querySelector('.weekend-dropdown');
-  const isOpen = dropdown.classList.contains('open');
-  if (isOpen) {
-    dropdown.classList.remove('open');
-    picker.classList.remove('open');
-  } else {
-    const btn = document.getElementById('weekendActiveBtn');
-    const rect = btn.getBoundingClientRect();
-    dropdown.style.top = (rect.bottom + 6) + 'px';
-    dropdown.style.right = (window.innerWidth - rect.right) + 'px';
-    dropdown.classList.add('open');
-    picker.classList.add('open');
-  }
-});
+const weekendActiveBtn = document.getElementById('weekendActiveBtn');
+if (weekendActiveBtn) {
+  weekendActiveBtn.addEventListener('click', () => {
+    const picker = document.getElementById('weekendPicker');
+    const dropdown = picker.querySelector('.weekend-dropdown');
+    const isOpen = dropdown.classList.contains('open');
+    if (isOpen) {
+      dropdown.classList.remove('open');
+      picker.classList.remove('open');
+    } else {
+      const rect = weekendActiveBtn.getBoundingClientRect();
+      dropdown.style.top = (rect.bottom + 6) + 'px';
+      dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+      dropdown.classList.add('open');
+      picker.classList.add('open');
+    }
+  });
+}
 
 // Weekend chip selection
 document.getElementById('weekendChips').addEventListener('click', (e) => {
