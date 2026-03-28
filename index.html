@@ -100,10 +100,9 @@ body {
   font-family: 'Rubik', sans-serif;
   font-weight: 700;
   font-size: 13px;
-  transform: rotate(-2deg);
   box-shadow: 0 3px 12px rgba(46,204,64,0.3);
   position: absolute;
-  top: 2px;
+  top: -6px;
   left: 50%;
   transform: translateX(-50%) rotate(-2deg);
   z-index: 3;
@@ -450,74 +449,93 @@ body {
 .location-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 14px;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   width: 100%;
-  padding: 6px 16px 6px;
+  padding: 10px 20px;
   border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(155,48,255,0.02) 0%, white 100%);
 }
-.location-selector {
+
+.filter-group {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  background: var(--bg);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
 }
-.location-label, .drive-label, .duration-label {
+
+.filter-group-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.filter-group-label {
   font-family: 'Heebo', sans-serif;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text-light);
+  color: var(--text);
   white-space: nowrap;
 }
+
 .location-select {
-  padding: 3px 10px;
+  padding: 6px 14px;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   font-family: 'Heebo', sans-serif;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text);
   background: white;
   cursor: pointer;
   direction: rtl;
+  transition: border-color 0.2s;
 }
-.location-select:focus { outline: none; border-color: var(--purple); }
+.location-select:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(155,48,255,0.1); }
+.location-select:hover { border-color: var(--purple-dark); }
+
 .location-detect-btn {
-  width: 26px; height: 26px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   border: 1.5px solid var(--border);
   background: white;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
 }
-.location-detect-btn:hover { border-color: var(--purple); }
-.drive-filter, .duration-filter {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.location-detect-btn:hover { border-color: var(--purple); background: rgba(155,48,255,0.05); transform: scale(1.1); }
+
+.filter-group-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  margin: 0 2px;
 }
-.drive-pills, .duration-pills { display: flex; gap: 3px; }
+
+.drive-pills, .duration-pills { display: flex; gap: 4px; }
 .drive-pill, .duration-pill {
-  padding: 3px 8px;
+  padding: 6px 12px;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   background: white;
   font-family: 'Heebo', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-light);
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
 }
-.drive-pill:hover { border-color: var(--blue); color: var(--blue); }
-.drive-pill.active { background: var(--blue); color: white; border-color: var(--blue); }
-.duration-pill:hover { border-color: #E08F00; color: #E08F00; }
-.duration-pill.active { background: #E08F00; color: white; border-color: #E08F00; }
+.drive-pill:hover { border-color: var(--blue); color: var(--blue); background: rgba(65,88,208,0.04); }
+.drive-pill.active { background: var(--blue); color: white; border-color: var(--blue); font-weight: 600; box-shadow: 0 2px 8px rgba(65,88,208,0.25); }
+.duration-pill:hover { border-color: #E08F00; color: #E08F00; background: rgba(249,168,37,0.04); }
+.duration-pill.active { background: #E08F00; color: white; border-color: #E08F00; font-weight: 600; box-shadow: 0 2px 8px rgba(249,168,37,0.25); }
 
 .event-meta-badges {
   display: flex;
@@ -528,30 +546,32 @@ body {
 }
 .event-drive-badge {
   font-family: 'Heebo', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--blue);
   background: rgba(65,88,208,0.08);
-  padding: 1px 8px;
+  padding: 2px 10px;
   border-radius: 100px;
 }
 .event-duration-badge {
   font-family: 'Heebo', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: #E08F00;
   background: rgba(249,168,37,0.1);
-  padding: 1px 8px;
+  padding: 2px 10px;
   border-radius: 100px;
 }
 
 @media (max-width: 700px) {
-  .location-row { gap: 6px; padding: 4px 12px; flex-wrap: wrap; }
+  .location-row { gap: 8px; padding: 8px 14px; justify-content: center; }
+  .filter-group { padding: 5px 10px; gap: 6px; }
+  .filter-group-icon { font-size: 15px; }
+  .filter-group-label { font-size: 12px; }
   .drive-pills, .duration-pills { flex-wrap: wrap; }
-  .drive-pill, .duration-pill { font-size: 9px; padding: 2px 6px; }
-  .location-label, .drive-label, .duration-label { font-size: 10px; }
-  .location-select { font-size: 10px; }
-  .location-detect-btn { width: 22px; height: 22px; font-size: 10px; }
+  .drive-pill, .duration-pill { font-size: 11px; padding: 4px 10px; }
+  .location-select { font-size: 12px; padding: 5px 12px; }
+  .location-detect-btn { width: 28px; height: 28px; font-size: 14px; }
 }
 
 /* ===== CONTENT ===== */
@@ -2153,30 +2173,35 @@ body {
       <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
     </div>
     <div class="location-row" id="locationRow">
-      <div class="location-selector">
-        <span class="location-label">📍</span>
-        <select class="location-select" id="citySelect" onchange="setUserCity(this.value)"></select>
-        <button class="location-detect-btn" onclick="detectLocation()" title="זיהוי מיקום">📡</button>
+      <div class="filter-group" title="בחרו עיר לחישוב מרחק נסיעה">
+        <span class="filter-group-icon">📍</span>
+        <span class="filter-group-label">מיקום</span>
+        <select class="location-select" id="citySelect" onchange="setUserCity(this.value)" title="בחרו את העיר שלכם"></select>
+        <button class="location-detect-btn" onclick="detectLocation()" title="זיהוי מיקום אוטומטי">📡</button>
       </div>
-      <div class="drive-filter">
-        <span class="drive-label">🚗</span>
+      <div class="filter-group-divider"></div>
+      <div class="filter-group" title="סננו לפי זמן נסיעה מהעיר שנבחרה">
+        <span class="filter-group-icon">🚗</span>
+        <span class="filter-group-label">נסיעה</span>
         <div class="drive-pills">
-          <button class="drive-pill active" data-minutes="" onclick="setMaxDrive(null)">הכל</button>
-          <button class="drive-pill" data-minutes="15" onclick="setMaxDrive(15)">15׳</button>
-          <button class="drive-pill" data-minutes="20" onclick="setMaxDrive(20)">20׳</button>
-          <button class="drive-pill" data-minutes="30" onclick="setMaxDrive(30)">30׳</button>
-          <button class="drive-pill" data-minutes="45" onclick="setMaxDrive(45)">45׳</button>
-          <button class="drive-pill" data-minutes="60" onclick="setMaxDrive(60)">60׳</button>
+          <button class="drive-pill active" data-minutes="" onclick="setMaxDrive(null)" title="הצגת כל האירועים">הכל</button>
+          <button class="drive-pill" data-minutes="15" onclick="setMaxDrive(15)" title="עד 15 דקות נסיעה">15׳</button>
+          <button class="drive-pill" data-minutes="20" onclick="setMaxDrive(20)" title="עד 20 דקות נסיעה">20׳</button>
+          <button class="drive-pill" data-minutes="30" onclick="setMaxDrive(30)" title="עד 30 דקות נסיעה">30׳</button>
+          <button class="drive-pill" data-minutes="45" onclick="setMaxDrive(45)" title="עד 45 דקות נסיעה">45׳</button>
+          <button class="drive-pill" data-minutes="60" onclick="setMaxDrive(60)" title="עד שעה נסיעה">60׳</button>
         </div>
       </div>
-      <div class="duration-filter">
-        <span class="duration-label">⏱️</span>
+      <div class="filter-group-divider"></div>
+      <div class="filter-group" title="סננו לפי משך הפעילות">
+        <span class="filter-group-icon">⏱️</span>
+        <span class="filter-group-label">משך</span>
         <div class="duration-pills">
-          <button class="duration-pill active" data-hours="" onclick="setMaxDuration(null)">הכל</button>
-          <button class="duration-pill" data-hours="1" onclick="setMaxDuration(1)">עד שעה</button>
-          <button class="duration-pill" data-hours="2" onclick="setMaxDuration(2)">עד 2</button>
-          <button class="duration-pill" data-hours="3" onclick="setMaxDuration(3)">עד 3</button>
-          <button class="duration-pill" data-hours="4" onclick="setMaxDuration(4)">חצי יום</button>
+          <button class="duration-pill active" data-hours="" onclick="setMaxDuration(null)" title="הצגת כל האירועים">הכל</button>
+          <button class="duration-pill" data-hours="1" onclick="setMaxDuration(1)" title="פעילויות עד שעה">עד שעה</button>
+          <button class="duration-pill" data-hours="2" onclick="setMaxDuration(2)" title="פעילויות עד שעתיים">עד 2</button>
+          <button class="duration-pill" data-hours="3" onclick="setMaxDuration(3)" title="פעילויות עד 3 שעות">עד 3</button>
+          <button class="duration-pill" data-hours="4" onclick="setMaxDuration(4)" title="פעילויות עד חצי יום">חצי יום</button>
         </div>
       </div>
     </div>
