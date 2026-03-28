@@ -102,7 +102,11 @@ body {
   font-size: 13px;
   transform: rotate(-2deg);
   box-shadow: 0 3px 12px rgba(46,204,64,0.3);
-  margin-bottom: 4px;
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  z-index: 3;
 }
 
 .hero-title {
@@ -441,6 +445,114 @@ body {
 .filter-pill.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
 .liked-filter-count { font-size: 10px; font-weight: 700; }
 .liked-filter-count:empty { display: none; }
+
+/* ===== LOCATION & DRIVE/DURATION FILTERS ===== */
+.location-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 6px 16px 6px;
+  border-top: 1px solid var(--border);
+}
+.location-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.location-label, .drive-label, .duration-label {
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+.location-select {
+  padding: 3px 10px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  background: white;
+  cursor: pointer;
+  direction: rtl;
+}
+.location-select:focus { outline: none; border-color: var(--purple); }
+.location-detect-btn {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: white;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.location-detect-btn:hover { border-color: var(--purple); }
+.drive-filter, .duration-filter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.drive-pills, .duration-pills { display: flex; gap: 3px; }
+.drive-pill, .duration-pill {
+  padding: 3px 8px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.drive-pill:hover { border-color: var(--blue); color: var(--blue); }
+.drive-pill.active { background: var(--blue); color: white; border-color: var(--blue); }
+.duration-pill:hover { border-color: #E08F00; color: #E08F00; }
+.duration-pill.active { background: #E08F00; color: white; border-color: #E08F00; }
+
+.event-meta-badges {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.event-drive-badge {
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--blue);
+  background: rgba(65,88,208,0.08);
+  padding: 1px 8px;
+  border-radius: 100px;
+}
+.event-duration-badge {
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #E08F00;
+  background: rgba(249,168,37,0.1);
+  padding: 1px 8px;
+  border-radius: 100px;
+}
+
+@media (max-width: 700px) {
+  .location-row { gap: 6px; padding: 4px 12px; flex-wrap: wrap; }
+  .drive-pills, .duration-pills { flex-wrap: wrap; }
+  .drive-pill, .duration-pill { font-size: 9px; padding: 2px 6px; }
+  .location-label, .drive-label, .duration-label { font-size: 10px; }
+  .location-select { font-size: 10px; }
+  .location-detect-btn { width: 22px; height: 22px; font-size: 10px; }
+}
 
 /* ===== CONTENT ===== */
 .content {
@@ -979,6 +1091,94 @@ body {
   border-color: var(--purple);
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(155,48,255,0.25);
+}
+
+/* ===== ARTICLES PREVIEW ===== */
+.articles-preview-section {
+  margin-top: 24px;
+  background: white;
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.articles-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.articles-preview-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+.articles-preview-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--purple);
+  text-decoration: none;
+}
+.articles-preview-link:hover { text-decoration: underline; }
+.articles-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.article-preview-card {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.article-preview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+.article-preview-img {
+  width: 100%;
+  height: 140px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--border);
+}
+.article-preview-img-placeholder {
+  width: 100%;
+  height: 140px;
+  background: var(--gradient-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+.article-preview-body {
+  padding: 12px 14px 14px;
+}
+.article-preview-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.article-preview-summary {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .form-type-selector {
@@ -1952,6 +2152,34 @@ body {
       <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
       <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
     </div>
+    <div class="location-row" id="locationRow">
+      <div class="location-selector">
+        <span class="location-label">📍</span>
+        <select class="location-select" id="citySelect" onchange="setUserCity(this.value)"></select>
+        <button class="location-detect-btn" onclick="detectLocation()" title="זיהוי מיקום">📡</button>
+      </div>
+      <div class="drive-filter">
+        <span class="drive-label">🚗</span>
+        <div class="drive-pills">
+          <button class="drive-pill active" data-minutes="" onclick="setMaxDrive(null)">הכל</button>
+          <button class="drive-pill" data-minutes="15" onclick="setMaxDrive(15)">15׳</button>
+          <button class="drive-pill" data-minutes="20" onclick="setMaxDrive(20)">20׳</button>
+          <button class="drive-pill" data-minutes="30" onclick="setMaxDrive(30)">30׳</button>
+          <button class="drive-pill" data-minutes="45" onclick="setMaxDrive(45)">45׳</button>
+          <button class="drive-pill" data-minutes="60" onclick="setMaxDrive(60)">60׳</button>
+        </div>
+      </div>
+      <div class="duration-filter">
+        <span class="duration-label">⏱️</span>
+        <div class="duration-pills">
+          <button class="duration-pill active" data-hours="" onclick="setMaxDuration(null)">הכל</button>
+          <button class="duration-pill" data-hours="1" onclick="setMaxDuration(1)">עד שעה</button>
+          <button class="duration-pill" data-hours="2" onclick="setMaxDuration(2)">עד 2</button>
+          <button class="duration-pill" data-hours="3" onclick="setMaxDuration(3)">עד 3</button>
+          <button class="duration-pill" data-hours="4" onclick="setMaxDuration(4)">חצי יום</button>
+        </div>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -1995,7 +2223,14 @@ body {
     </div>
   </div>
 
-
+  <!-- ARTICLES PREVIEW -->
+  <div class="articles-preview-section">
+    <div class="articles-preview-header">
+      <span class="articles-preview-title">📝 כתבות ומאמרים</span>
+      <a href="articles.html" class="articles-preview-link">לכל הכתבות &larr;</a>
+    </div>
+    <div class="articles-preview-grid" id="articlesPreview"></div>
+  </div>
 
     <div class="about-block">
       <div class="about-block-icon">🔍</div>
@@ -2134,6 +2369,134 @@ let activeWeekend = null;
 let activeView = 'calendar';
 let map = null;
 let markers = [];
+let userLat = null;
+let userLng = null;
+let maxDriveMinutes = null;
+let maxDurationHours = null;
+
+// ===== DUTCH CITIES =====
+const DUTCH_CITIES = [
+  { name: 'אמסטרדם', lat: 52.3676, lng: 4.9041 },
+  { name: 'רוטרדם', lat: 51.9225, lng: 4.4792 },
+  { name: 'דן האג', lat: 52.0705, lng: 4.3007 },
+  { name: 'אוטרכט', lat: 52.0907, lng: 5.1214 },
+  { name: 'איינדהובן', lat: 51.4416, lng: 5.4697 },
+  { name: 'חרונינגן', lat: 53.2194, lng: 6.5665 },
+  { name: 'אלמרה', lat: 52.3508, lng: 5.2647 },
+  { name: 'ארנהם', lat: 51.9851, lng: 5.8987 },
+  { name: 'מאסטריכט', lat: 50.8514, lng: 5.6910 },
+  { name: 'ליידן', lat: 52.1601, lng: 4.4970 },
+  { name: 'הארלם', lat: 52.3874, lng: 4.6462 },
+  { name: 'אמרספורט', lat: 52.1561, lng: 5.3878 },
+];
+
+// ===== DISTANCE & DURATION UTILITIES =====
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function estimateDriveMinutes(km) {
+  return Math.round((km * 1.35) / 70 * 60);
+}
+
+function recomputeEventDistances() {
+  events.forEach(e => {
+    if (userLat != null && userLng != null && e.lat && e.lng) {
+      const km = haversineKm(userLat, userLng, e.lat, e.lng);
+      e._distKm = Math.round(km);
+      e._driveMin = estimateDriveMinutes(km);
+    } else {
+      e._distKm = null;
+      e._driveMin = null;
+    }
+  });
+}
+
+function formatDuration(hours) {
+  if (hours == null || isNaN(hours)) return null;
+  if (hours <= 0.5) return 'עד חצי שעה';
+  if (hours <= 0.75) return 'כ-45 דק׳';
+  if (hours === 1) return 'כשעה';
+  if (hours === 1.5) return 'שעה וחצי';
+  if (hours === 2) return 'כשעתיים';
+  if (hours === 2.5) return 'שעתיים וחצי';
+  if (hours === 3) return 'כ-3 שעות';
+  if (hours <= 4) return `כ-${hours} שעות`;
+  return 'חצי יום+';
+}
+
+// ===== CITY & LOCATION =====
+function populateCitySelect() {
+  const sel = document.getElementById('citySelect');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">בחרו עיר...</option>';
+  DUTCH_CITIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.name;
+    opt.textContent = c.name;
+    sel.appendChild(opt);
+  });
+}
+
+function setUserCity(cityName) {
+  if (!cityName) { cityName = 'אמסטרדם'; document.getElementById('citySelect').value = cityName; }
+  const city = DUTCH_CITIES.find(c => c.name === cityName);
+  if (city) { userLat = city.lat; userLng = city.lng; }
+  if (typeof currentUser !== 'undefined' && currentUser && typeof saveProfile === 'function') {
+    saveProfile({ city: cityName });
+  }
+  localStorage.setItem('places_city', cityName);
+  recomputeEventDistances();
+  render();
+}
+
+function detectLocation() {
+  if (!navigator.geolocation) { alert('הדפדפן לא תומך בזיהוי מיקום'); return; }
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    let nearest = DUTCH_CITIES[0], minDist = Infinity;
+    DUTCH_CITIES.forEach(c => { const d = haversineKm(userLat, userLng, c.lat, c.lng); if (d < minDist) { minDist = d; nearest = c; } });
+    document.getElementById('citySelect').value = nearest.name;
+    localStorage.setItem('places_city', nearest.name);
+    if (typeof currentUser !== 'undefined' && currentUser && typeof saveProfile === 'function') saveProfile({ city: nearest.name });
+    recomputeEventDistances();
+    render();
+  }, () => { alert('לא הצלחנו לזהות את המיקום שלכם'); });
+}
+
+function setMaxDrive(minutes) {
+  maxDriveMinutes = minutes;
+  document.querySelectorAll('.drive-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.minutes === String(minutes || ''));
+  });
+  render();
+}
+
+function setMaxDuration(hours) {
+  maxDurationHours = hours;
+  document.querySelectorAll('.duration-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.hours === String(hours || ''));
+  });
+  render();
+}
+
+function initCityFromProfile() {
+  let city = null;
+  if (typeof userProfile !== 'undefined' && userProfile && userProfile.city) city = userProfile.city;
+  if (!city) city = localStorage.getItem('places_city');
+  if (!city) city = 'אמסטרדם';
+  const sel = document.getElementById('citySelect');
+  const match = DUTCH_CITIES.find(c => c.name === city);
+  if (match) { sel.value = city; userLat = match.lat; userLng = match.lng; }
+  else { sel.value = 'אמסטרדם'; userLat = DUTCH_CITIES[0].lat; userLng = DUTCH_CITIES[0].lng; }
+}
 
 // ===== LOAD DATA FROM GOOGLE SHEET =====
 function parseCSV(text) {
@@ -2211,6 +2574,7 @@ function rowToEvent(row, id) {
     lat: parseFloat(row.lat) || 0,
     lng: parseFloat(row.lng) || 0,
     museumkaart: (row.museumkaart || '').toUpperCase() === 'TRUE',
+    duration: row.duration ? parseFloat(row.duration) : null,
   };
 }
 
@@ -2234,6 +2598,7 @@ async function loadEvents() {
     console.error('Error loading events:', err);
     events = [];
   }
+  recomputeEventDistances();
   document.getElementById('loadingState').classList.add('hidden');
   buildWeekendChips();
   render();
@@ -2325,10 +2690,23 @@ function eventMatchesFilters(e) {
 function getFilteredEvents() {
   if (!activeWeekend) return [];
   const { sat, sun } = activeWeekend;
-  return events.filter(e => {
+  let filtered = events.filter(e => {
     if (!eventOnWeekend(e, sat, sun)) return false;
     return eventMatchesFilters(e);
   });
+  // Drive time filter
+  if (maxDriveMinutes != null && userLat != null) {
+    filtered = filtered.filter(e => e._driveMin != null && e._driveMin <= maxDriveMinutes);
+  }
+  // Duration filter
+  if (maxDurationHours != null) {
+    filtered = filtered.filter(e => e.duration != null && e.duration <= maxDurationHours);
+  }
+  // Sort by distance when location is set
+  if (userLat != null && userLng != null) {
+    filtered.sort((a, b) => (a._distKm || 9999) - (b._distKm || 9999));
+  }
+  return filtered;
 }
 
 // ===== CARD HTML =====
@@ -2357,6 +2735,10 @@ function cardHTML(e, i) {
           ${e.museumkaart ? '<span class="etag etag-museum">🏛️ Museumkaart</span>' : ''}
           <span class="etag etag-age">👶 ${e.ages}</span>
         </div>
+        ${(e._driveMin != null || e.duration) ? `<div class="event-meta-badges">
+          ${e._driveMin != null ? `<span class="event-drive-badge">🚗 ${e._driveMin} דק׳ (${e._distKm} ק״מ)</span>` : ''}
+          ${e.duration ? `<span class="event-duration-badge">⏱️ ${formatDuration(e.duration)}</span>` : ''}
+        </div>` : ''}
         <h3 class="event-title">${e.title}</h3>
         <p class="event-desc">${e.desc}</p>
         <div class="event-actions event-actions-icons">
@@ -2525,6 +2907,7 @@ function renderMap() {
     marker.bindPopup(`
       <div class="popup-title">${e.title}</div>
       <div class="popup-desc">${e.desc}</div>
+      ${e._driveMin != null || e.duration ? `<div class="popup-meta" style="color:#4158D0;font-weight:600;">${e._driveMin != null ? `🚗 ${e._driveMin} דק׳` : ''}${e._driveMin != null && e.duration ? ' · ' : ''}${e.duration ? `⏱️ ${formatDuration(e.duration)}` : ''}</div>` : ''}
       <div class="popup-meta">📍 ${e.location} · ${e.time} · ${e.price}</div>
       <div class="popup-links">
         ${e.link ? `<a class="popup-link" href="${e.link}" target="_blank">🔗 לאירוע</a>` : ''}
@@ -3062,7 +3445,39 @@ renderCalendar = function() { _origRenderCalendar(); observeImages(); };
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
+populateCitySelect();
+initCityFromProfile();
 loadEvents();
+
+// ===== ARTICLES PREVIEW =====
+(async function loadArticlesPreview() {
+  try {
+    const ARTICLES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=478633181&single=true&output=csv';
+    const cb = Math.floor(Date.now() / 60000);
+    const resp = await fetch(ARTICLES_CSV + '&_cb=' + cb);
+    if (!resp.ok) return;
+    const text = await resp.text();
+    const rows = parseCSV(text);
+    const articles = rows.filter(r => r.title).map(r => ({
+      title: r.title,
+      summary: r.summary || '',
+      image: r.image ? (r.image.startsWith('http') ? r.image : (r.image.startsWith('images/') ? r.image : 'images/' + r.image)) : null,
+      link: r.link || 'articles.html',
+    }));
+    if (articles.length === 0) { document.querySelector('.articles-preview-section').style.display = 'none'; return; }
+    const latest = articles.slice(0, 3);
+    const container = document.getElementById('articlesPreview');
+    container.innerHTML = latest.map(a => {
+      const imgHTML = a.image
+        ? `<div class="article-preview-img" style="background-image:url(${a.image})"></div>`
+        : `<div class="article-preview-img-placeholder">📝</div>`;
+      return `<a href="${a.link}" target="_blank" rel="noopener" class="article-preview-card">${imgHTML}<div class="article-preview-body"><div class="article-preview-title">${a.title}</div>${a.summary ? `<div class="article-preview-summary">${a.summary}</div>` : ''}</div></a>`;
+    }).join('');
+  } catch (e) {
+    const section = document.querySelector('.articles-preview-section');
+    if (section) section.style.display = 'none';
+  }
+})();
 </script>
 
 <!-- PROFILE / ONBOARDING MODAL -->
@@ -3187,6 +3602,15 @@ loadEvents();
 // ===== AUTH INTEGRATION FOR INDEX PAGE =====
 
 function onUserLoggedIn(needsProfileCompletion) {
+  // Sync city from profile
+  if (userProfile && userProfile.city) {
+    const match = DUTCH_CITIES.find(c => c.name === userProfile.city);
+    if (match) {
+      document.getElementById('citySelect').value = userProfile.city;
+      userLat = match.lat; userLng = match.lng;
+      recomputeEventDistances();
+    }
+  }
   // Remove blur gate
   document.querySelectorAll('.event-card.gated').forEach(card => {
     card.classList.remove('gated');
