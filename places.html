@@ -257,6 +257,126 @@ body {
   color: white;
 }
 
+/* ===== LOCATION & DRIVE TIME ROW ===== */
+.location-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+.location-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.location-label {
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.location-select {
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: white;
+  cursor: pointer;
+  direction: rtl;
+  transition: border-color 0.2s;
+}
+.location-select:focus { outline: none; border-color: var(--purple); }
+
+.location-detect-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.location-detect-btn:hover { border-color: var(--purple); background: rgba(155,48,255,0.05); }
+
+.drive-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drive-label {
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.drive-pills {
+  display: flex;
+  gap: 4px;
+}
+
+.drive-pill {
+  padding: 4px 12px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.drive-pill:hover { border-color: var(--blue); color: var(--blue); }
+.drive-pill.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+/* ===== PLACE META (distance + duration badges) ===== */
+.place-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.place-drive-badge {
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+  background: rgba(65,88,208,0.08);
+  padding: 2px 10px;
+  border-radius: 100px;
+}
+
+.place-duration-badge {
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #E08F00;
+  background: rgba(249,168,37,0.1);
+  padding: 2px 10px;
+  border-radius: 100px;
+}
+
 .view-toggle-row {
   display: flex;
   gap: 0;
@@ -692,6 +812,11 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 .search-input:focus { outline: none; border-color: var(--purple); }
 .search-input::placeholder { color: var(--text-lighter); }
 
+@media (max-width: 900px) {
+  .location-row { flex-direction: column; gap: 8px; }
+  .drive-pills { flex-wrap: wrap; justify-content: center; }
+}
+
 @media (max-width: 700px) {
   .hero-title { font-size: 28px; }
   .hero-subtitle { font-size: 14px; }
@@ -702,6 +827,9 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .nav-top { flex-direction: column; gap: 8px; }
   .content { padding: 10px 16px 40px; }
   .map-container { padding: 10px 16px; }
+  .location-select { font-size: 12px; padding: 5px 10px; }
+  .drive-pill { font-size: 11px; padding: 3px 8px; }
+  .drive-label, .location-label { font-size: 12px; }
 }
 
 /* ===== AUTH NAV TABS ===== */
@@ -889,6 +1017,25 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
       <button class="filter-pill" data-cat="museum" onclick="toggleFilter('museum')"><span class="filter-dot" style="background:var(--museum)"></span> 🏛️ מוזיאונים עם ילדים <span class="filter-count" id="countMuseum"></span></button>
       <button class="filter-pill" data-cat="playground" onclick="toggleFilter('playground')"><span class="filter-dot" style="background:var(--playground)"></span> 🛝 גני שעשועים <span class="filter-count" id="countPlayground"></span></button>
     </div>
+    <div class="location-row" id="locationRow">
+      <div class="location-selector">
+        <span class="location-label">📍 מאיפה יוצאים?</span>
+        <select class="location-select" id="citySelect" onchange="setUserCity(this.value)">
+        </select>
+        <button class="location-detect-btn" onclick="detectLocation()" title="זיהוי מיקום אוטומטי">📡</button>
+      </div>
+      <div class="drive-filter" id="driveFilter">
+        <span class="drive-label">🚗 מקסימום נסיעה:</span>
+        <div class="drive-pills" id="drivePills">
+          <button class="drive-pill active" data-minutes="" onclick="setMaxDrive(null)">הכל</button>
+          <button class="drive-pill" data-minutes="15" onclick="setMaxDrive(15)">15 דק׳</button>
+          <button class="drive-pill" data-minutes="20" onclick="setMaxDrive(20)">20 דק׳</button>
+          <button class="drive-pill" data-minutes="30" onclick="setMaxDrive(30)">30 דק׳</button>
+          <button class="drive-pill" data-minutes="45" onclick="setMaxDrive(45)">45 דק׳</button>
+          <button class="drive-pill" data-minutes="60" onclick="setMaxDrive(60)">שעה</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1038,13 +1185,16 @@ async function loadPlaces() {
       cat: r.cat || 'restaurant',
       lat: parseFloat(r.lat),
       lng: parseFloat(r.lng),
+      duration: r.duration || null,
     }));
   } catch (err) {
     console.error('Error loading places:', err);
     PLACES = [];
   }
+  recomputeDistances();
   updateCounts();
   initMap();
+  updateDistanceCircle();
   renderCards('placesGridMap');
   renderCards('placesGrid');
 }
@@ -1055,6 +1205,178 @@ let currentView = 'map';
 let map = null;
 let markers = [];
 let searchTerm = '';
+let userLat = null;
+let userLng = null;
+let maxDriveMinutes = null;
+let distanceCircle = null;
+
+// ===== DUTCH CITIES =====
+const DUTCH_CITIES = [
+  { name: 'אמסטרדם', lat: 52.3676, lng: 4.9041 },
+  { name: 'רוטרדם', lat: 51.9225, lng: 4.4792 },
+  { name: 'דן האג', lat: 52.0705, lng: 4.3007 },
+  { name: 'אוטרכט', lat: 52.0907, lng: 5.1214 },
+  { name: 'איינדהובן', lat: 51.4416, lng: 5.4697 },
+  { name: 'חרונינגן', lat: 53.2194, lng: 6.5665 },
+  { name: 'אלמרה', lat: 52.3508, lng: 5.2647 },
+  { name: 'ארנהם', lat: 51.9851, lng: 5.8987 },
+  { name: 'מאסטריכט', lat: 50.8514, lng: 5.6910 },
+  { name: 'ליידן', lat: 52.1601, lng: 4.4970 },
+  { name: 'הארלם', lat: 52.3874, lng: 4.6462 },
+  { name: 'אמרספורט', lat: 52.1561, lng: 5.3878 },
+];
+
+// ===== DISTANCE UTILITIES =====
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function estimateDriveMinutes(km) {
+  return Math.round((km * 1.35) / 70 * 60);
+}
+
+function recomputeDistances() {
+  PLACES.forEach(p => {
+    if (userLat != null && userLng != null) {
+      const km = haversineKm(userLat, userLng, p.lat, p.lng);
+      p._distKm = Math.round(km);
+      p._driveMin = estimateDriveMinutes(km);
+    } else {
+      p._distKm = null;
+      p._driveMin = null;
+    }
+  });
+}
+
+// ===== CITY & LOCATION =====
+function populateCitySelect() {
+  const sel = document.getElementById('citySelect');
+  sel.innerHTML = '<option value="">בחרו עיר...</option>';
+  DUTCH_CITIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.name;
+    opt.textContent = c.name;
+    sel.appendChild(opt);
+  });
+}
+
+function setUserCity(cityName) {
+  if (!cityName) {
+    // Default to Amsterdam
+    cityName = 'אמסטרדם';
+    document.getElementById('citySelect').value = cityName;
+  }
+  const city = DUTCH_CITIES.find(c => c.name === cityName);
+  if (city) {
+    userLat = city.lat;
+    userLng = city.lng;
+  }
+  // Sync to Firebase profile if logged in
+  if (typeof currentUser !== 'undefined' && currentUser && typeof saveProfile === 'function') {
+    saveProfile({ city: cityName });
+  }
+  localStorage.setItem('places_city', cityName);
+  recomputeDistances();
+  updateDistanceCircle();
+  if (map) {
+    addMarkers();
+    renderCards('placesGrid');
+  }
+}
+
+function detectLocation() {
+  if (!navigator.geolocation) {
+    alert('הדפדפן לא תומך בזיהוי מיקום');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    // Find nearest city for display
+    let nearest = DUTCH_CITIES[0];
+    let minDist = Infinity;
+    DUTCH_CITIES.forEach(c => {
+      const d = haversineKm(userLat, userLng, c.lat, c.lng);
+      if (d < minDist) { minDist = d; nearest = c; }
+    });
+    document.getElementById('citySelect').value = nearest.name;
+    localStorage.setItem('places_city', nearest.name);
+    if (typeof currentUser !== 'undefined' && currentUser && typeof saveProfile === 'function') {
+      saveProfile({ city: nearest.name });
+    }
+    recomputeDistances();
+    updateDistanceCircle();
+    addMarkers();
+    renderCards('placesGrid');
+  }, () => {
+    alert('לא הצלחנו לזהות את המיקום שלכם');
+  });
+}
+
+function setMaxDrive(minutes) {
+  maxDriveMinutes = minutes;
+  document.querySelectorAll('.drive-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.minutes === String(minutes || ''));
+  });
+  updateDistanceCircle();
+  filterPlaces();
+}
+
+function updateDistanceCircle() {
+  removeDistanceCircle();
+  if (!userLat || !maxDriveMinutes || !map) return;
+  const radiusKm = (maxDriveMinutes * 70 / 60) / 1.35;
+  distanceCircle = L.circle([userLat, userLng], {
+    radius: radiusKm * 1000,
+    color: '#4158D0',
+    fillColor: '#4158D0',
+    fillOpacity: 0.06,
+    weight: 2,
+    dashArray: '6 4'
+  }).addTo(map);
+}
+
+function removeDistanceCircle() {
+  if (distanceCircle && map) {
+    map.removeLayer(distanceCircle);
+    distanceCircle = null;
+  }
+}
+
+function initCityFromProfile() {
+  let city = null;
+  // 1. Firebase profile city
+  if (typeof userProfile !== 'undefined' && userProfile && userProfile.city) {
+    city = userProfile.city;
+  }
+  // 2. localStorage fallback
+  if (!city) {
+    city = localStorage.getItem('places_city');
+  }
+  // 3. Default to Amsterdam
+  if (!city) {
+    city = 'אמסטרדם';
+  }
+  const sel = document.getElementById('citySelect');
+  // Check if city is in our list
+  const match = DUTCH_CITIES.find(c => c.name === city);
+  if (match) {
+    sel.value = city;
+    userLat = match.lat;
+    userLng = match.lng;
+  } else {
+    sel.value = 'אמסטרדם';
+    userLat = DUTCH_CITIES[0].lat;
+    userLng = DUTCH_CITIES[0].lng;
+  }
+  recomputeDistances();
+}
 
 // ===== CATEGORY CONFIG =====
 const CAT_CONFIG = {
@@ -1065,8 +1387,28 @@ const CAT_CONFIG = {
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
+  populateCitySelect();
+  initCityFromProfile();
   loadPlaces();
 });
+
+// Hook into auth: update city when user logs in
+function onUserLoggedIn() {
+  if (userProfile && userProfile.city) {
+    const match = DUTCH_CITIES.find(c => c.name === userProfile.city);
+    if (match) {
+      document.getElementById('citySelect').value = userProfile.city;
+      userLat = match.lat;
+      userLng = match.lng;
+      recomputeDistances();
+      updateDistanceCircle();
+      if (map) {
+        addMarkers();
+        renderCards('placesGrid');
+      }
+    }
+  }
+}
 
 function updateCounts() {
   document.getElementById('countAll').textContent = PLACES.length;
@@ -1124,9 +1466,14 @@ function addMarkers() {
     const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
     const searchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}`;
 
+    const metaParts = [];
+    if (place._driveMin != null) metaParts.push(`🚗 ${place._driveMin} דק׳ (${place._distKm} ק״מ)`);
+    if (place.duration) metaParts.push(`⏱️ ${place.duration}`);
+
     const popupHtml = `
       <div class="place-popup">
         <h3>${CAT_CONFIG[place.cat].emoji} ${place.name}</h3>
+        ${metaParts.length ? `<p style="font-size:12px;color:#4158D0;font-weight:600;margin:4px 0;">${metaParts.join(' · ')}</p>` : ''}
         ${place.desc ? `<p>${place.desc}</p>` : ''}
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <a href="${navUrl}" target="_blank">🧭 נסענו!</a>
@@ -1160,6 +1507,14 @@ function getFilteredPlaces() {
       (p.desc && p.desc.toLowerCase().includes(term))
     );
   }
+  // Drive time filter
+  if (maxDriveMinutes != null && userLat != null) {
+    filtered = filtered.filter(p => p._driveMin != null && p._driveMin <= maxDriveMinutes);
+  }
+  // Sort by distance when location is set
+  if (userLat != null && userLng != null) {
+    filtered.sort((a, b) => (a._distKm || 9999) - (b._distKm || 9999));
+  }
   return filtered;
 }
 
@@ -1178,6 +1533,7 @@ function filterPlaces() {
   const searchEl = document.getElementById('searchInput');
   searchTerm = searchEl ? searchEl.value.trim() : '';
 
+  updateDistanceCircle();
   addMarkers();
   renderCards('placesGrid');
 }
@@ -1213,6 +1569,10 @@ function renderCards(containerId) {
           <span class="place-name">${place.name}</span>
         </div>
         <span class="place-category ${place.cat}">${config.emoji} ${config.label}</span>
+        ${(place._driveMin != null || place.duration) ? `<div class="place-meta">
+          ${place._driveMin != null ? `<span class="place-drive-badge">🚗 ${place._driveMin} דק׳ (${place._distKm} ק״מ)</span>` : ''}
+          ${place.duration ? `<span class="place-duration-badge">⏱️ ${place.duration}</span>` : ''}
+        </div>` : ''}
         ${place.desc
           ? `<div class="place-desc">${place.desc}</div>`
           : `<div class="place-no-desc">עוד לא הספקנו לכתוב - אבל אנחנו ממליצים!</div>`

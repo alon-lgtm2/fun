@@ -13,6 +13,7 @@
 | Home | `index.html` | Weekend events with filtering, weekend picker, and hamburger menu navigation |
 | Recommended Places | `places.html` | Interactive Leaflet map of family-friendly restaurants, museums, and playgrounds |
 | Holidays & Vacations | `holidays.html` | Dutch official holidays (2026-2027), school vacations by region, and important info |
+| Weather Forecast | `weather.html` | Weekend weather forecast for Dutch cities using Open-Meteo API |
 | About | `about.html` | About the site and team |
 
 ## Architecture
@@ -20,6 +21,7 @@
 - **Static site** — all pages are self-contained HTML files with inline CSS and JavaScript (no build step)
 - **RTL layout** — full right-to-left Hebrew UI using `dir="rtl"` and flexbox
 - **PWA support** — `manifest.json` + `sw.js` service worker for installability
+- **Authentication** — Firebase (Google Sign-in) with Firestore for user data
 - **Analytics** — Umami Cloud (`cloud.umami.is`)
 
 ## Data Sources
@@ -70,6 +72,10 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 - Self-contained tab-switching JS
 - Navigation label: "📅 מתי חופש?"
 
+### weather.html (Weather Forecast)
+- **Weekend weather** — forecasts for Dutch cities using the Open-Meteo API
+- Displays temperature ranges per city for upcoming weekends
+
 ### about.html (About)
 - **2-column grid** with 4 info blocks + disclaimer
 - Prominent home link in sticky nav
@@ -82,6 +88,9 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 | [Heebo](https://fonts.google.com/specimen/Heebo) + [Rubik](https://fonts.google.com/specimen/Rubik) | Hebrew-optimized fonts |
 | [Leaflet.js](https://leafletjs.com/) 1.9.4 | Interactive map on places page |
 | [Google Sheets CSV](https://support.google.com/docs/answer/183965) | Dynamic data source for events and places |
+| [Firebase](https://firebase.google.com/) 10.12.0 | Authentication (Google Sign-in) and Firestore database |
+| [Open-Meteo API](https://open-meteo.com/) | Weather forecasts (free, no API key required) |
+| [Formspree](https://formspree.io/) | Community feedback and event submission forms |
 | [Umami](https://umami.is/) | Privacy-friendly analytics |
 | PWA (manifest + SW) | Mobile installability |
 
@@ -115,14 +124,17 @@ fun/
 ├── index.html          # Home page — weekend events
 ├── places.html         # Recommended places map
 ├── holidays.html       # Holidays & vacations
+├── weather.html        # Weather forecast page
 ├── about.html          # About page
+├── auth.js             # Firebase authentication & profile management
+├── likes-backend.gs    # Google Apps Script backend for likes
 ├── manifest.json       # PWA manifest
 ├── sw.js               # Service worker
+├── CNAME               # Custom domain config
 ├── images/             # Event images, icons, OG tags
 │   ├── Button-Purple.svg
 │   ├── az.png          # App icon
-│   ├── og2.png         # Open Graph image (current)
-│   ├── ogtag.png       # Open Graph image (legacy)
+│   ├── og3.png         # Open Graph image (current)
 │   └── ...             # Event images
 └── .claude/
     └── launch.json     # Dev server config

@@ -7,7 +7,7 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 - Israeli families living in the Netherlands (not limited to children — quality activities for all family members)
 
 ## Current State (Live)
-- Four HTML pages (`index.html`, `places.html`, `holidays.html`, `about.html`) — no build step
+- Five HTML pages (`index.html`, `places.html`, `holidays.html`, `weather.html`, `about.html`) — no build step
 - Data fetched from a published Google Sheet on each page load
 - Two views: List (calendar-grouped) and Map (Leaflet)
 - Weekend selector (upcoming 8 weekends) with auto-advance on scroll
@@ -66,14 +66,14 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 - Empty card at end of event list invites submissions
 
 ### SEO & Branding
-- Open Graph meta tags with `og2.png` image — positioned as quality family activities
+- Open Graph meta tags with `og3.png` image — positioned as quality family activities
 - OG description: "פעילויות איכות עם המשפחה בהולנד בסופ״ש"
 - Purple button SVG favicon
 - Umami analytics tracking
 
 ### Navigation
 - Sticky nav bar with home logo link on all pages
-- Tab pills: אירועים, 📍 מקומות, 📅 מתי חופש?, 🧡 עלינו
+- Tab pills: אירועים, 📍 מקומות, 📅 מתי חופש?, 🌤️ תחזית מזג אוויר, 🧡 עלינו
 - Holidays section branded as "מתי חופש?" (catchy phrasing instead of generic "חגים")
 
 ## Architecture
@@ -115,14 +115,17 @@ fun/
 ├── index.html              # Home page — weekend events
 ├── places.html             # Recommended places map
 ├── holidays.html           # Holidays & vacations (מתי חופש?)
+├── weather.html            # Weather forecast page
 ├── about.html              # About page
+├── auth.js                 # Firebase authentication & profile management
+├── likes-backend.gs        # Google Apps Script backend for likes
 ├── CNAME                   # Custom domain config
 ├── manifest.json           # PWA manifest
 ├── sw.js                   # Service worker
 ├── images/                 # Event images
 │   ├── Button-Purple.svg   # Favicon
-│   ├── og2.png             # OG image (current)
-│   └── ogtag.png           # OG image (legacy)
+│   ├── og3.png             # OG image (current)
+│   └── ...                 # Event images
 ├── PRD.md                  # This file
 └── DEPLOY-INSTRUCTIONS.md  # Deploy guide
 ```
