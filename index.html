@@ -2376,19 +2376,25 @@ let maxDurationHours = null;
 
 // ===== DUTCH CITIES =====
 const DUTCH_CITIES = [
-  { name: 'אמסטרדם', lat: 52.3676, lng: 4.9041 },
-  { name: 'רוטרדם', lat: 51.9225, lng: 4.4792 },
-  { name: 'דן האג', lat: 52.0705, lng: 4.3007 },
-  { name: 'אוטרכט', lat: 52.0907, lng: 5.1214 },
-  { name: 'איינדהובן', lat: 51.4416, lng: 5.4697 },
-  { name: 'חרונינגן', lat: 53.2194, lng: 6.5665 },
-  { name: 'אלמרה', lat: 52.3508, lng: 5.2647 },
-  { name: 'ארנהם', lat: 51.9851, lng: 5.8987 },
-  { name: 'מאסטריכט', lat: 50.8514, lng: 5.6910 },
-  { name: 'ליידן', lat: 52.1601, lng: 4.4970 },
-  { name: 'הארלם', lat: 52.3874, lng: 4.6462 },
-  { name: 'אמרספורט', lat: 52.1561, lng: 5.3878 },
+  { name: 'אמסטרדם', en: 'Amsterdam', lat: 52.3676, lng: 4.9041 },
+  { name: 'רוטרדם', en: 'Rotterdam', lat: 51.9225, lng: 4.4792 },
+  { name: 'דן האג', en: 'Den Haag', lat: 52.0705, lng: 4.3007 },
+  { name: 'אוטרכט', en: 'Utrecht', lat: 52.0907, lng: 5.1214 },
+  { name: 'איינדהובן', en: 'Eindhoven', lat: 51.4416, lng: 5.4697 },
+  { name: 'חרונינגן', en: 'Groningen', lat: 53.2194, lng: 6.5665 },
+  { name: 'אלמרה', en: 'Almere', lat: 52.3508, lng: 5.2647 },
+  { name: 'ארנהם', en: 'Arnhem', lat: 51.9851, lng: 5.8987 },
+  { name: 'מאסטריכט', en: 'Maastricht', lat: 50.8514, lng: 5.6910 },
+  { name: 'ליידן', en: 'Leiden', lat: 52.1601, lng: 4.4970 },
+  { name: 'הארלם', en: 'Haarlem', lat: 52.3874, lng: 4.6462 },
+  { name: 'אמרספורט', en: 'Amersfoort', lat: 52.1561, lng: 5.3878 },
+  { name: 'אמסטלפיין', en: 'Amstelveen', lat: 52.3012, lng: 4.8637 },
 ];
+
+function findCityByProfile(profileCity) {
+  if (!profileCity) return null;
+  return DUTCH_CITIES.find(c => c.en === profileCity || c.name === profileCity);
+}
 
 // ===== DISTANCE & DURATION UTILITIES =====
 function haversineKm(lat1, lng1, lat2, lng2) {
@@ -2493,8 +2499,8 @@ function initCityFromProfile() {
   if (!city) city = localStorage.getItem('places_city');
   if (!city) city = 'אמסטרדם';
   const sel = document.getElementById('citySelect');
-  const match = DUTCH_CITIES.find(c => c.name === city);
-  if (match) { sel.value = city; userLat = match.lat; userLng = match.lng; }
+  const match = findCityByProfile(city);
+  if (match) { sel.value = match.name; userLat = match.lat; userLng = match.lng; }
   else { sel.value = 'אמסטרדם'; userLat = DUTCH_CITIES[0].lat; userLng = DUTCH_CITIES[0].lng; }
 }
 
@@ -3604,11 +3610,12 @@ loadEvents();
 function onUserLoggedIn(needsProfileCompletion) {
   // Sync city from profile
   if (userProfile && userProfile.city) {
-    const match = DUTCH_CITIES.find(c => c.name === userProfile.city);
+    const match = findCityByProfile(userProfile.city);
     if (match) {
-      document.getElementById('citySelect').value = userProfile.city;
+      document.getElementById('citySelect').value = match.name;
       userLat = match.lat; userLng = match.lng;
       recomputeEventDistances();
+      render();
     }
   }
   // Remove blur gate
@@ -3790,6 +3797,18 @@ async function handleProfileSubmit(e) {
       disclaimerAccepted: document.getElementById('profileFormDisclaimer').checked,
       favorites: userProfile?.favorites || JSON.parse(localStorage.getItem('likedEvents') || '[]')
     });
+
+    // Sync city filter from saved profile
+    const savedCity = document.getElementById('profileFormCity').value;
+    if (savedCity) {
+      const match = findCityByProfile(savedCity);
+      if (match) {
+        document.getElementById('citySelect').value = match.name;
+        userLat = match.lat; userLng = match.lng;
+        recomputeEventDistances();
+        render();
+      }
+    }
 
     submitBtn.textContent = 'נשמר!';
     setTimeout(() => {
