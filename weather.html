@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תחזית מזג אוויר לסופ״ש - fun.israelis.nl</title>
+<meta name="description" content="תחזית מזג אוויר לסופ״ש בהולנד - מה לצפות, מה ללבוש, והמלצות">
+<meta property="og:title" content="תחזית מזג אוויר לסופ״ש">
+<meta property="og:description" content="תחזית מזג אוויר לסופ״ש בהולנד - מה לצפות, מה ללבוש, והמלצות">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fun.israelis.nl/weather.html">
+<meta property="og:site_name" content="fun.israelis.nl">
+<meta property="og:locale" content="he_IL">
+<meta property="og:image" content="https://fun.israelis.nl/images/og3.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="תחזית מזג אוויר לסופ״ש">
+<meta name="twitter:description" content="תחזית מזג אוויר לסופ״ש בהולנד - מה לצפות, מה ללבוש, והמלצות">
+<meta name="twitter:image" content="https://fun.israelis.nl/images/og3.png">
+<link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="images/az.png">
+<meta name="theme-color" content="#9B30FF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="מה עושים?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+  --purple: #9B30FF;
+  --purple-light: #B060FF;
+  --gradient: linear-gradient(135deg, #9B30FF, #6C3CE0);
+  --gradient-soft: linear-gradient(135deg, #f5f0ff, #ece5ff);
+  --green: #2ECC40;
+  --bg: #F8F6FF;
+  --card-bg: #FFFFFF;
+  --text: #2D2640;
+  --text-light: #5A5270;
+  --text-lighter: #8A82A0;
+  --border: #E8E0F0;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 4px 20px rgba(155,48,255,0.08);
+  --shadow-hover: 0 8px 30px rgba(155,48,255,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); }
+
+/* ===== HERO ===== */
+.hero {
+  background: var(--gradient);
+  padding: 20px 20px 12px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 60%, rgba(46,204,64,0.06) 0%, transparent 40%);
+  pointer-events: none;
+}
+.hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+.hero-title { font-family: 'Rubik', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 6px; text-shadow: 2px 3px 8px rgba(0,0,0,0.15); line-height: 1.2; }
+.hero-subtitle { font-size: 16px; opacity: 0.9; }
+
+.hero-nav-tabs-unified {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px 0;
+  max-width: 1000px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+}
+.hero-tab {
+  padding: 7px 16px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.hero-tab:hover { background: rgba(255,255,255,0.25); color: white; border-color: rgba(255,255,255,0.5); }
+.hero-tab.active { background: white; color: var(--purple); border-color: white; font-weight: 700; }
+
+/* ===== MAIN CONTENT ===== */
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+}
+
+/* ===== WEEKEND SUMMARY ===== */
+.weekend-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.day-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.day-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+}
+.day-card.saturday::before { background: linear-gradient(90deg, #9B30FF, #B060FF); }
+.day-card.sunday::before { background: linear-gradient(90deg, #2ECC40, #40E050); }
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.day-name {
+  font-family: 'Rubik', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+}
+.day-date {
+  font-size: 14px;
+  color: var(--text-lighter);
+}
+.day-weather-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.weather-icon {
+  font-size: 52px;
+  line-height: 1;
+}
+.weather-temp {
+  font-family: 'Rubik', sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--text);
+}
+.weather-temp-unit {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-lighter);
+}
+.weather-desc {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 12px;
+}
+.weather-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.weather-detail {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-light);
+  background: var(--bg);
+  padding: 6px 12px;
+  border-radius: 100px;
+}
+
+/* ===== RECOMMENDATION ===== */
+.recommendation-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 28px;
+  text-align: center;
+}
+.recommendation-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.recommendation-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-light);
+}
+.rec-tags {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.rec-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+}
+
+/* ===== MAP ===== */
+.weather-map-section {
+  margin-bottom: 28px;
+}
+.section-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#weatherMap {
+  width: 100%;
+  height: 420px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+/* ===== CITY CARDS ===== */
+.cities-section { margin-bottom: 28px; }
+.city-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.city-chip {
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-light);
+}
+.city-chip:hover { border-color: var(--purple); color: var(--purple); }
+.city-chip.active { background: var(--gradient); color: white; border-color: transparent; }
+
+.city-forecast {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.city-day-card {
+  background: white;
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+.city-day-header {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.city-weather-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.city-temp {
+  font-family: 'Rubik', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+}
+.city-icon { font-size: 32px; }
+.city-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.city-detail {
+  font-size: 12px;
+  color: var(--text-lighter);
+  background: var(--bg);
+  padding: 4px 8px;
+  border-radius: 100px;
+}
+
+/* ===== HOURLY ===== */
+.hourly-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 0;
+  scrollbar-width: thin;
+}
+.hourly-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 60px;
+  padding: 8px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font-size: 12px;
+}
+.hourly-time { font-weight: 700; color: var(--text-light); }
+.hourly-icon { font-size: 20px; }
+.hourly-temp { font-weight: 700; font-size: 14px; }
+
+/* ===== LOADING ===== */
+.loading-weather {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-lighter);
+  font-size: 16px;
+}
+.loading-weather .spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--purple);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
+  .hero-tab { font-size: 12px; padding: 5px 10px; }
+  .weekend-summary { grid-template-columns: 1fr; }
+  .city-forecast { grid-template-columns: 1fr; }
+  .weather-icon { font-size: 40px; }
+  .weather-temp { font-size: 32px; }
+  #weatherMap { height: 300px; }
+  .content { padding: 16px 16px 40px; }
+}
+
+@media (min-width: 701px) {
+  .hero-title { font-size: 36px; }
+  .hero-subtitle { font-size: 18px; }
+  .hero-tab { font-size: 15px; padding: 7px 18px; }
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 13px;
+  color: var(--text-lighter);
+}
+.footer a { color: var(--purple); text-decoration: none; }
+
+/* ===== SUGGESTION MODAL ===== */
+.form-type-selector { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.form-type-btn { padding: 8px 16px; border: 1.5px solid var(--border); border-radius: 100px; background: white; font-family: 'Heebo', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-light); cursor: pointer; transition: all 0.2s; }
+.form-type-btn.active { background: var(--purple); color: white; border-color: var(--purple); }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.active { display: flex; }
+.modal { background: white; border-radius: var(--radius); padding: 28px 24px; max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); position: relative; }
+.modal-close { position: absolute; top: 12px; left: 12px; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-lighter); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background 0.2s; }
+.modal-close:hover { background: var(--bg); }
+.modal-title { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.modal-subtitle { font-size: 13px; color: var(--text-light); margin-bottom: 18px; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+.form-input, .form-textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Heebo', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); transition: border-color 0.2s; direction: rtl; }
+.form-input:focus, .form-textarea:focus { outline: none; border-color: var(--purple); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-submit { width: 100%; padding: 12px; background: var(--gradient); color: white; border: none; border-radius: 100px; font-family: 'Heebo', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(155,48,255,0.25); margin-top: 6px; }
+.form-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(155,48,255,0.35); }
+.form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.form-success { text-align: center; padding: 30px 10px; }
+.form-success-emoji { font-size: 48px; margin-bottom: 10px; }
+.form-success-text { font-size: 16px; font-weight: 600; color: var(--text); }
+.form-success-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">אז מה עושים היום?</h1>
+    <p class="hero-subtitle">פעילויות איכות עם המשפחה בהולנד בסופ״ש</p>
+  </div>
+  <div class="hero-nav-tabs-unified">
+    <a href="index.html" class="hero-tab">🏠 עמוד הבית</a>
+    <a href="places.html" class="hero-tab">📍 מקומות מומלצים</a>
+    <a href="holidays.html" class="hero-tab">📅 לוח חופשות</a>
+    <a href="weather.html" class="hero-tab active">🌤️ תחזית מזג אוויר</a>
+    <a href="articles.html" class="hero-tab">📝 כתבות</a>
+    <a href="about.html" class="hero-tab">🤝 נעים להכיר</a>
+    <a href="#" class="hero-tab" onclick="event.preventDefault(); openSuggestionModal('feedback')">💬 צרו קשר</a>
+  </div>
+</div>
+
+<div class="content">
+  <!-- LOADING STATE -->
+  <div class="loading-weather" id="loadingState">
+    <div class="spinner"></div>
+    טוען תחזית...
+  </div>
+
+  <!-- CONTENT (hidden until loaded) -->
+  <div id="weatherContent" style="display:none">
+
+    <!-- RECOMMENDATION -->
+    <div class="recommendation-card" id="recommendationCard">
+      <div class="recommendation-title">💡 ההמלצה שלנו לסופ״ש</div>
+      <div class="recommendation-text" id="recommendationText"></div>
+      <div class="rec-tags" id="recTags"></div>
+    </div>
+
+    <!-- WEEKEND SUMMARY -->
+    <div class="weekend-summary" id="weekendSummary"></div>
+
+    <!-- WEATHER MAP -->
+    <div class="weather-map-section">
+      <div class="section-title">🗺️ מפת הולנד - תחזית לסופ״ש</div>
+      <div id="weatherMap"></div>
+    </div>
+
+    <!-- CITY FORECASTS -->
+    <div class="cities-section">
+      <div class="section-title">🏙️ תחזית לפי עיר</div>
+      <div class="city-chips" id="cityChips"></div>
+      <div id="cityForecast"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  נבנה באהבה לקהילה הישראלית בהולנד ❤️
+  <br>חלק מ-<a href="https://israelis.nl">israelis.nl</a> · נתוני מזג אוויר מ-<a href="https://open-meteo.com/" target="_blank">Open-Meteo</a>
+</div>
+
+<!-- SUGGESTION MODAL -->
+<div class="modal-overlay" id="suggestionModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSuggestionModal()">&times;</button>
+    <div id="suggestionFormContainer">
+      <div class="modal-title" id="modalTitle">💬 שתפו את דעתכם</div>
+      <div class="modal-subtitle" id="modalSubtitle"></div>
+      <div class="form-type-selector" id="formTypeSelector">
+        <button class="form-type-btn active" data-type="event" onclick="switchFormType('event')">🎪 הוסיפו אירוע</button>
+        <button class="form-type-btn" data-type="feedback" onclick="switchFormType('feedback')">💭 פידבק</button>
+      </div>
+      <form id="suggestionForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
+        <input type="hidden" name="form_type" id="formTypeInput" value="event">
+        <div class="form-fields" id="fieldsEvent">
+          <div class="form-group"><label class="form-label">שם האירוע *</label><input class="form-input" type="text" name="event_name" placeholder="למשל: פסטיבל האור באיינדהובן"></div>
+          <div class="form-group"><label class="form-label">מתי?</label><input class="form-input" type="text" name="event_date" placeholder="למשל: שבת 21/3, 18:00-23:00"></div>
+          <div class="form-group"><label class="form-label">איפה?</label><input class="form-input" type="text" name="event_location" placeholder="למשל: מרכז איינדהובן"></div>
+          <div class="form-group"><label class="form-label">קישור לאירוע</label><input class="form-input" type="url" name="event_link" dir="ltr" placeholder="https://..."></div>
+          <div class="form-group"><label class="form-label">פרטים נוספים</label><textarea class="form-textarea" name="event_details" placeholder="מה שווה באירוע הזה? למי מתאים? מחיר?"></textarea></div>
+        </div>
+        <div class="form-fields hidden" id="fieldsFeedback">
+          <div class="form-group"><label class="form-label">מה תרצו לשתף? *</label><textarea class="form-textarea" name="feedback_text" placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea></div>
+        </div>
+        <div class="form-group"><label class="form-label">השם שלך (לא חובה)</label><input class="form-input" type="text" name="submitter_name" placeholder="כדי שנוכל לחזור אליכם"></div>
+        <div class="form-group"><label class="form-label">אימייל (לא חובה)</label><input class="form-input" type="email" name="submitter_email" dir="ltr" placeholder="email@example.com"></div>
+        <div class="form-group"><label class="form-label">טלפון (לא חובה)</label><input class="form-input" type="tel" name="submitter_phone" dir="ltr" placeholder="+31 6..."></div>
+        <input type="hidden" name="_subject" id="formSubject" value="הודעה חדשה - fun.israelis.nl">
+        <button type="submit" class="form-submit" id="submitBtn">שליחה 🚀</button>
+      </form>
+    </div>
+    <div class="form-success hidden" id="suggestionSuccess">
+      <div class="form-success-emoji">🎉</div>
+      <div class="form-success-text">תודה רבה!</div>
+      <div class="form-success-sub">קיבלנו את ההמלצה שלכם ונבדוק אותה בהקדם.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase (for contact modal) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script src="auth.js"></script>
+<script>
+function onUserLoggedIn() {}
+function onUserLoggedOut() {}
+
+// ===== CITIES =====
+const CITIES = [
+  { name: 'אמסטרדם', nameEn: 'Amsterdam', lat: 52.37, lng: 4.90 },
+  { name: 'רוטרדם', nameEn: 'Rotterdam', lat: 51.92, lng: 4.48 },
+  { name: 'דן האג', nameEn: 'Den Haag', lat: 52.08, lng: 4.30 },
+  { name: 'אוטרכט', nameEn: 'Utrecht', lat: 52.09, lng: 5.12 },
+  { name: 'איינדהובן', nameEn: 'Eindhoven', lat: 51.44, lng: 5.47 },
+  { name: 'חרונינגן', nameEn: 'Groningen', lat: 53.22, lng: 6.57 },
+  { name: 'מאסטריכט', nameEn: 'Maastricht', lat: 50.85, lng: 5.69 },
+  { name: 'ארנהם', nameEn: 'Arnhem', lat: 51.98, lng: 5.91 },
+];
+
+const HEBREW_DAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const HEBREW_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+// ===== WMO WEATHER CODES =====
+function weatherEmoji(code) {
+  if (code === 0) return '☀️';
+  if (code === 1) return '🌤️';
+  if (code === 2) return '⛅';
+  if (code === 3) return '☁️';
+  if (code >= 45 && code <= 48) return '🌫️';
+  if (code >= 51 && code <= 55) return '🌦️';
+  if (code >= 56 && code <= 57) return '🌧️';
+  if (code >= 61 && code <= 65) return '🌧️';
+  if (code >= 66 && code <= 67) return '🌨️';
+  if (code >= 71 && code <= 77) return '❄️';
+  if (code >= 80 && code <= 82) return '🌦️';
+  if (code >= 85 && code <= 86) return '🌨️';
+  if (code >= 95 && code <= 99) return '⛈️';
+  return '🌡️';
+}
+
+function weatherDesc(code) {
+  if (code === 0) return 'שמיים בהירים';
+  if (code === 1) return 'בעיקר בהיר';
+  if (code === 2) return 'מעונן חלקית';
+  if (code === 3) return 'מעונן';
+  if (code >= 45 && code <= 48) return 'ערפל';
+  if (code >= 51 && code <= 55) return 'טפטוף';
+  if (code >= 56 && code <= 57) return 'טפטוף קופא';
+  if (code >= 61 && code <= 63) return 'גשם';
+  if (code >= 64 && code <= 65) return 'גשם חזק';
+  if (code >= 66 && code <= 67) return 'גשם קופא';
+  if (code >= 71 && code <= 75) return 'שלג';
+  if (code >= 77) return 'גרגירי שלג';
+  if (code >= 80 && code <= 82) return 'ממטרים';
+  if (code >= 85 && code <= 86) return 'ממטרי שלג';
+  if (code >= 95 && code <= 99) return 'סופת רעמים';
+  return 'לא ידוע';
+}
+
+// ===== FIND WEEKEND DATES =====
+function getWeekendDates() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const dayOfWeek = today.getDay();
+
+  let saturday, sunday;
+  if (dayOfWeek === 6) {
+    // Today is Saturday
+    saturday = new Date(today);
+    sunday = new Date(today);
+    sunday.setDate(sunday.getDate() + 1);
+  } else if (dayOfWeek === 0) {
+    // Today is Sunday
+    saturday = new Date(today);
+    saturday.setDate(saturday.getDate() - 1);
+    sunday = new Date(today);
+  } else {
+    // Weekday — find upcoming Saturday
+    const daysUntilSat = 6 - dayOfWeek;
+    saturday = new Date(today);
+    saturday.setDate(saturday.getDate() + daysUntilSat);
+    sunday = new Date(saturday);
+    sunday.setDate(sunday.getDate() + 1);
+  }
+
+  return {
+    saturday: saturday.toISOString().split('T')[0],
+    sunday: sunday.toISOString().split('T')[0],
+    satDate: saturday,
+    sunDate: sunday
+  };
+}
+
+function fmtDate(d) {
+  return `${d.getDate()} ${HEBREW_MONTHS[d.getMonth()]}`;
+}
+
+function fmtDayLabel(d) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.floor((d - today) / 86400000);
+  const dayName = 'יום ' + HEBREW_DAYS[d.getDay()];
+  if (diff === 0) return 'היום - ' + dayName;
+  if (diff === 1) return 'מחר - ' + dayName;
+  return dayName;
+}
+
+// ===== FETCH WEATHER =====
+async function fetchAllWeather() {
+  const { saturday, sunday } = getWeekendDates();
+  const startDate = saturday;
+  const endDate = sunday;
+
+  const promises = CITIES.map(city => {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,windspeed_10m_max,weathercode&hourly=temperature_2m,weathercode,precipitation_probability&start_date=${startDate}&end_date=${endDate}&timezone=Europe/Amsterdam`;
+    return fetch(url).then(r => r.json()).then(data => ({ city, data }));
+  });
+
+  return Promise.all(promises);
+}
+
+// ===== BUILD RECOMMENDATION =====
+function buildRecommendation(results, weekend) {
+  // Average across all cities for the weekend
+  let totalRain = 0, totalWind = 0, totalMaxTemp = 0, totalMinTemp = 0, rainyDays = 0;
+  let maxRainProb = 0;
+
+  results.forEach(({ data }) => {
+    data.daily.precipitation_sum.forEach(p => totalRain += p);
+    data.daily.windspeed_10m_max.forEach(w => totalWind += w);
+    data.daily.temperature_2m_max.forEach(t => totalMaxTemp += t);
+    data.daily.temperature_2m_min.forEach(t => totalMinTemp += t);
+    data.daily.precipitation_probability_max.forEach(p => { if (p > maxRainProb) maxRainProb = p; });
+    data.daily.precipitation_probability_max.forEach(p => { if (p > 50) rainyDays++; });
+  });
+
+  const n = results.length * 2; // 2 days * cities
+  const avgMaxTemp = totalMaxTemp / n;
+  const avgMinTemp = totalMinTemp / n;
+  const avgWind = totalWind / n;
+  const avgRain = totalRain / n;
+
+  let text = '';
+  const tags = [];
+
+  // Temperature advice
+  if (avgMaxTemp >= 20) {
+    text += 'סוף שבוע נעים צפוי! טמפרטורות נוחות ליציאה לפעילויות בחוץ. ';
+    tags.push({ icon: '👕', label: 'בגדים קלים' });
+  } else if (avgMaxTemp >= 12) {
+    text += 'טמפרטורות ממוצעות לעונה. ';
+    tags.push({ icon: '🧥', label: 'שכבות ביגוד' });
+  } else if (avgMaxTemp >= 5) {
+    text += 'צפוי להיות קריר. מומלץ להתלבש בשכבות ולקחת מעיל חם. ';
+    tags.push({ icon: '🧥', label: 'מעיל חם' });
+    tags.push({ icon: '🧤', label: 'כפפות וכובע' });
+  } else {
+    text += 'סופ״ש קר! התלבשו חם ושקלו פעילויות בפנים. ';
+    tags.push({ icon: '🧥', label: 'מעיל כבד' });
+    tags.push({ icon: '🧤', label: 'כפפות וכובע' });
+    tags.push({ icon: '🏠', label: 'פעילויות בפנים' });
+  }
+
+  // Rain advice
+  if (maxRainProb >= 70) {
+    text += 'סיכוי גבוה לגשם — קחו מטריה! ';
+    tags.push({ icon: '☂️', label: 'מטריה חובה' });
+  } else if (maxRainProb >= 40) {
+    text += 'יש סיכוי לגשם, כדאי לקחת מטריה ליתר ביטחון. ';
+    tags.push({ icon: '🌂', label: 'מטריה מומלצת' });
+  } else {
+    tags.push({ icon: '😊', label: 'יבש יחסית' });
+  }
+
+  // Wind advice
+  if (avgWind >= 40) {
+    text += 'רוחות חזקות צפויות — שימו לב בפעילויות חוץ.';
+    tags.push({ icon: '💨', label: 'רוחות חזקות' });
+  } else if (avgWind >= 25) {
+    tags.push({ icon: '🍃', label: 'רוח מתונה' });
+  }
+
+  document.getElementById('recommendationText').textContent = text;
+  document.getElementById('recTags').innerHTML = tags.map(t =>
+    `<span class="rec-tag">${t.icon} ${t.label}</span>`
+  ).join('');
+}
+
+// ===== BUILD WEEKEND SUMMARY =====
+function buildWeekendSummary(results, weekend) {
+  // Use Amsterdam (first city) as the main summary
+  const ams = results[0].data;
+  const html = [0, 1].map(i => {
+    const d = i === 0 ? weekend.satDate : weekend.sunDate;
+    const dayClass = i === 0 ? 'saturday' : 'sunday';
+    const code = ams.daily.weathercode[i];
+    const maxT = Math.round(ams.daily.temperature_2m_max[i]);
+    const minT = Math.round(ams.daily.temperature_2m_min[i]);
+    const rain = ams.daily.precipitation_sum[i];
+    const rainProb = ams.daily.precipitation_probability_max[i];
+    const wind = Math.round(ams.daily.windspeed_10m_max[i]);
+
+    // Hourly data for this day
+    const startHour = i * 24;
+    const hourlyHtml = [];
+    for (let h = 8; h <= 20; h += 2) {
+      const idx = startHour + h;
+      if (idx < ams.hourly.temperature_2m.length) {
+        hourlyHtml.push(`
+          <div class="hourly-item">
+            <span class="hourly-time">${String(h).padStart(2,'0')}:00</span>
+            <span class="hourly-icon">${weatherEmoji(ams.hourly.weathercode[idx])}</span>
+            <span class="hourly-temp">${Math.round(ams.hourly.temperature_2m[idx])}°</span>
+          </div>
+        `);
+      }
+    }
+
+    return `
+      <div class="day-card ${dayClass}">
+        <div class="day-header">
+          <div class="day-name">${fmtDayLabel(d)}</div>
+          <div class="day-date">${fmtDate(d)}</div>
+        </div>
+        <div class="day-weather-main">
+          <span class="weather-icon">${weatherEmoji(code)}</span>
+          <div>
+            <span class="weather-temp">${maxT}°<span class="weather-temp-unit">/${minT}°</span></span>
+          </div>
+        </div>
+        <div class="weather-desc">${weatherDesc(code)}</div>
+        <div class="weather-details">
+          <span class="weather-detail">💧 ${rainProb}% סיכוי לגשם</span>
+          <span class="weather-detail">🌧️ ${rain.toFixed(1)} מ״מ</span>
+          <span class="weather-detail">💨 ${wind} קמ״ש</span>
+        </div>
+        <div style="margin-top:14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text-light);margin-bottom:6px;">שעה אחר שעה (אמסטרדם)</div>
+          <div class="hourly-row">${hourlyHtml.join('')}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('weekendSummary').innerHTML = html;
+}
+
+// ===== BUILD MAP =====
+function buildMap(results, weekend) {
+  const nlBounds = L.latLngBounds([50.75, 3.2], [53.55, 7.25]);
+  const map = window._weatherMap = L.map('weatherMap', {
+    scrollWheelZoom: false,
+    maxBounds: nlBounds.pad(0.1),
+    minZoom: 7
+  }).setView([52.2, 5.1], 8);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OSM &copy; CARTO',
+    maxZoom: 19
+  }).addTo(map);
+
+  results.forEach(({ city, data }) => {
+    const code = data.daily.weathercode[0]; // Saturday
+    const maxT = Math.round(data.daily.temperature_2m_max[0]);
+    const minT = Math.round(data.daily.temperature_2m_min[0]);
+    const emoji = weatherEmoji(code);
+
+    const icon = L.divIcon({
+      className: 'weather-marker',
+      html: `<div style="
+        background: white;
+        border-radius: 12px;
+        padding: 4px 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        font-family: 'Heebo', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      ">${emoji} ${maxT}°/${minT}°</div>`,
+      iconSize: [90, 30],
+      iconAnchor: [45, 15]
+    });
+
+    const marker = L.marker([city.lat, city.lng], { icon }).addTo(map);
+
+    const satCode = data.daily.weathercode[0];
+    const sunCode = data.daily.weathercode[1] || satCode;
+    marker.bindPopup(`
+      <div style="font-family:'Heebo',sans-serif;text-align:center;direction:rtl;">
+        <strong>${city.name}</strong><br>
+        <div style="margin:6px 0;">
+          <b>שבת:</b> ${weatherEmoji(satCode)} ${Math.round(data.daily.temperature_2m_max[0])}°/${Math.round(data.daily.temperature_2m_min[0])}°
+          <br><b>ראשון:</b> ${weatherEmoji(sunCode)} ${Math.round(data.daily.temperature_2m_max[1] || data.daily.temperature_2m_max[0])}°/${Math.round(data.daily.temperature_2m_min[1] || data.daily.temperature_2m_min[0])}°
+        </div>
+      </div>
+    `, { maxWidth: 200 });
+  });
+}
+
+// ===== CITY FORECAST =====
+let selectedCityIdx = 0;
+
+function buildCityChips() {
+  document.getElementById('cityChips').innerHTML = CITIES.map((c, i) =>
+    `<button class="city-chip ${i === 0 ? 'active' : ''}" onclick="selectCity(${i})">${c.name}</button>`
+  ).join('');
+}
+
+function selectCity(idx) {
+  selectedCityIdx = idx;
+  document.querySelectorAll('.city-chip').forEach((c, i) => c.classList.toggle('active', i === idx));
+  renderCityForecast();
+}
+
+let allResults = [];
+
+function renderCityForecast() {
+  const { data } = allResults[selectedCityIdx];
+  const weekend = getWeekendDates();
+
+  const html = [0, 1].map(i => {
+    const d = i === 0 ? weekend.satDate : weekend.sunDate;
+    const code = data.daily.weathercode[i];
+    const maxT = Math.round(data.daily.temperature_2m_max[i]);
+    const minT = Math.round(data.daily.temperature_2m_min[i]);
+    const rain = data.daily.precipitation_sum[i];
+    const rainProb = data.daily.precipitation_probability_max[i];
+    const wind = Math.round(data.daily.windspeed_10m_max[i]);
+
+    return `
+      <div class="city-day-card">
+        <div class="city-day-header">${fmtDayLabel(d)} · ${fmtDate(d)}</div>
+        <div class="city-weather-row">
+          <span class="city-icon">${weatherEmoji(code)}</span>
+          <span class="city-temp">${maxT}°<span style="font-size:16px;color:var(--text-lighter)">/${minT}°</span></span>
+        </div>
+        <div style="font-size:14px;color:var(--text-light);margin-bottom:8px;">${weatherDesc(code)}</div>
+        <div class="city-details">
+          <span class="city-detail">💧 ${rainProb}% גשם</span>
+          <span class="city-detail">🌧️ ${rain.toFixed(1)} מ״מ</span>
+          <span class="city-detail">💨 ${wind} קמ״ש</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('cityForecast').innerHTML = `<div class="city-forecast">${html}</div>`;
+}
+
+// ===== INIT =====
+async function init() {
+  try {
+    const weekend = getWeekendDates();
+    allResults = await fetchAllWeather();
+
+    buildRecommendation(allResults, weekend);
+    buildWeekendSummary(allResults, weekend);
+    buildMap(allResults, weekend);
+    buildCityChips();
+    renderCityForecast();
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('weatherContent').style.display = 'block';
+    // Leaflet needs a size recalc after container becomes visible
+    if (window._weatherMap) setTimeout(() => window._weatherMap.invalidateSize(), 100);
+  } catch (err) {
+    console.error('Weather load error:', err);
+    document.getElementById('loadingState').innerHTML = '❌ שגיאה בטעינת התחזית. נסו שוב מאוחר יותר.';
+  }
+}
+
+// ===== SUGGESTION MODAL =====
+function openSuggestionModal(type) {
+  document.getElementById('suggestionModal').classList.add('active');
+  document.getElementById('suggestionFormContainer').classList.remove('hidden');
+  document.getElementById('suggestionSuccess').classList.add('hidden');
+  document.getElementById('suggestionForm').reset();
+  switchFormType(type || 'feedback');
+}
+function switchFormType(type) {
+  document.querySelectorAll('.form-type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.form-type-btn[data-type="${type}"]`).classList.add('active');
+  document.getElementById('formTypeInput').value = type;
+  document.querySelectorAll('.form-fields').forEach(f => f.classList.add('hidden'));
+  const subjects = { event: 'אירוע חדש', feedback: 'פידבק' };
+  const subtitles = { event: 'יש לכם אירוע שווה? ספרו לנו!', feedback: 'נשמח לשמוע מה אתם חושבים' };
+  document.getElementById('modalSubtitle').textContent = subtitles[type];
+  document.getElementById('formSubject').value = `${subjects[type]} - fun.israelis.nl`;
+  if (type === 'event') document.getElementById('fieldsEvent').classList.remove('hidden');
+  else if (type === 'feedback') document.getElementById('fieldsFeedback').classList.remove('hidden');
+}
+function closeSuggestionModal() { document.getElementById('suggestionModal').classList.remove('active'); }
+document.getElementById('suggestionModal').addEventListener('click', function(e) { if (e.target === this) closeSuggestionModal(); });
+document.getElementById('suggestionForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'שולח...';
+  try {
+    const resp = await fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } });
+    if (resp.ok) {
+      document.getElementById('suggestionFormContainer').classList.add('hidden');
+      document.getElementById('suggestionSuccess').classList.remove('hidden');
+      setTimeout(closeSuggestionModal, 3000);
+    } else { throw new Error('Form submission failed'); }
+  } catch (err) { alert('שגיאה בשליחה. נסו שוב מאוחר יותר.'); btn.disabled = false; btn.textContent = 'שליחה 🚀'; }
+});
+
+init();
+</script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
+</body>
+</html>
