@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>קצת עלינו - fun.israelis.nl</title>
-<meta name="description" content="פעילויות איכות למשפחות בהולנד - קצת עלינו">
-<meta property="og:title" content="קצת עלינו - fun.israelis.nl">
-<meta property="og:description" content="פעילויות איכות למשפחות בהולנד - קצת עלינו">
+<title>מאמרים - fun.israelis.nl</title>
+<meta name="description" content="מאמרים וטיפים לחיים בהולנד - מדריכים, המלצות ועוד">
+<meta property="og:title" content="מאמרים - fun.israelis.nl">
+<meta property="og:description" content="מאמרים וטיפים לחיים בהולנד">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://fun.israelis.nl/about.html">
+<meta property="og:url" content="https://fun.israelis.nl/articles.html">
 <meta property="og:site_name" content="fun.israelis.nl">
 <meta property="og:locale" content="he_IL">
 <meta property="og:image" content="https://fun.israelis.nl/images/og2.png">
@@ -21,7 +21,6 @@
 <meta name="apple-mobile-web-app-title" content="מה עושים?">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -35,6 +34,7 @@
   --green: #2ECC40;
   --green-dark: #27AE35;
   --gradient: linear-gradient(135deg, var(--magenta) 0%, var(--purple) 40%, var(--blue) 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(200,80,192,0.08) 0%, rgba(155,48,255,0.08) 40%, rgba(65,88,208,0.06) 100%);
   --bg: #F0EFF4;
   --card-bg: #FFFFFF;
   --text: #1A1A2E;
@@ -49,7 +49,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); }
 
-/* ===== STICKY NAV TABS ===== */
+/* ===== STICKY NAV ===== */
 .sticky-nav {
   background: white;
   position: sticky;
@@ -101,6 +101,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 .nav-tab-pill:hover { background: var(--bg); color: var(--purple); border-color: var(--purple); }
 .nav-tab-pill.active { background: var(--gradient); color: white; border-color: transparent; }
 
+/* ===== HERO ===== */
 .hero {
   background: var(--gradient);
   padding: 40px 20px 32px;
@@ -113,86 +114,244 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 .hero-title { font-family: 'Rubik', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 8px; }
 .hero-subtitle { font-size: 15px; opacity: 0.9; }
 
-.hero-back {
-  display: inline-block;
-  color: rgba(255,255,255,0.85);
-  text-decoration: none;
+/* Hero nav tabs */
+.hero-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.hero-nav-tab {
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  margin-bottom: 12px;
-  padding: 4px 12px;
-  border-radius: 100px;
-  background: rgba(255,255,255,0.15);
-  transition: background 0.2s;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
 }
-.hero-back:hover { background: rgba(255,255,255,0.25); }
 
+.hero-nav-tab:hover { color: white; background: rgba(255,255,255,0.15); }
+.hero-nav-tab.active { color: white; background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); }
+
+.hero-nav-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.25);
+}
+
+.hero-auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 8px;
+}
+.hero-auth-btn:hover { background: rgba(255,255,255,0.25); }
+.hero-auth-btn img { width: 14px; height: 14px; }
+.hero-auth-btn.hidden { display: none; }
+
+.hero-profile-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px 3px 4px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 8px;
+}
+
+.hero-profile-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== CONTENT ===== */
 .content {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 24px 20px 60px;
 }
 
-.about-section {
+/* Filters */
+.filters-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.filter-pill {
+  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-pill:hover { border-color: var(--purple); color: var(--purple); }
+.filter-pill.active { background: var(--purple); color: white; border-color: var(--purple); }
+.filter-pill.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+
+/* Mobile collapsible filters */
+.filters-toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  margin: 0 auto 16px;
+}
+.filters-toggle:hover { border-color: var(--purple); color: var(--purple); }
+.filters-toggle.has-active { border-color: var(--purple); color: var(--purple); }
+.filters-toggle .toggle-arrow { font-size: 8px; transition: transform 0.2s; }
+.filters-toggle.open .toggle-arrow { transform: rotate(180deg); }
+
+.filters-active-count {
+  background: var(--purple);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+.filters-active-count:empty { display: none; }
+
+/* Articles grid */
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.article-card {
   background: white;
   border-radius: var(--radius);
-  padding: 32px;
-  box-shadow: var(--shadow);
+  overflow: hidden;
   border: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
-}
-
-.about-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  grid-column: 1 / -1;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  flex-direction: column;
 }
 
-.about-block {
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  padding: 20px;
+.article-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(155,48,255,0.12);
 }
 
-.about-block-icon { font-size: 28px; margin-bottom: 8px; }
+.article-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: var(--gradient-soft);
+}
 
-.about-block-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 15px;
+.article-body {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-category {
+  display: inline-block;
+  font-size: 11px;
   font-weight: 700;
-  margin-bottom: 6px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  background: rgba(155,48,255,0.08);
+  color: var(--purple);
+  margin-bottom: 8px;
+  align-self: flex-start;
+}
+
+.article-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.4;
 }
 
-.about-text {
-  font-size: 14px;
+.article-summary {
+  font-size: 13px;
   color: var(--text-light);
-  line-height: 1.8;
-  font-weight: 400;
+  line-height: 1.6;
+  flex: 1;
 }
 
-.about-text strong { font-weight: 600; color: var(--text); }
-
-.about-note {
-  grid-column: 1 / -1;
-  font-size: 12px;
+.article-date {
+  font-size: 11px;
   color: var(--text-lighter);
-  line-height: 1.6;
-  padding-top: 14px;
+  margin-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid var(--border);
 }
 
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-lighter);
+  font-size: 14px;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-lighter);
+  font-size: 14px;
+}
+
+/* Footer */
 footer {
   text-align: center;
   padding: 24px 20px;
@@ -279,150 +438,59 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 .form-success-emoji { font-size: 48px; margin-bottom: 10px; }
 .form-success-text { font-size: 16px; font-weight: 600; color: var(--text); }
 
-@media (max-width: 700px) {
-  .about-section { grid-template-columns: 1fr; padding: 24px; gap: 20px; }
-}
-
-/* ===== AUTH NAV TABS ===== */
-.hero-nav-tabs {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  justify-content: center;
-  margin-bottom: 12px;
-}
-
-.hero-nav-tab {
-  padding: 5px 14px;
-  border-radius: 100px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.7);
-  text-decoration: none;
-  transition: all 0.2s;
-  border: 1.5px solid transparent;
-}
-
-.hero-nav-tab:hover { color: white; background: rgba(255,255,255,0.15); }
-.hero-nav-tab.active { color: white; background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); }
-
-.hero-nav-divider {
-  width: 1px;
-  height: 16px;
-  background: rgba(255,255,255,0.25);
-}
-
-.hero-auth-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  border: 1.5px solid rgba(255,255,255,0.4);
-  border-radius: 100px;
-  background: rgba(255,255,255,0.1);
-  color: white;
-  font-family: 'Heebo', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-right: 8px;
-}
-
-.hero-auth-btn:hover { background: rgba(255,255,255,0.25); }
-.hero-auth-btn img { width: 14px; height: 14px; }
-.hero-auth-btn.hidden { display: none; }
-
-.hero-profile-btn {
-  display: none;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 12px 3px 4px;
-  border: 1.5px solid rgba(255,255,255,0.3);
-  border-radius: 100px;
-  background: rgba(255,255,255,0.1);
-  color: white;
-  font-family: 'Heebo', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  margin-right: 8px;
-}
-
-.hero-profile-avatar {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  background-size: cover;
-  background-position: center;
-}
-
-.signup-cta-section {
-  background: var(--gradient);
+/* Signup banner */
+.signup-soft-banner {
+  background: linear-gradient(135deg, rgba(200,80,192,0.06) 0%, rgba(155,48,255,0.06) 100%);
+  border: 1px solid rgba(155,48,255,0.1);
   border-radius: var(--radius);
-  padding: 28px 32px;
+  padding: 16px 24px;
+  margin-bottom: 20px;
   text-align: center;
-  color: white;
-  margin-top: 20px;
-}
-
-.signup-cta-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.signup-cta-desc {
   font-size: 14px;
-  opacity: 0.9;
-  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-
-.signup-cta-btn {
+.signup-soft-banner.hidden { display: none !important; }
+.signup-soft-banner-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 24px;
-  border: 2px solid white;
+  gap: 6px;
+  padding: 6px 16px;
+  border: none;
   border-radius: 100px;
-  background: rgba(255,255,255,0.15);
+  background: var(--gradient);
   color: white;
   font-family: 'Heebo', sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
 }
-
-.signup-cta-btn:hover { background: white; color: var(--purple); }
-.signup-cta-btn img { width: 18px; height: 18px; }
-
-.signup-cta-section.hidden { display: none !important; }
+.signup-soft-banner-btn:hover { opacity: 0.9; }
+.signup-soft-banner-btn img { width: 14px; height: 14px; }
 
 @media (max-width: 700px) {
   .hero-nav-tabs { flex-wrap: wrap; gap: 2px; }
   .hero-nav-tab { font-size: 12px; padding: 4px 10px; }
   .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
   .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
+  .articles-grid { grid-template-columns: 1fr; }
+  .article-img { height: 160px; }
+  .filters-toggle { display: flex; }
+  .filters-row { display: none; }
+  .filters-row.open { display: flex; }
 }
 
-/* Desktop: larger text for readability */
 @media (min-width: 701px) {
   .hero-title { font-size: 32px; }
   .hero-subtitle { font-size: 17px; }
   .nav-logo { font-size: 17px; }
   .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
-  .about-block-title { font-size: 18px; }
-  .about-text { font-size: 16px; }
-  .about-title { font-size: 26px; }
+  .filter-pill { font-size: 13px; padding: 8px 18px; }
+  .article-title { font-size: 18px; }
+  .article-summary { font-size: 14px; }
 }
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
@@ -438,9 +506,9 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
       <div class="hero-nav-divider"></div>
       <a href="holidays.html" class="hero-nav-tab">מתי חופש?</a>
       <div class="hero-nav-divider"></div>
-      <a href="articles.html" class="hero-nav-tab">מאמרים</a>
+      <a href="articles.html" class="hero-nav-tab active">מאמרים</a>
       <div class="hero-nav-divider"></div>
-      <a href="about.html" class="hero-nav-tab active">עלינו</a>
+      <a href="about.html" class="hero-nav-tab">עלינו</a>
       <div class="hero-nav-divider"></div>
       <button class="hero-auth-btn" id="authBtn" onclick="signInWithGoogle()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
@@ -451,8 +519,8 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
         <span id="profileName">הפרופיל</span>
       </a>
     </div>
-    <h1 class="hero-title">קצת עלינו</h1>
-    <p class="hero-subtitle">מי אנחנו ומה תמצאו כאן</p>
+    <h1 class="hero-title">מאמרים וטיפים</h1>
+    <p class="hero-subtitle">מדריכים, המלצות וכל מה שכדאי לדעת על החיים בהולנד</p>
   </div>
 </div>
 
@@ -465,63 +533,29 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
     <a href="index.html" class="nav-tab-pill">אירועים</a>
     <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
     <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
-    <a href="articles.html" class="nav-tab-pill">📝 מאמרים</a>
-    <a href="about.html" class="nav-tab-pill active">🧡 עלינו</a>
+    <a href="articles.html" class="nav-tab-pill active">📝 מאמרים</a>
+    <a href="about.html" class="nav-tab-pill">🧡 עלינו</a>
     <button class="nav-tab-pill" onclick="openContactModal()">💬 צרו קשר</button>
   </div>
 </div>
 
 <div class="content">
-  <div class="about-section">
-    <div class="about-title">קצת עלינו</div>
-
-    <div class="about-block">
-      <div class="about-block-icon">🎯</div>
-      <div class="about-block-title">מה תמצאו כאן?</div>
-      <div class="about-text">
-        אירועים <strong>מקומיים וייחודיים</strong> לילדים ומשפחות בהולנד - לא אטרקציות כלליות, אלא דברים שקורים במקום מסוים, בתאריך ספציפי, ומתאימים למשפחות.
-      </div>
-    </div>
-
-    <div class="about-block">
-      <div class="about-block-icon">🔍</div>
-      <div class="about-block-title">איך זה עובד?</div>
-      <div class="about-text">
-        התכנים מסוקרים ונאספים באופן ידני כדי להביא לכם את הדברים הכי שווים שקורים ברחבי המדינה. כל אירוע נבדק ומתעדכן.
-      </div>
-    </div>
-
-    <div class="about-block">
-      <div class="about-block-icon">🧡</div>
-      <div class="about-block-title">מי אנחנו?</div>
-      <div class="about-text">
-        האתר הוא חלק מ-<a href="https://israelis.nl" target="_blank" style="color:var(--purple);text-decoration:none;font-weight:600;">israelis.nl</a> - פלטפורמה לקהילה הישראלית בהולנד. נבנה מאהבה, בשבילכם.
-      </div>
-    </div>
-
-    <div class="about-block">
-      <div class="about-block-icon">💡</div>
-      <div class="about-block-title">יש לכם המלצה?</div>
-      <div class="about-text">
-        יודעים על אירוע שווה שלא מופיע כאן? <a onclick="openContactModal()" style="cursor:pointer;color:var(--purple);font-weight:600;text-decoration:none;">שלחו לנו המלצה</a> ונוסיף אותו!
-        <br>ובינתיים, בקרו ב<a href="places.html" style="color:var(--purple);font-weight:600;text-decoration:none;">מקומות שאנחנו ממליצים</a> 📍
-      </div>
-    </div>
-
-    <div class="about-note">
-      ⚠️ המידע באתר נאסף ממקורות שונים ומתעדכן באופן שוטף. מומלץ תמיד לבדוק בקישור לאירוע לפני שיוצאים לדרך.
-    </div>
-  </div>
-
-  <!-- SIGNUP CTA -->
-  <div class="signup-cta-section" id="signupCta">
-    <div class="signup-cta-title">הצטרפו לקהילה שלנו</div>
-    <div class="signup-cta-desc">התחברו כדי לקבל גישה מלאה לאירועים, לשמור מועדפים ולהיות חלק מהקהילה</div>
-    <button class="signup-cta-btn" onclick="signInWithGoogle()">
+  <div class="signup-soft-banner" id="signupBanner">
+    רוצים לדעת מה עושים בסופ״ש? אצלנו תמצאו אירועים לכל סופ״ש
+    <button class="signup-soft-banner-btn" onclick="signInWithGoogle()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-      התחברו עם Google
+      התחברו
     </button>
   </div>
+
+  <button class="filters-toggle" id="filtersToggle" onclick="toggleFiltersCollapse()">
+    סינון <span class="filters-active-count" id="filtersActiveCount"></span> <span class="toggle-arrow">▼</span>
+  </button>
+  <div class="filters-row" id="filtersRow"></div>
+
+  <div class="loading" id="loading">טוען מאמרים...</div>
+  <div class="articles-grid" id="articlesGrid"></div>
+  <div class="no-results" id="noResults" style="display:none">לא נמצאו מאמרים בקטגוריה זו</div>
 </div>
 
 <footer>
@@ -572,6 +606,126 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 <!-- Firebase Auth -->
 <script src="auth.js"></script>
 <script>
+const ARTICLES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1Gyd7c8hWg3CFKUXCnEKa1WRlfnAXpjWGuPvhvviTSBc/export?format=csv&gid=478633181';
+
+let articles = [];
+let activeFilter = 'all';
+
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (i + 1 < line.length && line[i + 1] === '"') { current += '"'; i++; }
+        else { inQuotes = false; }
+      } else { current += ch; }
+    } else {
+      if (ch === '"') { inQuotes = true; }
+      else if (ch === ',') { result.push(current); current = ''; }
+      else { current += ch; }
+    }
+  }
+  result.push(current);
+  return result;
+}
+
+function parseCSV(text) {
+  const lines = text.split('\n');
+  if (lines.length < 2) return [];
+  const headers = parseCSVLine(lines[0]);
+  const results = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const values = parseCSVLine(line);
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h.trim().toLowerCase()] = (values[idx] || '').trim(); });
+    results.push(obj);
+  }
+  return results;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  if (isNaN(d)) return dateStr;
+  const months = ['בינואר','בפברואר','במרץ','באפריל','במאי','ביוני','ביולי','באוגוסט','בספטמבר','באוקטובר','בנובמבר','בדצמבר'];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function buildFilters() {
+  const categories = [...new Set(articles.map(a => a.category).filter(Boolean))];
+  const row = document.getElementById('filtersRow');
+  row.innerHTML = '<button class="filter-pill active" data-cat="all">הכל</button>';
+  categories.forEach(cat => {
+    row.innerHTML += `<button class="filter-pill" data-cat="${cat}">${cat}</button>`;
+  });
+
+  row.addEventListener('click', (e) => {
+    const pill = e.target.closest('.filter-pill');
+    if (!pill) return;
+    activeFilter = pill.dataset.cat;
+    row.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('active', p.dataset.cat === activeFilter));
+    updateToggleBadge();
+    renderArticles();
+  });
+}
+
+function renderArticles() {
+  const grid = document.getElementById('articlesGrid');
+  const noResults = document.getElementById('noResults');
+  const filtered = activeFilter === 'all' ? articles : articles.filter(a => a.category === activeFilter);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    noResults.style.display = 'block';
+    return;
+  }
+
+  noResults.style.display = 'none';
+  grid.innerHTML = filtered.map(a => `
+    <a class="article-card" href="${a.link || '#'}" ${a.link && a.link !== '#' ? 'target="_blank" rel="noopener"' : ''}>
+      <img class="article-img" src="${a.image || ''}" alt="${a.title}" onerror="this.style.display='none'">
+      <div class="article-body">
+        ${a.category ? `<span class="article-category">${a.category}</span>` : ''}
+        <div class="article-title">${a.title}</div>
+        <div class="article-summary">${a.summary || ''}</div>
+        <div class="article-date">${formatDate(a.date)}</div>
+      </div>
+    </a>
+  `).join('');
+}
+
+function toggleFiltersCollapse() {
+  document.getElementById('filtersToggle').classList.toggle('open');
+  document.getElementById('filtersRow').classList.toggle('open');
+}
+
+function updateToggleBadge() {
+  const badge = document.getElementById('filtersActiveCount');
+  const toggle = document.getElementById('filtersToggle');
+  if (activeFilter !== 'all') {
+    badge.textContent = activeFilter;
+    toggle.classList.add('has-active');
+  } else {
+    badge.textContent = '';
+    toggle.classList.remove('has-active');
+  }
+}
+
+// Close filters on outside click
+document.addEventListener('click', (e) => {
+  const toggle = document.getElementById('filtersToggle');
+  const row = document.getElementById('filtersRow');
+  if (row.classList.contains('open') && !row.contains(e.target) && !toggle.contains(e.target)) {
+    row.classList.remove('open');
+    toggle.classList.remove('open');
+  }
+});
+
 // Contact modal
 function openContactModal() {
   document.getElementById('contactOverlay').classList.add('active');
@@ -599,15 +753,37 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   }
 });
 
+// Auth callbacks
 function onUserLoggedIn() {
-  const cta = document.getElementById('signupCta');
-  if (cta) cta.classList.add('hidden');
-  window.location.href = 'index.html';
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.add('hidden');
 }
 function onUserLoggedOut() {
-  const cta = document.getElementById('signupCta');
-  if (cta) cta.classList.remove('hidden');
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.remove('hidden');
 }
+
+// Load articles
+async function loadArticles() {
+  try {
+    const cacheBust = Math.floor(Date.now() / 60000);
+    const resp = await fetch(ARTICLES_SHEET_URL + '&_cb=' + cacheBust);
+    if (!resp.ok) throw new Error('Failed to fetch articles');
+    const text = await resp.text();
+    articles = parseCSV(text).filter(a => a.title);
+    // Sort by date descending
+    articles.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  } catch (err) {
+    console.error('Error loading articles:', err);
+    articles = [];
+  }
+
+  document.getElementById('loading').style.display = 'none';
+  buildFilters();
+  renderArticles();
+}
+
+loadArticles();
 </script>
 </body>
 </html>
