@@ -223,6 +223,45 @@ body {
   color: white;
 }
 
+/* Mobile collapsible filters */
+.filters-toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.filters-toggle:hover { border-color: var(--purple); color: var(--purple); }
+.filters-toggle.has-active { border-color: var(--purple); color: var(--purple); }
+
+.filters-toggle .toggle-arrow {
+  font-size: 8px;
+  transition: transform 0.2s;
+}
+
+.filters-toggle.open .toggle-arrow { transform: rotate(180deg); }
+
+.filters-active-label {
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--purple);
+  color: white;
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+
+.filters-active-label:empty { display: none; }
+
 .view-toggle-row {
   display: flex;
   gap: 0;
@@ -619,7 +658,9 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 @media (max-width: 700px) {
   .hero-title { font-size: 28px; }
   .hero-subtitle { font-size: 14px; }
-  .filters-row { gap: 6px; }
+  .filters-toggle { display: flex; }
+  .filters-row { display: none; gap: 6px; flex-wrap: wrap; }
+  .filters-row.open { display: flex; }
   .filter-pill { padding: 6px 14px; font-size: 12px; }
   .search-row { max-width: 100%; }
   .nav-inner { padding: 8px 16px; }
@@ -827,7 +868,10 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
         <input type="text" class="search-input" id="searchInput" placeholder="🔍 חיפוש מקום..." oninput="filterPlaces()">
       </div>
     </div>
-    <div class="filters-row">
+    <button class="filters-toggle" id="filtersToggle" onclick="toggleFiltersCollapse()">
+      סינון <span class="filters-active-label" id="filtersActiveLabel"></span> <span class="toggle-arrow">▼</span>
+    </button>
+    <div class="filters-row" id="filtersRow">
       <button class="filter-pill active" data-cat="all" onclick="toggleFilter('all')">הכל <span class="filter-count" id="countAll"></span></button>
       <button class="filter-pill" data-cat="restaurant" onclick="toggleFilter('restaurant')"><span class="filter-dot" style="background:var(--restaurant)"></span> 🍽️ מסעדות עם ילדים <span class="filter-count" id="countRestaurant"></span></button>
       <button class="filter-pill" data-cat="museum" onclick="toggleFilter('museum')"><span class="filter-dot" style="background:var(--museum)"></span> 🏛️ מוזיאונים עם ילדים <span class="filter-count" id="countMuseum"></span></button>
@@ -1114,8 +1158,41 @@ function toggleFilter(cat) {
     pill.classList.toggle('active', pill.dataset.cat === cat);
   });
 
+  // Update mobile toggle badge
+  updatePlacesFilterToggle();
   filterPlaces();
 }
+
+function toggleFiltersCollapse() {
+  const toggle = document.getElementById('filtersToggle');
+  const row = document.getElementById('filtersRow');
+  toggle.classList.toggle('open');
+  row.classList.toggle('open');
+}
+
+function updatePlacesFilterToggle() {
+  const label = document.getElementById('filtersActiveLabel');
+  const toggle = document.getElementById('filtersToggle');
+  if (!label) return;
+  if (activeFilter && activeFilter !== 'all') {
+    const activePill = document.querySelector('.filter-pill.active');
+    label.textContent = activePill ? activePill.textContent.trim().split(' ').slice(1).join(' ') : '';
+    toggle.classList.add('has-active');
+  } else {
+    label.textContent = '';
+    toggle.classList.remove('has-active');
+  }
+}
+
+// Close filters on outside click
+document.addEventListener('click', (e) => {
+  const toggle = document.getElementById('filtersToggle');
+  const row = document.getElementById('filtersRow');
+  if (row && row.classList.contains('open') && !row.contains(e.target) && !toggle.contains(e.target)) {
+    row.classList.remove('open');
+    toggle.classList.remove('open');
+  }
+});
 
 function filterPlaces() {
   searchTerm = document.getElementById('searchInput').value.trim();

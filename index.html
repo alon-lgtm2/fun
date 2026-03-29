@@ -476,6 +476,68 @@ body {
 .liked-filter-count { font-size: 10px; font-weight: 700; }
 .liked-filter-count:empty { display: none; }
 
+/* Mobile collapsible filters */
+.filters-toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.filters-toggle:hover { border-color: var(--purple); color: var(--purple); }
+.filters-toggle.has-active { border-color: var(--purple); color: var(--purple); }
+
+.filters-toggle .toggle-arrow {
+  font-size: 8px;
+  transition: transform 0.2s;
+}
+
+.filters-toggle.open .toggle-arrow { transform: rotate(180deg); }
+
+.filters-active-count {
+  background: var(--purple);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 100px;
+  min-width: 16px;
+  text-align: center;
+}
+
+.filters-active-count:empty { display: none; }
+
+@media (max-width: 700px) {
+  .filters-toggle { display: flex; }
+  .filters-row {
+    display: none;
+    flex-wrap: wrap;
+    overflow-x: visible;
+    width: 100%;
+    padding: 8px 0 0;
+  }
+  .filters-row.open {
+    display: flex;
+  }
+  .filters-row .filter-pill {
+    flex-shrink: 0;
+  }
+  .nav-bar {
+    flex-wrap: wrap;
+  }
+}
+
 /* ===== CONTENT ===== */
 .content {
   max-width: 1400px;
@@ -1902,6 +1964,9 @@ body {
         </div>
       </div>
 
+      <button class="filters-toggle" id="filtersToggle" onclick="toggleFiltersCollapse()">
+        סינון <span class="filters-active-count" id="filtersActiveCount"></span> <span class="toggle-arrow">▼</span>
+      </button>
       <div class="filters-row" id="filters">
         <button class="filter-pill active" data-filter="all">הכל</button>
         <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
@@ -2926,8 +2991,26 @@ document.getElementById('filters').addEventListener('click', (e) => {
     }
   }
   updateFilterAvailability();
+  updateFiltersToggleBadge();
   render();
 });
+
+// Mobile collapsible filters
+function toggleFiltersCollapse() {
+  const toggle = document.getElementById('filtersToggle');
+  const row = document.getElementById('filters');
+  toggle.classList.toggle('open');
+  row.classList.toggle('open');
+}
+
+function updateFiltersToggleBadge() {
+  const badge = document.getElementById('filtersActiveCount');
+  const toggle = document.getElementById('filtersToggle');
+  if (!badge) return;
+  const count = activeFilters.size;
+  badge.textContent = count > 0 ? count : '';
+  toggle.classList.toggle('has-active', count > 0);
+}
 
 // Close dropdowns on click outside
 document.addEventListener('click', (e) => {
@@ -2941,6 +3024,13 @@ document.addEventListener('click', (e) => {
   if (wkDropdown.classList.contains('open') && !picker.contains(e.target)) {
     wkDropdown.classList.remove('open');
     picker.classList.remove('open');
+  }
+  // Close mobile filters on outside click
+  const filtersToggle = document.getElementById('filtersToggle');
+  const filtersRow = document.getElementById('filters');
+  if (filtersRow.classList.contains('open') && !filtersRow.contains(e.target) && !filtersToggle.contains(e.target)) {
+    filtersRow.classList.remove('open');
+    filtersToggle.classList.remove('open');
   }
 });
 
