@@ -11,7 +11,13 @@
 <meta property="og:url" content="https://fun.israelis.nl/places.html">
 <meta property="og:site_name" content="fun.israelis.nl">
 <meta property="og:locale" content="he_IL">
-<meta property="og:image" content="https://fun.israelis.nl/images/og2.png">
+<meta property="og:image" content="https://fun.israelis.nl/images/og3.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="מקומות מומלצים">
+<meta name="twitter:description" content="מקומות מומלצים למשפחות בהולנד – מסעדות, מוזיאונים ועוד">
+<meta name="twitter:image" content="https://fun.israelis.nl/images/og3.png">
 <link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="images/az.png">
@@ -68,7 +74,7 @@ body {
 .hero {
   background: var(--gradient);
   color: white;
-  padding: 24px 20px 16px;
+  padding: 20px 20px 12px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -86,6 +92,34 @@ body {
 
 .hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
 
+.hero-nav-tabs-unified {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px 0;
+  max-width: 1000px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+}
+.hero-tab {
+  padding: 7px 16px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.hero-tab:hover { background: rgba(255,255,255,0.25); color: white; border-color: rgba(255,255,255,0.5); }
+.hero-tab.active { background: white; color: var(--purple); border-color: white; font-weight: 700; }
+
 .hero-back {
   display: inline-flex;
   align-items: center;
@@ -102,8 +136,8 @@ body {
 
 .hero-title {
   font-family: 'Rubik', sans-serif;
-  font-size: 36px;
-  font-weight: 900;
+  font-size: 32px;
+  font-weight: 800;
   letter-spacing: -0.5px;
   margin-bottom: 6px;
   text-shadow: 2px 3px 8px rgba(0,0,0,0.15);
@@ -113,7 +147,6 @@ body {
 .hero-subtitle {
   font-size: 16px;
   opacity: 0.9;
-  font-weight: 300;
 }
 
 /* ===== STICKY NAV ===== */
@@ -223,44 +256,282 @@ body {
   color: white;
 }
 
-/* Mobile collapsible filters */
-.filters-toggle {
+/* Filter toggle button (mobile only) */
+.filter-toggle-btn {
   display: none;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.filter-toggle-btn:hover { border-color: var(--purple); color: var(--purple); }
+.filter-toggle-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
+.filter-toggle-icon { font-size: 16px; line-height: 1; }
+.filter-toggle-badge {
+  display: none;
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  background: var(--purple);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Heebo', sans-serif;
+  line-height: 16px;
+  text-align: center;
+  padding: 0 4px;
+}
+.filter-toggle-badge.has-filters { display: block; }
+
+/* Nav auth buttons (inside sticky filter bar) */
+.auth-btn-nav {
+  display: flex;
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  background: white;
+  color: var(--purple);
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  margin-right: auto;
+}
+.auth-btn-nav:hover { background: var(--purple); color: white; border-color: var(--purple); }
+.auth-btn-nav img { width: 14px; height: 14px; }
+
+.profile-btn-nav {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px 3px 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  background: white;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: auto;
+}
+.profile-btn-nav:hover { border-color: var(--purple); }
+
+.profile-avatar-nav {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== FILTER TOGGLE STRIP ===== */
+.filter-strip-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(155,48,255,0.04) 0%, white 100%);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Heebo', sans-serif;
+}
+.filter-strip-toggle:active { background: rgba(155,48,255,0.06); }
+
+.filter-strip-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.filter-strip-arrow {
+  font-size: 12px;
+  color: var(--purple);
+  transition: transform 0.3s;
+  font-weight: 700;
+}
+.filter-strip-toggle.open .filter-strip-arrow { transform: rotate(180deg); }
+
+.filter-strip-summary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--purple);
+  background: rgba(155,48,255,0.08);
+  padding: 2px 10px;
+  border-radius: 100px;
+}
+.filter-strip-summary:empty { display: none; }
+
+@media (max-width: 700px) {
+  .filter-strip-toggle { display: flex; }
+}
+
+/* ===== LOCATION & DRIVE TIME ROW ===== */
+.location-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+.location-selector {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.location-label {
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.location-select {
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  background: white;
+  cursor: pointer;
+  direction: rtl;
+  transition: border-color 0.2s;
+}
+.location-select:focus { outline: none; border-color: var(--purple); }
+
+
+.drive-filter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.drive-label {
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.drive-pills {
+  display: flex;
+  gap: 3px;
+}
+
+.drive-pill {
+  padding: 3px 8px;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   background: white;
   font-family: 'Heebo', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-light);
   cursor: pointer;
-  white-space: nowrap;
   transition: all 0.2s;
+  white-space: nowrap;
+}
+.drive-pill:hover { border-color: var(--blue); color: var(--blue); }
+.drive-pill.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+.duration-filter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.filters-toggle:hover { border-color: var(--purple); color: var(--purple); }
-.filters-toggle.has-active { border-color: var(--purple); color: var(--purple); }
-
-.filters-toggle .toggle-arrow {
-  font-size: 8px;
-  transition: transform 0.2s;
+.duration-label {
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+  white-space: nowrap;
 }
 
-.filters-toggle.open .toggle-arrow { transform: rotate(180deg); }
+.duration-pills {
+  display: flex;
+  gap: 3px;
+}
 
-.filters-active-label {
-  font-size: 10px;
-  font-weight: 700;
-  background: var(--purple);
-  color: white;
-  padding: 1px 6px;
+.duration-pill {
+  padding: 3px 8px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.duration-pill:hover { border-color: #E08F00; color: #E08F00; }
+.duration-pill.active { background: #E08F00; color: white; border-color: #E08F00; }
+
+/* ===== PLACE META (distance + duration badges) ===== */
+.place-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.place-drive-badge {
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+  background: rgba(65,88,208,0.08);
+  padding: 2px 10px;
   border-radius: 100px;
 }
 
-.filters-active-label:empty { display: none; }
+.place-duration-badge {
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #E08F00;
+  background: rgba(249,168,37,0.1);
+  padding: 2px 10px;
+  border-radius: 100px;
+}
 
 .view-toggle-row {
   display: flex;
@@ -297,24 +568,65 @@ body {
 }
 
 /* ===== MAP ===== */
-.map-container {
+/* ===== INTRO ===== */
+.places-intro {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 14px 24px;
+  padding: 16px 24px 0;
+  text-align: center;
+}
+.places-intro-text {
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-light);
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 16px 24px;
+  border: 1px solid var(--border);
+}
+.places-intro-text a {
+  color: var(--purple);
+  font-weight: 700;
+  text-decoration: none;
+}
+.places-intro-text a:hover { text-decoration: underline; }
+
+/* ===== SIDE-BY-SIDE LAYOUT ===== */
+.places-layout {
+  display: flex;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 24px 40px;
+  align-items: flex-start;
+}
+
+.places-map-col {
+  flex: 0 0 55%;
+  position: sticky;
+  top: 140px;
+  align-self: flex-start;
 }
 
 #placesMap {
   width: 100%;
-  height: 500px;
+  height: calc(100vh - 160px);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
   z-index: 1;
 }
 
-@media (max-width: 700px) {
-  #placesMap { height: 350px; }
-  .leaflet-control-zoom { display: none; }
+.places-list-col {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .places-layout { flex-direction: column; }
+  .places-map-col { flex: none; width: 100%; position: static; }
+  #placesMap { height: 50vh; }
 }
 
 /* ===== PLACE CARDS ===== */
@@ -339,12 +651,8 @@ body {
 
 .places-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-}
-
-@media (max-width: 700px) {
-  .places-grid { grid-template-columns: 1fr; }
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
 .place-card {
@@ -595,6 +903,11 @@ body {
 .form-success-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
 .hidden { display: none !important; }
 
+/* ===== SUGGESTION MODAL FORM TYPE SELECTOR ===== */
+.form-type-selector { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.form-type-btn { padding: 8px 16px; border: 1.5px solid var(--border); border-radius: 100px; background: white; font-family: 'Heebo', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-light); cursor: pointer; transition: all 0.2s; }
+.form-type-btn.active { background: var(--purple); color: white; border-color: var(--purple); }
+
 /* ===== FOOTER ===== */
 footer {
   text-align: center;
@@ -655,18 +968,49 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 .search-input:focus { outline: none; border-color: var(--purple); }
 .search-input::placeholder { color: var(--text-lighter); }
 
+@media (max-width: 900px) {
+  .location-row { flex-direction: column; gap: 8px; }
+  .drive-pills { flex-wrap: wrap; justify-content: center; }
+  .duration-pills { flex-wrap: wrap; justify-content: center; }
+}
+
 @media (max-width: 700px) {
   .hero-title { font-size: 28px; }
   .hero-subtitle { font-size: 14px; }
-  .filters-toggle { display: flex; }
-  .filters-row { display: none; gap: 6px; flex-wrap: wrap; }
-  .filters-row.open { display: flex; }
-  .filter-pill { padding: 6px 14px; font-size: 12px; }
+  .filters-row { gap: 6px; padding: 8px 12px 8px; }
+  .filter-pill { padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 12px; min-height: 38px; }
   .search-row { max-width: 100%; }
   .nav-inner { padding: 8px 16px; }
   .nav-top { flex-direction: column; gap: 8px; }
   .content { padding: 10px 16px 40px; }
   .map-container { padding: 10px 16px; }
+  .location-select { font-size: 16px; padding: 10px 16px; border-radius: 14px; min-height: 44px; }
+  .drive-pill, .duration-pill {
+    font-size: 16px;
+    padding: 12px 20px;
+    min-width: 56px;
+    text-align: center;
+    border-radius: 14px;
+    font-weight: 600;
+    border-width: 2px;
+  }
+  .drive-label, .location-label, .duration-label { font-size: 15px; font-weight: 700; }
+  .drive-pills, .duration-pills { gap: 8px; }
+  .filter-toggle-btn { display: none; }
+  .location-row {
+    transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+    max-height: 600px;
+    opacity: 1;
+    overflow: hidden;
+    gap: 12px;
+  }
+  .location-row.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-color: transparent;
+  }
 }
 
 /* ===== AUTH NAV TABS ===== */
@@ -750,6 +1094,76 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   background-position: center;
 }
 
+.hero { position: relative; }
+
+.hero-auth-corner {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+}
+
+.auth-btn-hero {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+.auth-btn-hero:hover { background: rgba(255,255,255,0.3); border-color: white; }
+.auth-btn-hero img { width: 18px; height: 18px; }
+
+.profile-btn-hero {
+  display: none;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 2px;
+  backdrop-filter: blur(8px);
+}
+.profile-btn-hero:hover { border-color: white; background: rgba(255,255,255,0.3); }
+
+.profile-avatar-hero {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  background-size: cover;
+  background-position: center;
+}
+
+.profile-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background-size: cover;
+  background-position: center;
+}
+
 .signup-soft-banner {
   background: linear-gradient(135deg, rgba(200,80,192,0.06) 0%, rgba(155,48,255,0.06) 100%);
   border: 1px solid rgba(155,48,255,0.1);
@@ -793,12 +1207,16 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .hero-nav-tabs { flex-wrap: wrap; gap: 2px; }
   .hero-nav-tab { font-size: 12px; padding: 4px 10px; }
   .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
+  .auth-btn-hero .auth-btn-hero-text { display: none; }
+  .auth-btn-hero { padding: 6px 10px; }
   .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
+  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
+  .hero-tab { font-size: 12px; padding: 5px 10px; }
 }
 
 /* Desktop: larger text for readability */
 @media (min-width: 701px) {
-  .hero-title { font-size: 40px; }
+  .hero-title { font-size: 36px; }
   .hero-subtitle { font-size: 18px; }
   .nav-logo { font-size: 17px; }
   .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
@@ -814,27 +1232,27 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 
 <!-- HERO -->
 <div class="hero">
+  <div class="hero-auth-corner">
+    <button class="auth-btn-hero" id="authBtnHero" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      <span class="auth-btn-hero-text">התחברו</span>
+    </button>
+    <button class="profile-btn-hero" id="profileBtnHero" onclick="openProfileModal()">
+      <div class="profile-avatar-hero" id="profileAvatarHero">?</div>
+    </button>
+  </div>
   <div class="hero-content">
-    <div class="hero-nav-tabs">
-      <a href="index.html" class="hero-nav-tab">אירועים</a>
-      <div class="hero-nav-divider"></div>
-      <a href="places.html" class="hero-nav-tab active">מקומות</a>
-      <div class="hero-nav-divider"></div>
-      <a href="holidays.html" class="hero-nav-tab">מתי חופש?</a>
-      <div class="hero-nav-divider"></div>
-      <a href="about.html" class="hero-nav-tab">עלינו</a>
-      <div class="hero-nav-divider"></div>
-      <button class="hero-auth-btn" id="authBtn" onclick="signInWithGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-        התחברו
-      </button>
-      <a href="index.html" class="hero-profile-btn" id="profileBtn">
-        <div class="hero-profile-avatar" id="profileAvatar">?</div>
-        <span id="profileName">הפרופיל</span>
-      </a>
-    </div>
-    <h1 class="hero-title">📍 מקומות מומלצים</h1>
-    <p class="hero-subtitle">מסעדות, מוזיאונים וגני שעשועים שהיינו בהם באופן אישי ואנחנו חותמים עליהם</p>
+    <h1 class="hero-title">אז מה עושים היום?</h1>
+    <p class="hero-subtitle">פעילויות איכות עם המשפחה בהולנד בסופ״ש</p>
+  </div>
+  <div class="hero-nav-tabs-unified">
+    <a href="index.html" class="hero-tab">🏠 עמוד הבית</a>
+    <a href="places.html" class="hero-tab active">📍 מקומות מומלצים</a>
+    <a href="holidays.html" class="hero-tab">📅 לוח חופשות</a>
+    <a href="weather.html" class="hero-tab">🌤️ תחזית מזג אוויר</a>
+    <a href="articles.html" class="hero-tab">📝 כתבות</a>
+    <a href="about.html" class="hero-tab">🤝 נעים להכיר</a>
+    <a href="#" class="hero-tab" onclick="event.preventDefault(); openSuggestionModal('feedback')">💬 צרו קשר</a>
   </div>
 </div>
 
@@ -847,50 +1265,65 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   </button>
 </div>
 
-<!-- STICKY NAV -->
+<!-- INTRO -->
+<div class="places-intro">
+  <p class="places-intro-text">
+    ✨ כל המקומות כאן נבחרו בקפידה – היינו בהם באופן אישי, בדקנו אותם עם המשפחה, ואנחנו חותמים עליהם בשמחה.
+    <br>רוצים להציע מקום? יש לכם שאלה? <a href="#" onclick="event.preventDefault(); openSuggestionModal('feedback')">צרו איתנו קשר</a> 💬
+  </p>
+</div>
+
+<!-- FILTERS -->
 <div class="sticky-nav">
-  <div style="display:flex;align-items:center;gap:12px;padding:8px 16px 0;max-width:1400px;margin:0 auto;">
-    <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
-  </div>
-  <div class="nav-tabs-row">
-    <a href="index.html" class="nav-tab-pill">אירועים</a>
-    <a href="places.html" class="nav-tab-pill active">📍 מקומות</a>
-    <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
-    <a href="articles.html" class="nav-tab-pill">📝 מאמרים</a>
-    <a href="about.html" class="nav-tab-pill">🧡 עלינו</a>
-  </div>
   <div class="nav-inner">
-    <div class="nav-top" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
-      <div class="view-toggle-row">
-        <button class="view-btn active" data-view="map" onclick="switchView('map')"><span class="view-icon">🗺️</span> מפה</button>
-        <button class="view-btn" data-view="list" onclick="switchView('list')"><span class="view-icon">📋</span> רשימה</button>
-      </div>
-      <div class="search-row">
-        <input type="text" class="search-input" id="searchInput" placeholder="🔍 חיפוש מקום..." oninput="filterPlaces()">
-      </div>
-    </div>
-    <button class="filters-toggle" id="filtersToggle" onclick="toggleFiltersCollapse()">
-      סינון <span class="filters-active-label" id="filtersActiveLabel"></span> <span class="toggle-arrow">▼</span>
-    </button>
-    <div class="filters-row" id="filtersRow">
+    <div class="filters-row">
       <button class="filter-pill active" data-cat="all" onclick="toggleFilter('all')">הכל <span class="filter-count" id="countAll"></span></button>
       <button class="filter-pill" data-cat="restaurant" onclick="toggleFilter('restaurant')"><span class="filter-dot" style="background:var(--restaurant)"></span> 🍽️ מסעדות עם ילדים <span class="filter-count" id="countRestaurant"></span></button>
       <button class="filter-pill" data-cat="museum" onclick="toggleFilter('museum')"><span class="filter-dot" style="background:var(--museum)"></span> 🏛️ מוזיאונים עם ילדים <span class="filter-count" id="countMuseum"></span></button>
       <button class="filter-pill" data-cat="playground" onclick="toggleFilter('playground')"><span class="filter-dot" style="background:var(--playground)"></span> 🛝 גני שעשועים <span class="filter-count" id="countPlayground"></span></button>
     </div>
+    <button class="filter-strip-toggle open" id="filterStripToggle" onclick="toggleFilterStrip()">
+      <span class="filter-strip-label">🚗 זמן נסיעה ופעילות</span>
+      <span class="filter-strip-summary" id="filterStripSummary"></span>
+      <span class="filter-strip-arrow">▼</span>
+    </button>
+    <div class="location-row" id="locationRow">
+      <div class="location-selector">
+        <span class="location-label">📍 מאיפה יוצאים?</span>
+        <select class="location-select" id="citySelect" onchange="setUserCity(this.value)">
+        </select>
+      </div>
+      <div class="drive-filter" id="driveFilter">
+        <span class="drive-label">🚗 מקסימום נסיעה:</span>
+        <div class="drive-pills" id="drivePills">
+          <button class="drive-pill active" data-minutes="" onclick="setMaxDrive(null)">הכל</button>
+          <button class="drive-pill" data-minutes="15" onclick="setMaxDrive(15)">15 דק׳</button>
+          <button class="drive-pill" data-minutes="20" onclick="setMaxDrive(20)">20 דק׳</button>
+          <button class="drive-pill" data-minutes="30" onclick="setMaxDrive(30)">30 דק׳</button>
+          <button class="drive-pill" data-minutes="45" onclick="setMaxDrive(45)">45 דק׳</button>
+          <button class="drive-pill" data-minutes="60" onclick="setMaxDrive(60)">שעה</button>
+        </div>
+      </div>
+      <div class="duration-filter" id="durationFilter">
+        <span class="duration-label">⏱️ משך הבילוי:</span>
+        <div class="duration-pills" id="durationPills">
+          <button class="duration-pill active" data-hours="" onclick="setMaxDuration(null)">הכל</button>
+          <button class="duration-pill" data-hours="1" onclick="setMaxDuration(1)">עד שעה</button>
+          <button class="duration-pill" data-hours="2" onclick="setMaxDuration(2)">עד שעתיים</button>
+          <button class="duration-pill" data-hours="3" onclick="setMaxDuration(3)">עד 3 שעות</button>
+          <button class="duration-pill" data-hours="4" onclick="setMaxDuration(4)">חצי יום</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- MAP VIEW -->
-<div class="view-panel active" id="mapView">
-  <div class="map-container">
+<!-- SIDE-BY-SIDE: MAP + LIST -->
+<div class="places-layout">
+  <div class="places-map-col">
     <div id="placesMap"></div>
   </div>
-</div>
-
-<!-- LIST VIEW -->
-<div class="view-panel" id="listView">
-  <div class="content">
+  <div class="places-list-col" id="placesListCol">
     <div class="results-bar">
       <span class="results-count" id="resultsCount"></span>
     </div>
@@ -898,12 +1331,12 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   </div>
 </div>
 
-<!-- LIST BELOW MAP (always visible in map mode) -->
-<div class="content" id="mapListContent">
-  <div class="results-bar">
-    <span class="results-count" id="resultsCountMap"></span>
-  </div>
+<!-- Hidden elements kept for compatibility -->
+<div style="display:none" id="mapView"></div>
+<div style="display:none" id="listView"></div>
+<div style="display:none" id="mapListContent">
   <div class="places-grid" id="placesGridMap"></div>
+  <span id="resultsCountMap"></span>
 </div>
 
 <!-- SUGGEST -->
@@ -976,6 +1409,44 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   </div>
 </div>
 
+<!-- SUGGESTION MODAL -->
+<div class="modal-overlay" id="suggestionModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSuggestionModal()">&times;</button>
+    <div id="suggestionFormContainer">
+      <div class="modal-title" id="modalTitle">💬 שתפו את דעתכם</div>
+      <div class="modal-subtitle" id="modalSubtitle"></div>
+      <div class="form-type-selector" id="formTypeSelector">
+        <button class="form-type-btn active" data-type="event" onclick="switchFormType('event')">🎪 הוסיפו אירוע</button>
+        <button class="form-type-btn" data-type="feedback" onclick="switchFormType('feedback')">💭 פידבק</button>
+      </div>
+      <form id="suggestionForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
+        <input type="hidden" name="form_type" id="formTypeInput" value="event">
+        <div class="form-fields" id="fieldsEvent">
+          <div class="form-group"><label class="form-label">שם האירוע *</label><input class="form-input" type="text" name="event_name" placeholder="למשל: פסטיבל האור באיינדהובן"></div>
+          <div class="form-group"><label class="form-label">מתי?</label><input class="form-input" type="text" name="event_date" placeholder="למשל: שבת 21/3, 18:00-23:00"></div>
+          <div class="form-group"><label class="form-label">איפה?</label><input class="form-input" type="text" name="event_location" placeholder="למשל: מרכז איינדהובן"></div>
+          <div class="form-group"><label class="form-label">קישור לאירוע</label><input class="form-input" type="url" name="event_link" dir="ltr" placeholder="https://..."></div>
+          <div class="form-group"><label class="form-label">פרטים נוספים</label><textarea class="form-textarea" name="event_details" placeholder="מה שווה באירוע הזה? למי מתאים? מחיר?"></textarea></div>
+        </div>
+        <div class="form-fields hidden" id="fieldsFeedback">
+          <div class="form-group"><label class="form-label">מה תרצו לשתף? *</label><textarea class="form-textarea" name="feedback_text" placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea></div>
+        </div>
+        <div class="form-group"><label class="form-label">השם שלך (לא חובה)</label><input class="form-input" type="text" name="submitter_name" placeholder="כדי שנוכל לחזור אליכם"></div>
+        <div class="form-group"><label class="form-label">אימייל (לא חובה)</label><input class="form-input" type="email" name="submitter_email" dir="ltr" placeholder="email@example.com"></div>
+        <div class="form-group"><label class="form-label">טלפון (לא חובה)</label><input class="form-input" type="tel" name="submitter_phone" dir="ltr" placeholder="+31 6..."></div>
+        <input type="hidden" name="_subject" id="formSubject" value="הודעה חדשה - fun.israelis.nl">
+        <button type="submit" class="form-submit" id="submitBtn">שליחה 🚀</button>
+      </form>
+    </div>
+    <div class="form-success hidden" id="suggestionSuccess">
+      <div class="form-success-emoji">🎉</div>
+      <div class="form-success-text">תודה רבה!</div>
+      <div class="form-success-sub">קיבלנו את ההמלצה שלכם ונבדוק אותה בהקדם.</div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ===== PLACES DATA (loaded from Google Sheets CSV) =====
 const PLACES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=993728456&single=true&output=csv';
@@ -1031,13 +1502,16 @@ async function loadPlaces() {
       cat: r.cat || 'restaurant',
       lat: parseFloat(r.lat),
       lng: parseFloat(r.lng),
+      duration: r.duration ? parseFloat(r.duration) : null,
     }));
   } catch (err) {
     console.error('Error loading places:', err);
     PLACES = [];
   }
+  recomputeDistances();
   updateCounts();
   initMap();
+  updateDistanceCircle();
   renderCards('placesGridMap');
   renderCards('placesGrid');
 }
@@ -1048,6 +1522,268 @@ let currentView = 'map';
 let map = null;
 let markers = [];
 let searchTerm = '';
+let userLat = null;
+let userLng = null;
+let maxDriveMinutes = null;
+let maxDurationHours = null;
+let distanceCircle = null;
+
+// ===== DUTCH CITIES =====
+const DUTCH_CITIES = [
+  { name: 'אמסטרדם', lat: 52.3676, lng: 4.9041 },
+  { name: 'אוטרכט', lat: 52.0907, lng: 5.1214 },
+  { name: 'הארלם', lat: 52.3874, lng: 4.6462 },
+  { name: 'אלמרה', lat: 52.3508, lng: 5.2647 },
+  { name: 'אמרספורט', lat: 52.1561, lng: 5.3878 },
+  { name: 'איינדהובן', lat: 51.4416, lng: 5.4697 },
+  { name: 'ארנהם', lat: 51.9851, lng: 5.8987 },
+  { name: 'דן האג', lat: 52.0705, lng: 4.3007 },
+  { name: 'חרונינגן', lat: 53.2194, lng: 6.5665 },
+  { name: 'ליידן', lat: 52.1601, lng: 4.4970 },
+  { name: 'מאסטריכט', lat: 50.8514, lng: 5.6910 },
+  { name: 'רוטרדם', lat: 51.9225, lng: 4.4792 },
+];
+
+// ===== DISTANCE UTILITIES =====
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function estimateDriveMinutes(km) {
+  return Math.round((km * 1.35) / 70 * 60);
+}
+
+function recomputeDistances() {
+  PLACES.forEach(p => {
+    if (userLat != null && userLng != null) {
+      const km = haversineKm(userLat, userLng, p.lat, p.lng);
+      p._distKm = Math.round(km);
+      p._driveMin = estimateDriveMinutes(km);
+    } else {
+      p._distKm = null;
+      p._driveMin = null;
+    }
+  });
+}
+
+// ===== CITY & LOCATION =====
+function populateCitySelect() {
+  const sel = document.getElementById('citySelect');
+  sel.innerHTML = '<option value="">בחרו עיר...</option>';
+  DUTCH_CITIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.name;
+    opt.textContent = c.name;
+    sel.appendChild(opt);
+  });
+}
+
+function setUserCity(cityName) {
+  if (!cityName) {
+    // Default to Amsterdam
+    cityName = 'אמסטרדם';
+    document.getElementById('citySelect').value = cityName;
+  }
+  const city = DUTCH_CITIES.find(c => c.name === cityName);
+  if (city) {
+    userLat = city.lat;
+    userLng = city.lng;
+  }
+  // Sync to Firebase profile if logged in
+  if (typeof currentUser !== 'undefined' && currentUser && typeof saveProfile === 'function') {
+    saveProfile({ city: cityName });
+  }
+  localStorage.setItem('places_city', cityName);
+  recomputeDistances();
+  updateDistanceCircle();
+  if (map) {
+    addMarkers();
+    renderCards('placesGrid');
+  }
+}
+
+function detectLocation() {
+  if (!navigator.geolocation) {
+    alert('הדפדפן לא תומך בזיהוי מיקום');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    // Find nearest city for display
+    let nearest = DUTCH_CITIES[0];
+    let minDist = Infinity;
+    DUTCH_CITIES.forEach(c => {
+      const d = haversineKm(userLat, userLng, c.lat, c.lng);
+      if (d < minDist) { minDist = d; nearest = c; }
+    });
+    document.getElementById('citySelect').value = nearest.name;
+    localStorage.setItem('places_city', nearest.name);
+    if (typeof currentUser !== 'undefined' && currentUser && typeof saveProfile === 'function') {
+      saveProfile({ city: nearest.name });
+    }
+    recomputeDistances();
+    updateDistanceCircle();
+    addMarkers();
+    renderCards('placesGrid');
+  }, () => {
+    alert('לא הצלחנו לזהות את המיקום שלכם');
+  });
+}
+
+// ===== FILTER STRIP TOGGLE =====
+let _filterStripOpen = true;
+
+function toggleFilterStrip() {
+  const row = document.getElementById('locationRow');
+  const strip = document.getElementById('filterStripToggle');
+  if (!row || !strip) return;
+  _filterStripOpen = !_filterStripOpen;
+  row.classList.toggle('collapsed', !_filterStripOpen);
+  strip.classList.toggle('open', _filterStripOpen);
+  updateFilterSummary();
+}
+
+function updateFilterSummary() {
+  const summary = document.getElementById('filterStripSummary');
+  if (!summary) return;
+  const parts = [];
+  if (maxDriveMinutes !== null) {
+    parts.push('🚗 ' + (maxDriveMinutes === 60 ? 'שעה' : maxDriveMinutes + ' דק׳'));
+  }
+  if (maxDurationHours !== null) {
+    const labels = {1: 'שעה', 2: 'שעתיים', 3: '3 שעות', 4: 'חצי יום'};
+    parts.push('⏱️ ' + (labels[maxDurationHours] || maxDurationHours + ' שעות'));
+  }
+  summary.textContent = parts.join('  |  ');
+}
+
+function updateFilterBadge() {
+  updateFilterSummary();
+}
+
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 700) {
+    const row = document.getElementById('locationRow');
+    row.classList.remove('collapsed');
+    _filterStripOpen = true;
+    const strip = document.getElementById('filterStripToggle');
+    if (strip) strip.classList.add('open');
+  }
+});
+
+// Auto-collapse filters on scroll (mobile)
+(function() {
+  let lastScrollY = 0;
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function() {
+      const row = document.getElementById('locationRow');
+      const strip = document.getElementById('filterStripToggle');
+      if (!row || window.innerWidth > 700) { ticking = false; return; }
+      const scrollY = window.scrollY || window.pageYOffset;
+      if (scrollY > 150 && scrollY > lastScrollY && _filterStripOpen) {
+        _filterStripOpen = false;
+        row.classList.add('collapsed');
+        if (strip) strip.classList.remove('open');
+        updateFilterSummary();
+      }
+      lastScrollY = scrollY;
+      ticking = false;
+    });
+  });
+})();
+
+function setMaxDrive(minutes) {
+  maxDriveMinutes = minutes;
+  document.querySelectorAll('.drive-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.minutes === String(minutes || ''));
+  });
+  updateDistanceCircle();
+  filterPlaces();
+  updateFilterBadge();
+}
+
+function updateDistanceCircle() {
+  removeDistanceCircle();
+  if (!userLat || !maxDriveMinutes || !map) return;
+  const radiusKm = (maxDriveMinutes * 70 / 60) / 1.35;
+  distanceCircle = L.circle([userLat, userLng], {
+    radius: radiusKm * 1000,
+    color: '#4158D0',
+    fillColor: '#4158D0',
+    fillOpacity: 0.06,
+    weight: 2,
+    dashArray: '6 4'
+  }).addTo(map);
+}
+
+function removeDistanceCircle() {
+  if (distanceCircle && map) {
+    map.removeLayer(distanceCircle);
+    distanceCircle = null;
+  }
+}
+
+function initCityFromProfile() {
+  let city = null;
+  // 1. Firebase profile city
+  if (typeof userProfile !== 'undefined' && userProfile && userProfile.city) {
+    city = userProfile.city;
+  }
+  // 2. localStorage fallback
+  if (!city) {
+    city = localStorage.getItem('places_city');
+  }
+  // 3. Default to Amsterdam
+  if (!city) {
+    city = 'אמסטרדם';
+  }
+  const sel = document.getElementById('citySelect');
+  // Check if city is in our list
+  const match = DUTCH_CITIES.find(c => c.name === city);
+  if (match) {
+    sel.value = city;
+    userLat = match.lat;
+    userLng = match.lng;
+  } else {
+    sel.value = 'אמסטרדם';
+    userLat = DUTCH_CITIES[0].lat;
+    userLng = DUTCH_CITIES[0].lng;
+  }
+  recomputeDistances();
+}
+
+// ===== DURATION UTILITIES =====
+function formatDuration(hours) {
+  if (hours == null || isNaN(hours)) return null;
+  if (hours <= 0.5) return 'עד חצי שעה';
+  if (hours <= 0.75) return 'כ-45 דק׳';
+  if (hours === 1) return 'כשעה';
+  if (hours === 1.5) return 'שעה וחצי';
+  if (hours === 2) return 'כשעתיים';
+  if (hours === 2.5) return 'שעתיים וחצי';
+  if (hours === 3) return 'כ-3 שעות';
+  if (hours <= 4) return `כ-${hours} שעות`;
+  return 'חצי יום+';
+}
+
+function setMaxDuration(hours) {
+  maxDurationHours = hours;
+  document.querySelectorAll('.duration-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.hours === String(hours || ''));
+  });
+  filterPlaces();
+  updateFilterBadge();
+}
 
 // ===== CATEGORY CONFIG =====
 const CAT_CONFIG = {
@@ -1058,8 +1794,28 @@ const CAT_CONFIG = {
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
+  populateCitySelect();
+  initCityFromProfile();
   loadPlaces();
 });
+
+// Hook into auth: update city when user logs in
+function onUserLoggedIn() {
+  if (userProfile && userProfile.city) {
+    const match = DUTCH_CITIES.find(c => c.name === userProfile.city);
+    if (match) {
+      document.getElementById('citySelect').value = userProfile.city;
+      userLat = match.lat;
+      userLng = match.lng;
+      recomputeDistances();
+      updateDistanceCircle();
+      if (map) {
+        addMarkers();
+        renderCards('placesGrid');
+      }
+    }
+  }
+}
 
 function updateCounts() {
   document.getElementById('countAll').textContent = PLACES.length;
@@ -1070,7 +1826,12 @@ function updateCounts() {
 
 // ===== MAP =====
 function initMap() {
-  map = L.map('placesMap', { scrollWheelZoom: true }).setView([52.3, 4.9], 8);
+  const nlBounds = L.latLngBounds([50.75, 3.2], [53.55, 7.25]);
+  map = L.map('placesMap', {
+    scrollWheelZoom: true,
+    maxBounds: nlBounds.pad(0.1),
+    minZoom: 7
+  }).setView([52.2, 5.1], 8);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
@@ -1112,9 +1873,14 @@ function addMarkers() {
     const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
     const searchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}`;
 
+    const metaParts = [];
+    if (place._driveMin != null) metaParts.push(`🚗 ${place._driveMin} דק׳ (${place._distKm} ק״מ)`);
+    if (place.duration) metaParts.push(`⏱️ ${formatDuration(place.duration)}`);
+
     const popupHtml = `
       <div class="place-popup">
         <h3>${CAT_CONFIG[place.cat].emoji} ${place.name}</h3>
+        ${metaParts.length ? `<p style="font-size:12px;color:#4158D0;font-weight:600;margin:4px 0;">${metaParts.join(' · ')}</p>` : ''}
         ${place.desc ? `<p>${place.desc}</p>` : ''}
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <a href="${navUrl}" target="_blank">🧭 נסענו!</a>
@@ -1128,10 +1894,10 @@ function addMarkers() {
     markers.push(marker);
   });
 
-  // Fit bounds if markers exist
+  // Fit bounds if markers exist, but keep within Netherlands
   if (markers.length > 0) {
     const group = L.featureGroup(markers);
-    map.fitBounds(group.getBounds().pad(0.1));
+    map.fitBounds(group.getBounds().pad(0.1), { maxZoom: 12 });
   }
 }
 
@@ -1148,6 +1914,18 @@ function getFilteredPlaces() {
       (p.desc && p.desc.toLowerCase().includes(term))
     );
   }
+  // Drive time filter
+  if (maxDriveMinutes != null && userLat != null) {
+    filtered = filtered.filter(p => p._driveMin != null && p._driveMin <= maxDriveMinutes);
+  }
+  // Duration filter
+  if (maxDurationHours != null) {
+    filtered = filtered.filter(p => p.duration != null && p.duration <= maxDurationHours);
+  }
+  // Sort by distance when location is set
+  if (userLat != null && userLng != null) {
+    filtered.sort((a, b) => (a._distKm || 9999) - (b._distKm || 9999));
+  }
   return filtered;
 }
 
@@ -1159,47 +1937,15 @@ function toggleFilter(cat) {
     pill.classList.toggle('active', pill.dataset.cat === cat);
   });
 
-  // Update mobile toggle badge
-  updatePlacesFilterToggle();
   filterPlaces();
 }
 
-function toggleFiltersCollapse() {
-  const toggle = document.getElementById('filtersToggle');
-  const row = document.getElementById('filtersRow');
-  toggle.classList.toggle('open');
-  row.classList.toggle('open');
-}
-
-function updatePlacesFilterToggle() {
-  const label = document.getElementById('filtersActiveLabel');
-  const toggle = document.getElementById('filtersToggle');
-  if (!label) return;
-  if (activeFilter && activeFilter !== 'all') {
-    const activePill = document.querySelector('.filter-pill.active');
-    label.textContent = activePill ? activePill.textContent.trim().split(' ').slice(1).join(' ') : '';
-    toggle.classList.add('has-active');
-  } else {
-    label.textContent = '';
-    toggle.classList.remove('has-active');
-  }
-}
-
-// Close filters on outside click
-document.addEventListener('click', (e) => {
-  const toggle = document.getElementById('filtersToggle');
-  const row = document.getElementById('filtersRow');
-  if (row && row.classList.contains('open') && !row.contains(e.target) && !toggle.contains(e.target)) {
-    row.classList.remove('open');
-    toggle.classList.remove('open');
-  }
-});
-
 function filterPlaces() {
-  searchTerm = document.getElementById('searchInput').value.trim();
+  const searchEl = document.getElementById('searchInput');
+  searchTerm = searchEl ? searchEl.value.trim() : '';
 
+  updateDistanceCircle();
   addMarkers();
-  renderCards('placesGridMap');
   renderCards('placesGrid');
 }
 
@@ -1208,11 +1954,8 @@ function renderCards(containerId) {
   const container = document.getElementById(containerId);
   const filtered = getFilteredPlaces();
 
-  const countEl = containerId === 'placesGrid'
-    ? document.getElementById('resultsCount')
-    : document.getElementById('resultsCountMap');
-
-  countEl.textContent = `${filtered.length} מקומות`;
+  const countEl = document.getElementById('resultsCount');
+  if (countEl) countEl.textContent = `${filtered.length} מקומות`;
 
   if (filtered.length === 0) {
     container.innerHTML = `
@@ -1237,6 +1980,10 @@ function renderCards(containerId) {
           <span class="place-name">${place.name}</span>
         </div>
         <span class="place-category ${place.cat}">${config.emoji} ${config.label}</span>
+        ${(place._driveMin != null || place.duration) ? `<div class="place-meta">
+          ${place._driveMin != null ? `<span class="place-drive-badge">🚗 ${place._driveMin} דק׳ (${place._distKm} ק״מ)</span>` : ''}
+          ${place.duration ? `<span class="place-duration-badge">⏱️ ${formatDuration(place.duration)}</span>` : ''}
+        </div>` : ''}
         ${place.desc
           ? `<div class="place-desc">${place.desc}</div>`
           : `<div class="place-no-desc">עוד לא הספקנו לכתוב - אבל אנחנו ממליצים!</div>`
@@ -1250,20 +1997,10 @@ function renderCards(containerId) {
   }).join('');
 }
 
-// ===== VIEW TOGGLE =====
+// ===== VIEW TOGGLE (legacy – both columns always visible now) =====
 function switchView(view) {
   currentView = view;
-  document.querySelectorAll('.view-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.view === view);
-  });
-
-  document.getElementById('mapView').classList.toggle('active', view === 'map');
-  document.getElementById('listView').classList.toggle('active', view === 'list');
-  document.getElementById('mapListContent').style.display = view === 'map' ? 'block' : 'none';
-
-  if (view === 'map' && map) {
-    setTimeout(() => map.invalidateSize(), 100);
-  }
+  if (map) setTimeout(() => map.invalidateSize(), 100);
 }
 
 // ===== FOCUS PLACE ON MAP =====
@@ -1335,6 +2072,42 @@ document.getElementById('placeForm').addEventListener('submit', async (e) => {
     btn.textContent = 'שליחה 🚀';
   }
 });
+
+// ===== SUGGESTION MODAL =====
+function openSuggestionModal(type) {
+  document.getElementById('suggestionModal').classList.add('active');
+  document.getElementById('suggestionFormContainer').classList.remove('hidden');
+  document.getElementById('suggestionSuccess').classList.add('hidden');
+  document.getElementById('suggestionForm').reset();
+  switchFormType(type || 'feedback');
+}
+function switchFormType(type) {
+  document.querySelectorAll('.form-type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.form-type-btn[data-type="${type}"]`).classList.add('active');
+  document.getElementById('formTypeInput').value = type;
+  document.querySelectorAll('.form-fields').forEach(f => f.classList.add('hidden'));
+  const subjects = { event: 'אירוע חדש', feedback: 'פידבק' };
+  const subtitles = { event: 'יש לכם אירוע שווה? ספרו לנו!', feedback: 'נשמח לשמוע מה אתם חושבים' };
+  document.getElementById('modalSubtitle').textContent = subtitles[type];
+  document.getElementById('formSubject').value = `${subjects[type]} - fun.israelis.nl`;
+  if (type === 'event') document.getElementById('fieldsEvent').classList.remove('hidden');
+  else if (type === 'feedback') document.getElementById('fieldsFeedback').classList.remove('hidden');
+}
+function closeSuggestionModal() { document.getElementById('suggestionModal').classList.remove('active'); }
+document.getElementById('suggestionModal').addEventListener('click', function(e) { if (e.target === this) closeSuggestionModal(); });
+document.getElementById('suggestionForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'שולח...';
+  try {
+    const resp = await fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } });
+    if (resp.ok) {
+      document.getElementById('suggestionFormContainer').classList.add('hidden');
+      document.getElementById('suggestionSuccess').classList.remove('hidden');
+      setTimeout(closeSuggestionModal, 3000);
+    } else { throw new Error('Form submission failed'); }
+  } catch (err) { alert('שגיאה בשליחה. נסו שוב מאוחר יותר.'); btn.disabled = false; btn.textContent = 'שליחה 🚀'; }
+});
 </script>
 
 <!-- FACEBOOK BROWSER MODAL -->
@@ -1351,10 +2124,10 @@ document.getElementById('placeForm').addEventListener('submit', async (e) => {
 <!-- Firebase Auth -->
 <script src="auth.js"></script>
 <script>
-function onUserLoggedIn() {
+function onUserLoggedIn(needsProfile, isFreshLogin) {
   const banner = document.getElementById('signupBanner');
   if (banner) banner.classList.add('hidden');
-  window.location.href = 'index.html';
+  if (isFreshLogin) window.location.href = 'index.html';
 }
 function onUserLoggedOut() {
   const banner = document.getElementById('signupBanner');
