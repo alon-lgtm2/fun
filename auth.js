@@ -200,10 +200,16 @@ function onAuthReady(isLoggedIn, needsProfileCompletion, isFreshLogin) {
   const authBtn = document.getElementById('authBtn');
   const profileBtn = document.getElementById('profileBtn');
   const authBtnMobile = document.getElementById('authBtnMobile');
+  const authBtnNav = document.getElementById('authBtnNav');
+  const profileBtnNav = document.getElementById('profileBtnNav');
+  const authBtnHero = document.getElementById('authBtnHero');
+  const profileBtnHero = document.getElementById('profileBtnHero');
 
   if (isLoggedIn) {
     if (authBtn) authBtn.style.display = 'none';
     if (authBtnMobile) authBtnMobile.style.display = 'none';
+    if (authBtnNav) authBtnNav.style.display = 'none';
+    if (authBtnHero) authBtnHero.style.display = 'none';
     if (profileBtn) {
       profileBtn.style.display = 'flex';
       const avatar = profileBtn.querySelector('.profile-avatar');
@@ -214,6 +220,26 @@ function onAuthReady(isLoggedIn, needsProfileCompletion, isFreshLogin) {
         avatar.textContent = (currentUser.displayName || currentUser.email || '?')[0];
       }
     }
+    if (profileBtnNav) {
+      profileBtnNav.style.display = 'flex';
+      const avatarNav = profileBtnNav.querySelector('.profile-avatar-nav');
+      if (avatarNav && currentUser.photoURL) {
+        avatarNav.style.backgroundImage = `url(${currentUser.photoURL})`;
+        avatarNav.textContent = '';
+      } else if (avatarNav) {
+        avatarNav.textContent = (currentUser.displayName || currentUser.email || '?')[0];
+      }
+    }
+    if (profileBtnHero) {
+      profileBtnHero.style.display = 'flex';
+      const avatarHero = profileBtnHero.querySelector('.profile-avatar-hero');
+      if (avatarHero && currentUser.photoURL) {
+        avatarHero.style.backgroundImage = `url(${currentUser.photoURL})`;
+        avatarHero.textContent = '';
+      } else if (avatarHero) {
+        avatarHero.textContent = (currentUser.displayName || currentUser.email || '?')[0];
+      }
+    }
 
     // Page-specific auth callback
     if (typeof onUserLoggedIn === 'function') {
@@ -222,7 +248,11 @@ function onAuthReady(isLoggedIn, needsProfileCompletion, isFreshLogin) {
   } else {
     if (authBtn) authBtn.style.display = 'flex';
     if (authBtnMobile) authBtnMobile.style.display = 'flex';
+    if (authBtnNav) authBtnNav.style.display = 'flex';
+    if (authBtnHero) authBtnHero.style.display = 'flex';
     if (profileBtn) profileBtn.style.display = 'none';
+    if (profileBtnNav) profileBtnNav.style.display = 'none';
+    if (profileBtnHero) profileBtnHero.style.display = 'none';
 
     if (typeof onUserLoggedOut === 'function') {
       onUserLoggedOut();

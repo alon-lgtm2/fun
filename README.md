@@ -13,6 +13,7 @@
 | Home | `index.html` | Weekend events with filtering, weekend picker, and hamburger menu navigation |
 | Recommended Places | `places.html` | Interactive Leaflet map of family-friendly restaurants, museums, and playgrounds |
 | Holidays & Vacations | `holidays.html` | Dutch official holidays (2026-2027), school vacations by region, and important info |
+| Articles | `articles.html` | Hebrew articles and tips about life in the Netherlands |
 | Weather Forecast | `weather.html` | Weekend weather forecast for Dutch cities using Open-Meteo API |
 | About | `about.html` | About the site and team |
 
@@ -32,11 +33,22 @@ Event and place data is loaded dynamically from Google Sheets, published as CSV:
 |------|-----------|---------|
 | Weekend events | `gid=0` | `index.html` → `loadEvents()` |
 | Recommended places | `gid=993728456` | `places.html` → `loadPlaces()` |
+| Articles | `gid=478633181` | `articles.html` → `loadArticles()` |
 
 **Spreadsheet:** [Google Sheets](https://docs.google.com/spreadsheets/d/1Gyd7c8hWg3CFKUXCnEKa1WRlfnAXpjWGuPvhvviTSBc/edit)
 
 ### Events sheet columns (gid=0)
 Events are parsed via `parseCSV()` in `index.html`. Each row represents a weekend event with fields such as title, date, location, image URL, details link, etc.
+
+### Articles sheet columns (gid=478633181)
+| Column | Description |
+|--------|-------------|
+| `title` | Article title (Hebrew) |
+| `summary` | Short description/summary |
+| `image` | Image URL or path |
+| `date` | Publication date (YYYY-MM-DD) |
+| `link` | URL to full article |
+| `category` | Category for filtering (e.g. טיפים, אוכל, טיולים, תרבות) |
 
 ### Places sheet columns (gid=993728456)
 | Column | Description |
@@ -66,6 +78,12 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 - **List/Map toggle** — switch between map view and scrollable list
 - **Share button** — share the places page URL
 - **Dynamic data** — places loaded from Google Sheets CSV (gid=993728456)
+
+### articles.html (Articles)
+- **Article cards** — grid layout with lazy-loaded images, category tags, and date
+- **Category filtering** — dynamic filter pills generated from article data
+- **CSV data loading** — articles fetched from Google Sheets (gid=478633181)
+- **Date sorting** — articles sorted newest first
 
 ### holidays.html (מתי חופש? — Holidays & Vacations)
 - **Three tabs** — official holidays, school vacations by region, important info
@@ -123,6 +141,7 @@ git push origin main
 fun/
 ├── index.html          # Home page — weekend events
 ├── places.html         # Recommended places map
+├── articles.html       # Articles and tips
 ├── holidays.html       # Holidays & vacations
 ├── weather.html        # Weather forecast page
 ├── about.html          # About page

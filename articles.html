@@ -601,12 +601,25 @@ function closeFeedbackModal() {
 document.getElementById('feedbackModal').addEventListener('click', function(e) {
   if (e.target === this) closeFeedbackModal();
 });
-document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } })
-    .then(() => {
-      this.innerHTML = '<div style="text-align:center;padding:20px"><div style="font-size:48px;margin-bottom:12px">🎉</div><div style="font-size:16px;font-weight:600">תודה רבה!</div><div style="font-size:13px;color:var(--text-light);margin-top:4px">קיבלנו את ההודעה שלכם.</div></div>';
-    });
+  const btn = this.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+  try {
+    const resp = await fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } });
+    if (resp.ok) {
+      this.reset();
+      btn.textContent = '🎉 תודה רבה!';
+      setTimeout(() => { closeFeedbackModal(); btn.disabled = false; btn.textContent = 'שליחה 🚀'; }, 2500);
+    } else {
+      throw new Error('fail');
+    }
+  } catch {
+    alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
+    btn.disabled = false;
+    btn.textContent = 'שליחה 🚀';
+  }
 });
 
 // ===== INIT =====

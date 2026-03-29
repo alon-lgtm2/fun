@@ -7,7 +7,7 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 - Israeli families living in the Netherlands (not limited to children — quality activities for all family members)
 
 ## Current State (Live)
-- Five HTML pages (`index.html`, `places.html`, `holidays.html`, `weather.html`, `about.html`) — no build step
+- Six HTML pages (`index.html`, `places.html`, `articles.html`, `holidays.html`, `weather.html`, `about.html`) — no build step
 - Data fetched from a published Google Sheet on each page load
 - Two views: List (calendar-grouped) and Map (Leaflet)
 - Weekend selector (upcoming 8 weekends) with auto-advance on scroll
@@ -73,7 +73,7 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 
 ### Navigation
 - Sticky nav bar with home logo link on all pages
-- Tab pills: אירועים, 📍 מקומות, 📅 מתי חופש?, 🌤️ תחזית מזג אוויר, 🧡 עלינו
+- Tab pills: אירועים, 📍 מקומות, 📝 כתבות, 📅 מתי חופש?, 🌤️ תחזית מזג אוויר, 🧡 עלינו
 - Holidays section branded as "מתי חופש?" (catchy phrasing instead of generic "חגים")
 
 ## Architecture
@@ -109,11 +109,22 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 | O | lng | 5.4697 |
 | P | Museumkaart | TRUE / FALSE |
 
+### Articles Sheet Schema (gid=478633181)
+| Column | Field | Example |
+|--------|-------|---------|
+| A | title | 10 טיפים לחיסכון בהולנד |
+| B | summary | איך לחסוך כסף על קניות, ביטוחים ומיסים |
+| C | image | https://picsum.photos/seed/savings/800/600 |
+| D | date | 2026-03-25 |
+| E | link | https://example.com/article |
+| F | category | טיפים / אוכל / טיולים / תרבות / חינוך / אירועים |
+
 ### File Structure
 ```
 fun/
 ├── index.html              # Home page — weekend events
 ├── places.html             # Recommended places map
+├── articles.html           # Articles and tips (כתבות)
 ├── holidays.html           # Holidays & vacations (מתי חופש?)
 ├── weather.html            # Weather forecast page
 ├── about.html              # About page
@@ -143,4 +154,5 @@ fun/
 ## Service Credentials
 - **Umami**: `<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>`
 - **Formspree**: `https://formspree.io/f/mnjgwgzn`
-- **Google Sheet CSV**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=0&single=true&output=csv`
+- **Google Sheet CSV (events)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=0&single=true&output=csv`
+- **Google Sheet CSV (articles)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=478633181&single=true&output=csv`

@@ -77,6 +77,65 @@ body {
   overflow: hidden;
 }
 
+.hero-auth-corner {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+}
+
+.auth-btn-hero {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+.auth-btn-hero:hover { background: rgba(255,255,255,0.3); border-color: white; }
+.auth-btn-hero img { width: 18px; height: 18px; }
+
+.profile-btn-hero {
+  display: none;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 2px;
+  backdrop-filter: blur(8px);
+}
+.profile-btn-hero:hover { border-color: white; background: rgba(255,255,255,0.3); }
+
+.profile-avatar-hero {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  background-size: cover;
+  background-position: center;
+}
+
+@media (max-width: 700px) {
+  .auth-btn-hero .auth-btn-hero-text { display: none; }
+  .auth-btn-hero { padding: 6px 10px; }
+}
+
 .hero::before {
   content: '';
   position: absolute;
@@ -102,11 +161,13 @@ body {
   font-size: 13px;
   box-shadow: 0 3px 12px rgba(46,204,64,0.3);
   position: absolute;
-  top: 0;
+  top: -2px;
   left: 50%;
   transform: translateX(-50%) rotate(-2deg);
   z-index: 3;
 }
+
+.hero-content { padding-top: 32px; }
 
 .hero-title {
   font-family: 'Rubik', sans-serif;
@@ -564,17 +625,38 @@ body {
 }
 
 @media (max-width: 700px) {
-  .location-row { gap: 8px; padding: 8px 14px; justify-content: center; }
-  .filter-group { padding: 5px 10px; gap: 6px; }
-  .filter-group-icon { font-size: 15px; }
-  .filter-group-label { font-size: 12px; }
-  .drive-pills, .duration-pills { flex-wrap: wrap; }
-  .drive-pill, .duration-pill { font-size: 11px; padding: 4px 10px; }
-  .location-select { font-size: 12px; padding: 5px 12px; }
-  .location-detect-btn { width: 28px; height: 28px; font-size: 14px; }
-  .filter-toggle-btn { display: flex; }
-  .location-row { display: none; }
-  .location-row.expanded { display: flex; flex-wrap: wrap; }
+  .location-row {
+    gap: 10px;
+    padding: 10px 14px;
+    justify-content: center;
+    flex-direction: column;
+    transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+    max-height: 500px;
+    opacity: 1;
+    overflow: hidden;
+  }
+  .location-row.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top: none;
+  }
+  .filter-group {
+    padding: 8px 12px;
+    gap: 8px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .filter-group-icon { font-size: 18px; }
+  .filter-group-label { font-size: 13px; font-weight: 700; }
+  .drive-pills, .duration-pills { flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .drive-pill, .duration-pill { font-size: 14px; padding: 8px 16px; min-width: 48px; text-align: center; }
+  .location-select { font-size: 14px; padding: 8px 14px; }
+  .location-detect-btn { width: 34px; height: 34px; font-size: 18px; }
+  .filter-group-divider { display: none; }
+  .filter-toggle-btn { display: none; }
 }
 
 /* ===== CONTENT ===== */
@@ -2102,6 +2184,15 @@ body {
 
 <!-- HERO -->
 <div class="hero">
+  <div class="hero-auth-corner">
+    <button class="auth-btn-hero" id="authBtnHero" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      <span class="auth-btn-hero-text">התחברו</span>
+    </button>
+    <button class="profile-btn-hero" id="profileBtnHero" onclick="openProfileModal()">
+      <div class="profile-avatar-hero" id="profileAvatarHero">?</div>
+    </button>
+  </div>
   <div class="hero-content">
     <div class="hero-badge">כל סופ״ש! 🎉</div>
     <h1 class="hero-title">אז מה עושים היום?</h1>
@@ -2308,7 +2399,7 @@ body {
         <div class="form-fields" id="fieldsEvent">
           <div class="form-group">
             <label class="form-label">שם האירוע *</label>
-            <input class="form-input" type="text" name="event_name" placeholder="למשל: פסטיבל האור באיינדהובן">
+            <input class="form-input" type="text" name="event_name" required placeholder="למשל: פסטיבל האור באיינדהובן">
           </div>
           <div class="form-group">
             <label class="form-label">מתי?</label>
@@ -2331,7 +2422,7 @@ body {
         <div class="form-fields hidden" id="fieldsFeedback">
           <div class="form-group">
             <label class="form-label">מה תרצו לשתף? *</label>
-            <textarea class="form-textarea" name="feedback_text" placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea>
+            <textarea class="form-textarea" name="feedback_text" required placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea>
           </div>
         </div>
         <!-- Common fields -->
@@ -2522,9 +2613,32 @@ window.addEventListener('resize', function() {
     const row = document.getElementById('locationRow');
     const btn = document.getElementById('filterToggleBtn');
     row.classList.remove('expanded');
+    row.classList.remove('collapsed');
     if (btn) btn.classList.remove('active');
   }
 });
+
+// Auto-collapse filters on scroll (mobile)
+(function() {
+  let lastScrollY = 0;
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function() {
+      const row = document.getElementById('locationRow');
+      if (!row || window.innerWidth > 700) { ticking = false; return; }
+      const scrollY = window.scrollY || window.pageYOffset;
+      if (scrollY > 120 && scrollY > lastScrollY) {
+        row.classList.add('collapsed');
+      } else if (scrollY < lastScrollY) {
+        row.classList.remove('collapsed');
+      }
+      lastScrollY = scrollY;
+      ticking = false;
+    });
+  });
+})();
 
 function setMaxDrive(minutes) {
   maxDriveMinutes = minutes;
@@ -3262,6 +3376,9 @@ function openSuggestionModal(type) {
   document.getElementById('suggestionFormContainer').classList.remove('hidden');
   document.getElementById('suggestionSuccess').classList.add('hidden');
   document.getElementById('suggestionForm').reset();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.textContent = 'שליחה 🚀';
   switchFormType(type || 'event');
 }
 
@@ -3276,8 +3393,15 @@ function switchFormType(type) {
   document.getElementById('modalSubtitle').textContent = subtitles[type];
   document.getElementById('formSubject').value = `${subjects[type]} - fun.israelis.nl`;
 
-  if (type === 'event') document.getElementById('fieldsEvent').classList.remove('hidden');
-  else if (type === 'feedback') document.getElementById('fieldsFeedback').classList.remove('hidden');
+  if (type === 'event') {
+    document.getElementById('fieldsEvent').classList.remove('hidden');
+    document.querySelector('[name="event_name"]').required = true;
+    document.querySelector('[name="feedback_text"]').required = false;
+  } else if (type === 'feedback') {
+    document.getElementById('fieldsFeedback').classList.remove('hidden');
+    document.querySelector('[name="event_name"]').required = false;
+    document.querySelector('[name="feedback_text"]').required = true;
+  }
 }
 
 function closeSuggestionModal() {
