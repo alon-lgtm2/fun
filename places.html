@@ -903,6 +903,11 @@ body {
 .form-success-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
 .hidden { display: none !important; }
 
+/* ===== SUGGESTION MODAL FORM TYPE SELECTOR ===== */
+.form-type-selector { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.form-type-btn { padding: 8px 16px; border: 1.5px solid var(--border); border-radius: 100px; background: white; font-family: 'Heebo', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-light); cursor: pointer; transition: all 0.2s; }
+.form-type-btn.active { background: var(--purple); color: white; border-color: var(--purple); }
+
 /* ===== FOOTER ===== */
 footer {
   text-align: center;
@@ -1397,6 +1402,44 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
       </form>
     </div>
     <div class="form-success hidden" id="placeSuccess">
+      <div class="form-success-emoji">🎉</div>
+      <div class="form-success-text">תודה רבה!</div>
+      <div class="form-success-sub">קיבלנו את ההמלצה שלכם ונבדוק אותה בהקדם.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUGGESTION MODAL -->
+<div class="modal-overlay" id="suggestionModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSuggestionModal()">&times;</button>
+    <div id="suggestionFormContainer">
+      <div class="modal-title" id="modalTitle">💬 שתפו את דעתכם</div>
+      <div class="modal-subtitle" id="modalSubtitle"></div>
+      <div class="form-type-selector" id="formTypeSelector">
+        <button class="form-type-btn active" data-type="event" onclick="switchFormType('event')">🎪 הוסיפו אירוע</button>
+        <button class="form-type-btn" data-type="feedback" onclick="switchFormType('feedback')">💭 פידבק</button>
+      </div>
+      <form id="suggestionForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
+        <input type="hidden" name="form_type" id="formTypeInput" value="event">
+        <div class="form-fields" id="fieldsEvent">
+          <div class="form-group"><label class="form-label">שם האירוע *</label><input class="form-input" type="text" name="event_name" placeholder="למשל: פסטיבל האור באיינדהובן"></div>
+          <div class="form-group"><label class="form-label">מתי?</label><input class="form-input" type="text" name="event_date" placeholder="למשל: שבת 21/3, 18:00-23:00"></div>
+          <div class="form-group"><label class="form-label">איפה?</label><input class="form-input" type="text" name="event_location" placeholder="למשל: מרכז איינדהובן"></div>
+          <div class="form-group"><label class="form-label">קישור לאירוע</label><input class="form-input" type="url" name="event_link" dir="ltr" placeholder="https://..."></div>
+          <div class="form-group"><label class="form-label">פרטים נוספים</label><textarea class="form-textarea" name="event_details" placeholder="מה שווה באירוע הזה? למי מתאים? מחיר?"></textarea></div>
+        </div>
+        <div class="form-fields hidden" id="fieldsFeedback">
+          <div class="form-group"><label class="form-label">מה תרצו לשתף? *</label><textarea class="form-textarea" name="feedback_text" placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea></div>
+        </div>
+        <div class="form-group"><label class="form-label">השם שלך (לא חובה)</label><input class="form-input" type="text" name="submitter_name" placeholder="כדי שנוכל לחזור אליכם"></div>
+        <div class="form-group"><label class="form-label">אימייל (לא חובה)</label><input class="form-input" type="email" name="submitter_email" dir="ltr" placeholder="email@example.com"></div>
+        <div class="form-group"><label class="form-label">טלפון (לא חובה)</label><input class="form-input" type="tel" name="submitter_phone" dir="ltr" placeholder="+31 6..."></div>
+        <input type="hidden" name="_subject" id="formSubject" value="הודעה חדשה - fun.israelis.nl">
+        <button type="submit" class="form-submit" id="submitBtn">שליחה 🚀</button>
+      </form>
+    </div>
+    <div class="form-success hidden" id="suggestionSuccess">
       <div class="form-success-emoji">🎉</div>
       <div class="form-success-text">תודה רבה!</div>
       <div class="form-success-sub">קיבלנו את ההמלצה שלכם ונבדוק אותה בהקדם.</div>
@@ -2028,6 +2071,42 @@ document.getElementById('placeForm').addEventListener('submit', async (e) => {
     btn.disabled = false;
     btn.textContent = 'שליחה 🚀';
   }
+});
+
+// ===== SUGGESTION MODAL =====
+function openSuggestionModal(type) {
+  document.getElementById('suggestionModal').classList.add('active');
+  document.getElementById('suggestionFormContainer').classList.remove('hidden');
+  document.getElementById('suggestionSuccess').classList.add('hidden');
+  document.getElementById('suggestionForm').reset();
+  switchFormType(type || 'feedback');
+}
+function switchFormType(type) {
+  document.querySelectorAll('.form-type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.form-type-btn[data-type="${type}"]`).classList.add('active');
+  document.getElementById('formTypeInput').value = type;
+  document.querySelectorAll('.form-fields').forEach(f => f.classList.add('hidden'));
+  const subjects = { event: 'אירוע חדש', feedback: 'פידבק' };
+  const subtitles = { event: 'יש לכם אירוע שווה? ספרו לנו!', feedback: 'נשמח לשמוע מה אתם חושבים' };
+  document.getElementById('modalSubtitle').textContent = subtitles[type];
+  document.getElementById('formSubject').value = `${subjects[type]} - fun.israelis.nl`;
+  if (type === 'event') document.getElementById('fieldsEvent').classList.remove('hidden');
+  else if (type === 'feedback') document.getElementById('fieldsFeedback').classList.remove('hidden');
+}
+function closeSuggestionModal() { document.getElementById('suggestionModal').classList.remove('active'); }
+document.getElementById('suggestionModal').addEventListener('click', function(e) { if (e.target === this) closeSuggestionModal(); });
+document.getElementById('suggestionForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'שולח...';
+  try {
+    const resp = await fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } });
+    if (resp.ok) {
+      document.getElementById('suggestionFormContainer').classList.add('hidden');
+      document.getElementById('suggestionSuccess').classList.remove('hidden');
+      setTimeout(closeSuggestionModal, 3000);
+    } else { throw new Error('Form submission failed'); }
+  } catch (err) { alert('שגיאה בשליחה. נסו שוב מאוחר יותר.'); btn.disabled = false; btn.textContent = 'שליחה 🚀'; }
 });
 </script>
 

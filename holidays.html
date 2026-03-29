@@ -481,6 +481,31 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .hero-auth-btn { font-size: 14px; }
   footer { font-size: 15px; }
 }
+
+/* ===== SUGGESTION MODAL ===== */
+.form-type-selector { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.form-type-btn { padding: 8px 16px; border: 1.5px solid var(--border); border-radius: 100px; background: white; font-family: 'Heebo', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-light); cursor: pointer; transition: all 0.2s; }
+.form-type-btn.active { background: var(--purple); color: white; border-color: var(--purple); }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.active { display: flex; }
+.modal { background: white; border-radius: var(--radius); padding: 28px 24px; max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); position: relative; }
+.modal-close { position: absolute; top: 12px; left: 12px; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-lighter); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background 0.2s; }
+.modal-close:hover { background: var(--bg); }
+.modal-title { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.modal-subtitle { font-size: 13px; color: var(--text-light); margin-bottom: 18px; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+.form-input, .form-textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Heebo', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); transition: border-color 0.2s; direction: rtl; }
+.form-input:focus, .form-textarea:focus { outline: none; border-color: var(--purple); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-submit { width: 100%; padding: 12px; background: var(--gradient); color: white; border: none; border-radius: 100px; font-family: 'Heebo', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(155,48,255,0.25); margin-top: 6px; }
+.form-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(155,48,255,0.35); }
+.form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.form-success { text-align: center; padding: 30px 10px; }
+.form-success-emoji { font-size: 48px; margin-bottom: 10px; }
+.form-success-text { font-size: 16px; font-weight: 600; color: var(--text); }
+.form-success-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+.hidden { display: none !important; }
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
 </head>
@@ -672,6 +697,44 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
 </footer>
 
+<!-- SUGGESTION MODAL -->
+<div class="modal-overlay" id="suggestionModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSuggestionModal()">&times;</button>
+    <div id="suggestionFormContainer">
+      <div class="modal-title" id="modalTitle">💬 שתפו את דעתכם</div>
+      <div class="modal-subtitle" id="modalSubtitle"></div>
+      <div class="form-type-selector" id="formTypeSelector">
+        <button class="form-type-btn active" data-type="event" onclick="switchFormType('event')">🎪 הוסיפו אירוע</button>
+        <button class="form-type-btn" data-type="feedback" onclick="switchFormType('feedback')">💭 פידבק</button>
+      </div>
+      <form id="suggestionForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
+        <input type="hidden" name="form_type" id="formTypeInput" value="event">
+        <div class="form-fields" id="fieldsEvent">
+          <div class="form-group"><label class="form-label">שם האירוע *</label><input class="form-input" type="text" name="event_name" placeholder="למשל: פסטיבל האור באיינדהובן"></div>
+          <div class="form-group"><label class="form-label">מתי?</label><input class="form-input" type="text" name="event_date" placeholder="למשל: שבת 21/3, 18:00-23:00"></div>
+          <div class="form-group"><label class="form-label">איפה?</label><input class="form-input" type="text" name="event_location" placeholder="למשל: מרכז איינדהובן"></div>
+          <div class="form-group"><label class="form-label">קישור לאירוע</label><input class="form-input" type="url" name="event_link" dir="ltr" placeholder="https://..."></div>
+          <div class="form-group"><label class="form-label">פרטים נוספים</label><textarea class="form-textarea" name="event_details" placeholder="מה שווה באירוע הזה? למי מתאים? מחיר?"></textarea></div>
+        </div>
+        <div class="form-fields hidden" id="fieldsFeedback">
+          <div class="form-group"><label class="form-label">מה תרצו לשתף? *</label><textarea class="form-textarea" name="feedback_text" placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea></div>
+        </div>
+        <div class="form-group"><label class="form-label">השם שלך (לא חובה)</label><input class="form-input" type="text" name="submitter_name" placeholder="כדי שנוכל לחזור אליכם"></div>
+        <div class="form-group"><label class="form-label">אימייל (לא חובה)</label><input class="form-input" type="email" name="submitter_email" dir="ltr" placeholder="email@example.com"></div>
+        <div class="form-group"><label class="form-label">טלפון (לא חובה)</label><input class="form-input" type="tel" name="submitter_phone" dir="ltr" placeholder="+31 6..."></div>
+        <input type="hidden" name="_subject" id="formSubject" value="הודעה חדשה - fun.israelis.nl">
+        <button type="submit" class="form-submit" id="submitBtn">שליחה 🚀</button>
+      </form>
+    </div>
+    <div class="form-success hidden" id="suggestionSuccess">
+      <div class="form-success-emoji">🎉</div>
+      <div class="form-success-text">תודה רבה!</div>
+      <div class="form-success-sub">קיבלנו את ההמלצה שלכם ונבדוק אותה בהקדם.</div>
+    </div>
+  </div>
+</div>
+
 <script>
 document.querySelectorAll('.info-tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -680,6 +743,49 @@ document.querySelectorAll('.info-tab').forEach(tab => {
     tab.classList.add('active');
     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
   });
+});
+
+// ===== SUGGESTION MODAL =====
+function openSuggestionModal(type) {
+  document.getElementById('suggestionModal').classList.add('active');
+  document.getElementById('suggestionFormContainer').classList.remove('hidden');
+  document.getElementById('suggestionSuccess').classList.add('hidden');
+  document.getElementById('suggestionForm').reset();
+  switchFormType(type || 'feedback');
+}
+function switchFormType(type) {
+  document.querySelectorAll('.form-type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.form-type-btn[data-type="${type}"]`).classList.add('active');
+  document.getElementById('formTypeInput').value = type;
+  document.querySelectorAll('.form-fields').forEach(f => f.classList.add('hidden'));
+  const subjects = { event: 'אירוע חדש', feedback: 'פידבק' };
+  const subtitles = { event: 'יש לכם אירוע שווה? ספרו לנו!', feedback: 'נשמח לשמוע מה אתם חושבים' };
+  document.getElementById('modalSubtitle').textContent = subtitles[type];
+  document.getElementById('formSubject').value = `${subjects[type]} - fun.israelis.nl`;
+  if (type === 'event') document.getElementById('fieldsEvent').classList.remove('hidden');
+  else if (type === 'feedback') document.getElementById('fieldsFeedback').classList.remove('hidden');
+}
+function closeSuggestionModal() {
+  document.getElementById('suggestionModal').classList.remove('active');
+}
+document.getElementById('suggestionModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSuggestionModal();
+});
+document.getElementById('suggestionForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'שולח...';
+  try {
+    const resp = await fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } });
+    if (resp.ok) {
+      document.getElementById('suggestionFormContainer').classList.add('hidden');
+      document.getElementById('suggestionSuccess').classList.remove('hidden');
+      setTimeout(closeSuggestionModal, 3000);
+    } else { throw new Error('Form submission failed'); }
+  } catch (err) {
+    alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
+    btn.disabled = false; btn.textContent = 'שליחה 🚀';
+  }
 });
 </script>
 
