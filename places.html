@@ -256,14 +256,105 @@ body {
   color: white;
 }
 
+/* Filter toggle button (mobile only) */
+.filter-toggle-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.filter-toggle-btn:hover { border-color: var(--purple); color: var(--purple); }
+.filter-toggle-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
+.filter-toggle-icon { font-size: 16px; line-height: 1; }
+.filter-toggle-badge {
+  display: none;
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  background: var(--purple);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Heebo', sans-serif;
+  line-height: 16px;
+  text-align: center;
+  padding: 0 4px;
+}
+.filter-toggle-badge.has-filters { display: block; }
+
+/* Nav auth buttons (inside sticky filter bar) */
+.auth-btn-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  background: white;
+  color: var(--purple);
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  margin-right: auto;
+}
+.auth-btn-nav:hover { background: var(--purple); color: white; border-color: var(--purple); }
+.auth-btn-nav img { width: 14px; height: 14px; }
+
+.profile-btn-nav {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px 3px 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  background: white;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: auto;
+}
+.profile-btn-nav:hover { border-color: var(--purple); }
+
+.profile-avatar-nav {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background-size: cover;
+  background-position: center;
+}
+
 /* ===== LOCATION & DRIVE TIME ROW ===== */
 .location-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-wrap: nowrap;
+  gap: 8px;
   align-items: center;
   justify-content: center;
-  padding: 10px 0 0;
+  padding: 8px 0 0;
   border-top: 1px solid var(--border);
   margin-top: 8px;
 }
@@ -271,23 +362,23 @@ body {
 .location-selector {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .location-label {
   font-family: 'Heebo', sans-serif;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-light);
   white-space: nowrap;
 }
 
 .location-select {
-  padding: 6px 14px;
+  padding: 4px 10px;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   font-family: 'Heebo', sans-serif;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text);
   background: white;
@@ -297,30 +388,16 @@ body {
 }
 .location-select:focus { outline: none; border-color: var(--purple); }
 
-.location-detect-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border);
-  background: white;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.location-detect-btn:hover { border-color: var(--purple); background: rgba(155,48,255,0.05); }
 
 .drive-filter {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .drive-label {
   font-family: 'Heebo', sans-serif;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-light);
   white-space: nowrap;
@@ -328,16 +405,16 @@ body {
 
 .drive-pills {
   display: flex;
-  gap: 4px;
+  gap: 3px;
 }
 
 .drive-pill {
-  padding: 4px 12px;
+  padding: 3px 8px;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   background: white;
   font-family: 'Heebo', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-light);
   cursor: pointer;
@@ -350,12 +427,12 @@ body {
 .duration-filter {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .duration-label {
   font-family: 'Heebo', sans-serif;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-light);
   white-space: nowrap;
@@ -363,16 +440,16 @@ body {
 
 .duration-pills {
   display: flex;
-  gap: 4px;
+  gap: 3px;
 }
 
 .duration-pill {
-  padding: 4px 12px;
+  padding: 3px 8px;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   background: white;
   font-family: 'Heebo', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-light);
   cursor: pointer;
@@ -481,14 +558,15 @@ body {
 }
 
 .places-map-col {
-  flex: 0 0 45%;
+  flex: 0 0 55%;
   position: sticky;
-  top: 70px;
+  top: 140px;
+  align-self: flex-start;
 }
 
 #placesMap {
   width: 100%;
-  height: 500px;
+  height: calc(100vh - 160px);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
@@ -498,18 +576,12 @@ body {
 .places-list-col {
   flex: 1;
   min-width: 0;
-  max-height: 80vh;
-  overflow-y: auto;
-  padding-left: 4px;
-  scrollbar-width: thin;
 }
 
 @media (max-width: 900px) {
   .places-layout { flex-direction: column; }
   .places-map-col { flex: none; width: 100%; position: static; }
-  #placesMap { height: 300px; }
-  .places-list-col { max-height: none; overflow-y: visible; }
-  .leaflet-control-zoom { display: none; }
+  #placesMap { height: 50vh; }
 }
 
 /* ===== PLACE CARDS ===== */
@@ -866,6 +938,9 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .drive-pill { font-size: 11px; padding: 3px 8px; }
   .duration-pill { font-size: 11px; padding: 3px 8px; }
   .drive-label, .location-label, .duration-label { font-size: 12px; }
+  .filter-toggle-btn { display: flex; }
+  .location-row { display: none; }
+  .location-row.expanded { display: flex; flex-direction: column; gap: 8px; }
 }
 
 /* ===== AUTH NAV TABS ===== */
@@ -949,6 +1024,68 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   background-position: center;
 }
 
+.hero { position: relative; }
+
+.hero-auth-area {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.auth-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.auth-btn:hover { background: rgba(255,255,255,0.3); }
+.auth-btn img { width: 14px; height: 14px; }
+
+.profile-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px 3px 4px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+.profile-btn:hover { background: rgba(255,255,255,0.3); }
+
+.profile-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background-size: cover;
+  background-position: center;
+}
+
 .signup-soft-banner {
   background: linear-gradient(135deg, rgba(200,80,192,0.06) 0%, rgba(155,48,255,0.06) 100%);
   border: 1px solid rgba(155,48,255,0.1);
@@ -1015,6 +1152,16 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 
 <!-- HERO -->
 <div class="hero">
+  <div class="hero-auth-area">
+    <button class="auth-btn" id="authBtn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      התחברו
+    </button>
+    <button class="profile-btn" id="profileBtn" onclick="openProfileModal()">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+      <span id="profileName">הפרופיל שלי</span>
+    </button>
+  </div>
   <div class="hero-content">
     <h1 class="hero-title">אז מה עושים היום?</h1>
     <p class="hero-subtitle">פעילויות איכות עם המשפחה בהולנד בסופ״ש</p>
@@ -1055,13 +1202,24 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
       <button class="filter-pill" data-cat="restaurant" onclick="toggleFilter('restaurant')"><span class="filter-dot" style="background:var(--restaurant)"></span> 🍽️ מסעדות עם ילדים <span class="filter-count" id="countRestaurant"></span></button>
       <button class="filter-pill" data-cat="museum" onclick="toggleFilter('museum')"><span class="filter-dot" style="background:var(--museum)"></span> 🏛️ מוזיאונים עם ילדים <span class="filter-count" id="countMuseum"></span></button>
       <button class="filter-pill" data-cat="playground" onclick="toggleFilter('playground')"><span class="filter-dot" style="background:var(--playground)"></span> 🛝 גני שעשועים <span class="filter-count" id="countPlayground"></span></button>
+      <button class="profile-btn-nav" id="profileBtnNav" onclick="openProfileModal()">
+        <div class="profile-avatar-nav" id="profileAvatarNav">?</div>
+        <span id="profileNameNav">הפרופיל שלי</span>
+      </button>
+      <button class="auth-btn-nav" id="authBtnNav" onclick="signInWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+        התחברו
+      </button>
+      <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleLocationRow()" aria-label="סינון נוסף" aria-expanded="false">
+        <span class="filter-toggle-icon">⚙</span>
+        <span class="filter-toggle-badge" id="filterToggleBadge"></span>
+      </button>
     </div>
     <div class="location-row" id="locationRow">
       <div class="location-selector">
         <span class="location-label">📍 מאיפה יוצאים?</span>
         <select class="location-select" id="citySelect" onchange="setUserCity(this.value)">
         </select>
-        <button class="location-detect-btn" onclick="detectLocation()" title="זיהוי מיקום אוטומטי">📡</button>
       </div>
       <div class="drive-filter" id="driveFilter">
         <span class="drive-label">🚗 מקסימום נסיעה:</span>
@@ -1263,17 +1421,17 @@ let distanceCircle = null;
 // ===== DUTCH CITIES =====
 const DUTCH_CITIES = [
   { name: 'אמסטרדם', lat: 52.3676, lng: 4.9041 },
-  { name: 'רוטרדם', lat: 51.9225, lng: 4.4792 },
-  { name: 'דן האג', lat: 52.0705, lng: 4.3007 },
   { name: 'אוטרכט', lat: 52.0907, lng: 5.1214 },
-  { name: 'איינדהובן', lat: 51.4416, lng: 5.4697 },
-  { name: 'חרונינגן', lat: 53.2194, lng: 6.5665 },
-  { name: 'אלמרה', lat: 52.3508, lng: 5.2647 },
-  { name: 'ארנהם', lat: 51.9851, lng: 5.8987 },
-  { name: 'מאסטריכט', lat: 50.8514, lng: 5.6910 },
-  { name: 'ליידן', lat: 52.1601, lng: 4.4970 },
   { name: 'הארלם', lat: 52.3874, lng: 4.6462 },
+  { name: 'אלמרה', lat: 52.3508, lng: 5.2647 },
   { name: 'אמרספורט', lat: 52.1561, lng: 5.3878 },
+  { name: 'איינדהובן', lat: 51.4416, lng: 5.4697 },
+  { name: 'ארנהם', lat: 51.9851, lng: 5.8987 },
+  { name: 'דן האג', lat: 52.0705, lng: 4.3007 },
+  { name: 'חרונינגן', lat: 53.2194, lng: 6.5665 },
+  { name: 'ליידן', lat: 52.1601, lng: 4.4970 },
+  { name: 'מאסטריכט', lat: 50.8514, lng: 5.6910 },
+  { name: 'רוטרדם', lat: 51.9225, lng: 4.4792 },
 ];
 
 // ===== DISTANCE UTILITIES =====
@@ -1369,6 +1527,34 @@ function detectLocation() {
   });
 }
 
+function toggleLocationRow() {
+  const row = document.getElementById('locationRow');
+  const btn = document.getElementById('filterToggleBtn');
+  const isExpanded = row.classList.contains('expanded');
+  row.classList.toggle('expanded', !isExpanded);
+  btn.classList.toggle('active', !isExpanded);
+  btn.setAttribute('aria-expanded', String(!isExpanded));
+}
+
+function updateFilterBadge() {
+  const badge = document.getElementById('filterToggleBadge');
+  if (!badge) return;
+  let count = 0;
+  if (maxDriveMinutes !== null) count++;
+  if (maxDurationHours !== null) count++;
+  badge.textContent = count > 0 ? count : '';
+  badge.classList.toggle('has-filters', count > 0);
+}
+
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 700) {
+    const row = document.getElementById('locationRow');
+    const btn = document.getElementById('filterToggleBtn');
+    row.classList.remove('expanded');
+    if (btn) btn.classList.remove('active');
+  }
+});
+
 function setMaxDrive(minutes) {
   maxDriveMinutes = minutes;
   document.querySelectorAll('.drive-pill').forEach(p => {
@@ -1376,6 +1562,7 @@ function setMaxDrive(minutes) {
   });
   updateDistanceCircle();
   filterPlaces();
+  updateFilterBadge();
 }
 
 function updateDistanceCircle() {
@@ -1448,6 +1635,7 @@ function setMaxDuration(hours) {
     p.classList.toggle('active', p.dataset.hours === String(hours || ''));
   });
   filterPlaces();
+  updateFilterBadge();
 }
 
 // ===== CATEGORY CONFIG =====
@@ -1662,20 +1850,10 @@ function renderCards(containerId) {
   }).join('');
 }
 
-// ===== VIEW TOGGLE =====
+// ===== VIEW TOGGLE (legacy – both columns always visible now) =====
 function switchView(view) {
   currentView = view;
-  document.querySelectorAll('.view-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.view === view);
-  });
-
-  document.getElementById('mapView').classList.toggle('active', view === 'map');
-  document.getElementById('listView').classList.toggle('active', view === 'list');
-  document.getElementById('mapListContent').style.display = view === 'map' ? 'block' : 'none';
-
-  if (view === 'map' && map) {
-    setTimeout(() => map.invalidateSize(), 100);
-  }
+  if (map) setTimeout(() => map.invalidateSize(), 100);
 }
 
 // ===== FOCUS PLACE ON MAP =====

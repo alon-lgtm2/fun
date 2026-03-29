@@ -407,6 +407,44 @@ body {
 .liked-filter-count { font-size: 10px; font-weight: 700; }
 .liked-filter-count:empty { display: none; }
 
+/* Filter toggle button (mobile only) */
+.filter-toggle-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.filter-toggle-btn:hover { border-color: var(--purple); color: var(--purple); }
+.filter-toggle-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
+.filter-toggle-icon { font-size: 14px; line-height: 1; }
+.filter-toggle-badge {
+  display: none;
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 100px;
+  background: var(--purple);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: 'Heebo', sans-serif;
+  line-height: 14px;
+  text-align: center;
+  padding: 0 3px;
+}
+.filter-toggle-badge.has-filters { display: block; }
+
 /* ===== LOCATION & DRIVE/DURATION FILTERS ===== */
 .location-row {
   display: flex;
@@ -534,6 +572,9 @@ body {
   .drive-pill, .duration-pill { font-size: 11px; padding: 4px 10px; }
   .location-select { font-size: 12px; padding: 5px 12px; }
   .location-detect-btn { width: 28px; height: 28px; font-size: 14px; }
+  .filter-toggle-btn { display: flex; }
+  .location-row { display: none; }
+  .location-row.expanded { display: flex; flex-wrap: wrap; }
 }
 
 /* ===== CONTENT ===== */
@@ -2119,6 +2160,10 @@ body {
       <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
       <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
       <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
+      <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleLocationRow()" aria-label="סינון נוסף" aria-expanded="false">
+        <span class="filter-toggle-icon">⚙</span>
+        <span class="filter-toggle-badge" id="filterToggleBadge"></span>
+      </button>
     </div>
     <div class="location-row" id="locationRow">
       <div class="filter-group" title="בחרו עיר לחישוב מרחק נסיעה">
@@ -2151,11 +2196,10 @@ body {
           <button class="duration-pill" data-hours="4" onclick="setMaxDuration(4)" title="פעילויות עד חצי יום">חצי יום</button>
         </div>
       </div>
-      <div class="filter-group-divider"></div>
-      <div class="view-toggles">
-        <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
-        <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
-      </div>
+    </div>
+    <div class="view-toggles">
+      <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
+      <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
     </div>
   </div>
 </nav>
@@ -2454,12 +2498,41 @@ function detectLocation() {
   }, () => { alert('לא הצלחנו לזהות את המיקום שלכם'); });
 }
 
+function toggleLocationRow() {
+  const row = document.getElementById('locationRow');
+  const btn = document.getElementById('filterToggleBtn');
+  const isExpanded = row.classList.contains('expanded');
+  row.classList.toggle('expanded', !isExpanded);
+  btn.classList.toggle('active', !isExpanded);
+  btn.setAttribute('aria-expanded', String(!isExpanded));
+}
+
+function updateFilterBadge() {
+  const badge = document.getElementById('filterToggleBadge');
+  if (!badge) return;
+  let count = 0;
+  if (maxDriveMinutes !== null) count++;
+  if (maxDurationHours !== null) count++;
+  badge.textContent = count > 0 ? count : '';
+  badge.classList.toggle('has-filters', count > 0);
+}
+
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 700) {
+    const row = document.getElementById('locationRow');
+    const btn = document.getElementById('filterToggleBtn');
+    row.classList.remove('expanded');
+    if (btn) btn.classList.remove('active');
+  }
+});
+
 function setMaxDrive(minutes) {
   maxDriveMinutes = minutes;
   document.querySelectorAll('.drive-pill').forEach(p => {
     p.classList.toggle('active', p.dataset.minutes === String(minutes || ''));
   });
   render();
+  updateFilterBadge();
 }
 
 function setMaxDuration(hours) {
@@ -2468,6 +2541,7 @@ function setMaxDuration(hours) {
     p.classList.toggle('active', p.dataset.hours === String(hours || ''));
   });
   render();
+  updateFilterBadge();
 }
 
 function initCityFromProfile() {
@@ -2800,7 +2874,13 @@ function renderCalendar() {
 
   relevantWeekends.forEach((w, wIdx) => {
     const weekendEvents = events.filter(e => eventOnWeekend(e, w.sat, w.sun));
-    const filtered = weekendEvents.filter(e => eventMatchesFilters(e));
+    let filtered = weekendEvents.filter(e => eventMatchesFilters(e));
+    if (maxDriveMinutes != null && userLat != null) {
+      filtered = filtered.filter(e => e._driveMin != null && e._driveMin <= maxDriveMinutes);
+    }
+    if (maxDurationHours != null) {
+      filtered = filtered.filter(e => e.duration != null && e.duration <= maxDurationHours);
+    }
 
     if (!filtered.length) return;
 
