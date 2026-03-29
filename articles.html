@@ -3,21 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>כתבות ומאמרים - fun.israelis.nl</title>
-<meta name="description" content="כתבות, טיפים והמלצות לחיים עם ילדים בהולנד">
-<meta property="og:title" content="כתבות ומאמרים">
-<meta property="og:description" content="כתבות, טיפים והמלצות לחיים עם ילדים בהולנד">
+<title>מאמרים - fun.israelis.nl</title>
+<meta name="description" content="מאמרים וטיפים לחיים בהולנד - מדריכים, המלצות ועוד">
+<meta property="og:title" content="מאמרים - fun.israelis.nl">
+<meta property="og:description" content="מאמרים וטיפים לחיים בהולנד">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fun.israelis.nl/articles.html">
 <meta property="og:site_name" content="fun.israelis.nl">
 <meta property="og:locale" content="he_IL">
-<meta property="og:image" content="https://fun.israelis.nl/images/og3.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="כתבות ומאמרים">
-<meta name="twitter:description" content="כתבות, טיפים והמלצות לחיים עם ילדים בהולנד">
-<meta name="twitter:image" content="https://fun.israelis.nl/images/og3.png">
+<meta property="og:image" content="https://fun.israelis.nl/images/og2.png">
 <link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="images/az.png">
@@ -27,7 +21,6 @@
 <meta name="apple-mobile-web-app-title" content="מה עושים?">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -51,323 +44,473 @@
   --radius: 18px;
   --radius-sm: 12px;
   --shadow: 0 2px 16px rgba(155,48,255,0.06);
-  --shadow-hover: 0 8px 32px rgba(155,48,255,0.12);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); }
 
-body {
-  font-family: 'Heebo', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
+/* ===== STICKY NAV ===== */
+.sticky-nav {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border-bottom: 1px solid var(--border);
 }
+
+.nav-logo {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-tabs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-tabs-row::-webkit-scrollbar { display: none; }
+
+.nav-tab-pill {
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid var(--border);
+  background: white;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-tab-pill:hover { background: var(--bg); color: var(--purple); border-color: var(--purple); }
+.nav-tab-pill.active { background: var(--gradient); color: white; border-color: transparent; }
 
 /* ===== HERO ===== */
 .hero {
   background: var(--gradient);
+  padding: 40px 20px 32px;
+  text-align: center;
   color: white;
-  padding: 20px 20px 12px;
-  text-align: center;
   position: relative;
-  overflow: hidden;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08) 0%, transparent 50%),
-              radial-gradient(circle at 70% 60%, rgba(46,204,64,0.06) 0%, transparent 40%);
-  pointer-events: none;
-}
+.hero-content { max-width: 700px; margin: 0 auto; }
+.hero-title { font-family: 'Rubik', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+.hero-subtitle { font-size: 15px; opacity: 0.9; }
 
-.hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
-.hero-title { font-family: 'Rubik', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 6px; text-shadow: 2px 3px 8px rgba(0,0,0,0.15); line-height: 1.2; }
-.hero-subtitle { font-size: 16px; opacity: 0.9; }
-
-.hero-nav-tabs-unified {
+/* Hero nav tabs */
+.hero-nav-tabs {
   display: flex;
+  align-items: center;
+  gap: 4px;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 16px 0;
-  max-width: 1000px;
-  margin: 0 auto;
-  flex-wrap: wrap;
-  position: relative;
-  z-index: 2;
+  margin-bottom: 12px;
 }
-.hero-tab {
-  padding: 7px 16px;
+
+.hero-nav-tab {
+  padding: 5px 14px;
   border-radius: 100px;
   font-family: 'Heebo', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.7);
   text-decoration: none;
-  white-space: nowrap;
-  border: 1.5px solid rgba(255,255,255,0.3);
-  background: rgba(255,255,255,0.1);
   transition: all 0.2s;
-  cursor: pointer;
-}
-.hero-tab:hover { background: rgba(255,255,255,0.25); color: white; border-color: rgba(255,255,255,0.5); }
-.hero-tab.active { background: white; color: var(--purple); border-color: white; font-weight: 700; }
-
-@media (max-width: 700px) {
-  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
-  .hero-tab { font-size: 12px; padding: 5px 10px; }
+  border: 1.5px solid transparent;
 }
 
-@media (min-width: 701px) {
-  .hero-title { font-size: 36px; }
-  .hero-subtitle { font-size: 18px; }
+.hero-nav-tab:hover { color: white; background: rgba(255,255,255,0.15); }
+.hero-nav-tab.active { color: white; background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); }
+
+.hero-nav-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.25);
 }
 
-/* ===== PAGE INTRO ===== */
-.page-intro {
-  max-width: 800px;
-  margin: 20px auto 0;
-  padding: 0 20px;
-  text-align: center;
-  font-size: 15px;
-  color: var(--text-light);
-  line-height: 1.7;
-}
-
-/* ===== FILTERS ===== */
-.filters-bar {
-  max-width: 1200px;
-  margin: 16px auto 0;
-  padding: 0 20px;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.filter-pill {
-  padding: 7px 16px;
+.hero-auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1.5px solid rgba(255,255,255,0.4);
   border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
   font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-light);
-  background: white;
-  border: 1.5px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  margin-right: 8px;
 }
-.filter-pill:hover { border-color: var(--purple); color: var(--purple); }
-.filter-pill.active { background: var(--purple); color: white; border-color: var(--purple); font-weight: 600; }
+.hero-auth-btn:hover { background: rgba(255,255,255,0.25); }
+.hero-auth-btn img { width: 14px; height: 14px; }
+.hero-auth-btn.hidden { display: none; }
+
+.hero-profile-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px 3px 4px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 8px;
+}
+
+.hero-profile-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background-size: cover;
+  background-position: center;
+}
 
 /* ===== CONTENT ===== */
 .content {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 20px 20px 60px;
+  padding: 24px 20px 60px;
 }
 
-/* ===== ARTICLES GRID ===== */
+/* Filters */
+.filters-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.filter-pill {
+  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-pill:hover { border-color: var(--purple); color: var(--purple); }
+.filter-pill.active { background: var(--purple); color: white; border-color: var(--purple); }
+.filter-pill.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+
+/* Mobile collapsible filters */
+.filters-toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  margin: 0 auto 16px;
+}
+.filters-toggle:hover { border-color: var(--purple); color: var(--purple); }
+.filters-toggle.has-active { border-color: var(--purple); color: var(--purple); }
+.filters-toggle .toggle-arrow { font-size: 8px; transition: transform 0.2s; }
+.filters-toggle.open .toggle-arrow { transform: rotate(180deg); }
+
+.filters-active-count {
+  background: var(--purple);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+.filters-active-count:empty { display: none; }
+
+/* Articles grid */
 .articles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
 }
 
-/* ===== ARTICLE CARD ===== */
 .article-card {
-  background: var(--card-bg);
+  background: white;
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--shadow);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow);
   transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
   display: flex;
   flex-direction: column;
 }
+
 .article-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(155,48,255,0.12);
 }
 
 .article-img {
   width: 100%;
-  height: 200px;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--bg);
-  position: relative;
-}
-
-.article-img.img-loading {
-  background-image: none !important;
-}
-
-.article-img-placeholder {
-  width: 100%;
-  height: 200px;
+  height: 180px;
+  object-fit: cover;
   background: var(--gradient-soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 48px;
-}
-
-.article-category-tag {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: var(--purple);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 100px;
-  font-size: 12px;
-  font-weight: 600;
-  font-family: 'Heebo', sans-serif;
 }
 
 .article-body {
-  padding: 18px 20px 20px;
+  padding: 16px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex: 1;
+}
+
+.article-category {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 100px;
+  background: rgba(155,48,255,0.08);
+  color: var(--purple);
+  margin-bottom: 8px;
+  align-self: flex-start;
 }
 
 .article-title {
   font-family: 'Rubik', sans-serif;
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   line-height: 1.4;
 }
 
 .article-summary {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-light);
-  line-height: 1.7;
-  margin-bottom: 16px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  line-height: 1.6;
   flex: 1;
 }
 
-.article-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  color: var(--text-lighter);
-  margin-bottom: 14px;
-}
-
 .article-date {
+  font-size: 11px;
+  color: var(--text-lighter);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* Article detail view */
+.article-detail {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.article-detail-hero {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.article-detail-body {
+  padding: 32px 28px;
+}
+
+.article-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+}
+
+.article-detail-back:hover { border-color: var(--purple); color: var(--purple); }
+
+.article-detail-meta {
   display: flex;
   align-items: center;
-  gap: 4px;
-}
-
-.article-link {
-  display: block;
-  text-align: center;
-  padding: 10px 20px;
-  background: var(--gradient);
-  color: white;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-  transition: opacity 0.2s;
-}
-.article-link:hover { opacity: 0.9; }
-
-/* ===== LOADING ===== */
-.loading {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.loading-spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid var(--border);
-  border-top-color: var(--purple);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 12px;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.loading-text {
-  font-size: 14px;
-  color: var(--text-lighter);
-}
-
-/* ===== EMPTY STATE ===== */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.empty-state-emoji { font-size: 48px; margin-bottom: 12px; }
-.empty-state-text { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-.empty-state-sub { font-size: 14px; color: var(--text-light); }
-
-/* ===== FOOTER ===== */
-footer {
-  text-align: center;
-  padding: 20px;
-  font-size: 12px;
-  color: var(--text-lighter);
-  margin-top: 30px;
-}
-footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 700px) {
-  .articles-grid { grid-template-columns: 1fr; gap: 16px; }
-  .content { padding: 16px 16px 40px; }
-  .filter-pill { font-size: 12px; padding: 6px 12px; }
-}
-
-/* ===== UTILITY ===== */
-.hidden { display: none !important; }
-
-/* ===== SUGGESTION MODAL ===== */
-.form-type-selector {
-  display: flex;
-  gap: 6px;
+  gap: 10px;
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
-.form-type-btn {
-  padding: 8px 16px;
-  border: 1.5px solid var(--border);
+.article-detail-category {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
   border-radius: 100px;
+  background: rgba(155,48,255,0.08);
+  color: var(--purple);
+}
+
+.article-detail-date {
+  font-size: 13px;
+  color: var(--text-lighter);
+}
+
+.article-detail-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.article-detail-summary {
+  font-size: 16px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.article-detail-content {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.article-detail-content h2,
+.article-detail-content h3 {
+  font-family: 'Rubik', sans-serif;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.article-detail-content a {
+  color: var(--purple);
+  font-weight: 600;
+}
+
+.article-detail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  padding: 10px 20px;
+  border-radius: 100px;
+  background: var(--gradient);
+  color: white;
+  text-decoration: none;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+
+.article-detail-link:hover { transform: translateY(-1px); }
+
+.article-detail-share {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.share-btn {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
   background: white;
   font-family: 'Heebo', sans-serif;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-light);
   cursor: pointer;
+  text-decoration: none;
   transition: all 0.2s;
 }
 
-.form-type-btn.active {
-  background: var(--purple);
-  color: white;
-  border-color: var(--purple);
+.share-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+@media (max-width: 700px) {
+  .article-detail-body { padding: 20px 16px; }
+  .article-detail-title { font-size: 22px; }
+  .article-detail-summary { font-size: 14px; }
+  .article-detail-content { font-size: 14px; }
+  .article-detail-hero { max-height: 250px; }
 }
 
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-lighter);
+  font-size: 14px;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-lighter);
+  font-size: 14px;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 24px 20px;
+  color: var(--text-lighter);
+  font-size: 13px;
+}
+footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
+
+/* Contact modal */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -379,9 +522,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   justify-content: center;
   padding: 20px;
 }
-
 .modal-overlay.active { display: flex; }
-
 .modal {
   background: white;
   border-radius: var(--radius);
@@ -393,7 +534,6 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   box-shadow: 0 20px 60px rgba(0,0,0,0.2);
   position: relative;
 }
-
 .modal-close {
   position: absolute;
   top: 12px;
@@ -409,34 +549,12 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background 0.2s;
 }
-
 .modal-close:hover { background: var(--bg); }
-
-.modal-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.modal-subtitle {
-  font-size: 13px;
-  color: var(--text-light);
-  margin-bottom: 18px;
-}
-
+.modal-title { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.modal-subtitle { font-size: 13px; color: var(--text-light); margin-bottom: 18px; }
 .form-group { margin-bottom: 14px; }
-
-.form-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: var(--text);
-}
-
+.form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
 .form-input, .form-textarea {
   width: 100%;
   padding: 10px 12px;
@@ -446,17 +564,10 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   font-size: 14px;
   color: var(--text);
   background: var(--bg);
-  transition: border-color 0.2s;
   direction: rtl;
 }
-
-.form-input:focus, .form-textarea:focus {
-  outline: none;
-  border-color: var(--purple);
-}
-
+.form-input:focus, .form-textarea:focus { outline: none; border-color: var(--purple); }
 .form-textarea { resize: vertical; min-height: 80px; }
-
 .form-submit {
   width: 100%;
   padding: 12px;
@@ -468,149 +579,191 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
   box-shadow: 0 4px 16px rgba(155,48,255,0.25);
   margin-top: 6px;
 }
-
-.form-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(155,48,255,0.35); }
+.form-submit:hover { transform: translateY(-1px); }
 .form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-.form-success {
-  text-align: center;
-  padding: 30px 10px;
-}
-
+.form-success { text-align: center; padding: 30px 10px; }
 .form-success-emoji { font-size: 48px; margin-bottom: 10px; }
 .form-success-text { font-size: 16px; font-weight: 600; color: var(--text); }
-.form-success-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+
+/* Signup banner */
+.signup-soft-banner {
+  background: linear-gradient(135deg, rgba(200,80,192,0.06) 0%, rgba(155,48,255,0.06) 100%);
+  border: 1px solid rgba(155,48,255,0.1);
+  border-radius: var(--radius);
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.signup-soft-banner.hidden { display: none !important; }
+.signup-soft-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 100px;
+  background: var(--gradient);
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.signup-soft-banner-btn:hover { opacity: 0.9; }
+.signup-soft-banner-btn img { width: 14px; height: 14px; }
+
+@media (max-width: 700px) {
+  .hero-nav-tabs { flex-wrap: wrap; gap: 2px; }
+  .hero-nav-tab { font-size: 12px; padding: 4px 10px; }
+  .hero-auth-btn { font-size: 11px; padding: 4px 10px; }
+  .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
+  .articles-grid { grid-template-columns: 1fr; }
+  .article-img { height: 160px; }
+  .filters-toggle { display: flex; }
+  .filters-row { display: none; }
+  .filters-row.open { display: flex; }
+}
+
+@media (min-width: 701px) {
+  .hero-title { font-size: 32px; }
+  .hero-subtitle { font-size: 17px; }
+  .nav-logo { font-size: 17px; }
+  .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
+  .filter-pill { font-size: 13px; padding: 8px 18px; }
+  .article-title { font-size: 18px; }
+  .article-summary { font-size: 14px; }
+}
 </style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
 </head>
 <body>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-content">
-    <h1 class="hero-title">אז מה עושים היום?</h1>
-    <p class="hero-subtitle">פעילויות איכות עם המשפחה בהולנד בסופ״ש</p>
-  </div>
-  <div class="hero-nav-tabs-unified">
-    <a href="index.html" class="hero-tab">🏠 עמוד הבית</a>
-    <a href="places.html" class="hero-tab">📍 מקומות מומלצים</a>
-    <a href="holidays.html" class="hero-tab">📅 לוח חופשות</a>
-    <a href="weather.html" class="hero-tab">🌤️ תחזית מזג אוויר</a>
-    <a href="articles.html" class="hero-tab active">📝 כתבות</a>
-    <a href="about.html" class="hero-tab">🤝 נעים להכיר</a>
-    <a href="#" class="hero-tab" onclick="event.preventDefault(); openSuggestionModal('feedback')">💬 צרו קשר</a>
+    <div class="hero-nav-tabs">
+      <a href="index.html" class="hero-nav-tab">אירועים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="places.html" class="hero-nav-tab">מקומות</a>
+      <div class="hero-nav-divider"></div>
+      <a href="holidays.html" class="hero-nav-tab">מתי חופש?</a>
+      <div class="hero-nav-divider"></div>
+      <a href="articles.html" class="hero-nav-tab active">מאמרים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="about.html" class="hero-nav-tab">עלינו</a>
+      <div class="hero-nav-divider"></div>
+      <button class="hero-auth-btn" id="authBtn" onclick="signInWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+        התחברו
+      </button>
+      <a href="index.html" class="hero-profile-btn" id="profileBtn">
+        <div class="hero-profile-avatar" id="profileAvatar">?</div>
+        <span id="profileName">הפרופיל</span>
+      </a>
+    </div>
+    <h1 class="hero-title">מאמרים וטיפים</h1>
+    <p class="hero-subtitle">מדריכים, המלצות וכל מה שכדאי לדעת על החיים בהולנד</p>
   </div>
 </div>
 
-<p class="page-intro">
-  כתבות, טיפים והמלצות שכתבנו לאורך השנים על חיים עם ילדים בהולנד
-</p>
+<!-- STICKY NAV -->
+<div class="sticky-nav">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 16px 0;max-width:1400px;margin:0 auto;">
+    <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
+  </div>
+  <div class="nav-tabs-row">
+    <a href="index.html" class="nav-tab-pill">אירועים</a>
+    <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
+    <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
+    <a href="articles.html" class="nav-tab-pill active">📝 מאמרים</a>
+    <a href="about.html" class="nav-tab-pill">🧡 עלינו</a>
+    <button class="nav-tab-pill" onclick="openContactModal()">💬 צרו קשר</button>
+  </div>
+</div>
 
-<!-- FILTERS -->
-<div class="filters-bar" id="categoryFilters"></div>
-
-<!-- MAIN CONTENT -->
 <div class="content">
-  <!-- Loading -->
-  <div class="loading" id="loadingState">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">טוען כתבות...</div>
+  <div class="signup-soft-banner" id="signupBanner">
+    רוצים לדעת מה עושים בסופ״ש? אצלנו תמצאו אירועים לכל סופ״ש
+    <button class="signup-soft-banner-btn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+      התחברו
+    </button>
   </div>
 
-  <!-- Articles Grid -->
-  <div class="articles-grid" id="articlesGrid" style="display:none"></div>
+  <button class="filters-toggle" id="filtersToggle" onclick="toggleFiltersCollapse()">
+    סינון <span class="filters-active-count" id="filtersActiveCount"></span> <span class="toggle-arrow">▼</span>
+  </button>
+  <div class="filters-row" id="filtersRow"></div>
 
-  <!-- Empty State -->
-  <div class="empty-state" id="emptyState" style="display:none">
-    <div class="empty-state-emoji">📝</div>
-    <div class="empty-state-text">עוד אין כתבות</div>
-    <div class="empty-state-sub">כתבות חדשות בדרך, הישארו מעודכנים!</div>
+  <div class="loading" id="loading">טוען מאמרים...</div>
+  <div id="listView">
+    <div class="articles-grid" id="articlesGrid"></div>
+    <div class="no-results" id="noResults" style="display:none">לא נמצאו מאמרים בקטגוריה זו</div>
   </div>
+  <div id="detailView" style="display:none"></div>
 </div>
 
 <footer>
-  <p>נבנה באהבה לקהילה הישראלית בהולנד 🧡</p>
+  <p>נבנה באהבה לקהילה הישראלית בהולנד</p>
   <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
 </footer>
 
-<!-- SUGGESTION MODAL -->
-<div class="modal-overlay" id="suggestionModal">
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactOverlay" onclick="if(event.target===this)closeContactModal()">
   <div class="modal">
-    <button class="modal-close" onclick="closeSuggestionModal()">&times;</button>
-    <div id="suggestionFormContainer">
-      <div class="modal-title" id="modalTitle">💬 שתפו את דעתכם</div>
-      <div class="modal-subtitle" id="modalSubtitle"></div>
-      <div class="form-type-selector" id="formTypeSelector">
-        <button class="form-type-btn active" data-type="event" onclick="switchFormType('event')">🎪 הוסיפו אירוע</button>
-        <button class="form-type-btn" data-type="feedback" onclick="switchFormType('feedback')">💭 פידבק</button>
+    <button class="modal-close" onclick="closeContactModal()">✕</button>
+    <div class="modal-title">💬 צרו קשר</div>
+    <div class="modal-subtitle">שלחו לנו הודעה ונחזור אליכם</div>
+    <form id="contactForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
+      <input type="hidden" name="_type" value="feedback">
+      <div class="form-group">
+        <label class="form-label">הודעה *</label>
+        <textarea class="form-textarea" name="message" required placeholder="מה תרצו לספר לנו?"></textarea>
       </div>
-      <form id="suggestionForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
-        <input type="hidden" name="form_type" id="formTypeInput" value="event">
-        <!-- Event fields -->
-        <div class="form-fields" id="fieldsEvent">
-          <div class="form-group">
-            <label class="form-label">שם האירוע *</label>
-            <input class="form-input" type="text" name="event_name" placeholder="למשל: פסטיבל האור באיינדהובן">
-          </div>
-          <div class="form-group">
-            <label class="form-label">מתי?</label>
-            <input class="form-input" type="text" name="event_date" placeholder="למשל: שבת 21/3, 18:00-23:00">
-          </div>
-          <div class="form-group">
-            <label class="form-label">איפה?</label>
-            <input class="form-input" type="text" name="event_location" placeholder="למשל: מרכז איינדהובן">
-          </div>
-          <div class="form-group">
-            <label class="form-label">קישור לאירוע</label>
-            <input class="form-input" type="url" name="event_link" dir="ltr" placeholder="https://...">
-          </div>
-          <div class="form-group">
-            <label class="form-label">פרטים נוספים</label>
-            <textarea class="form-textarea" name="event_details" placeholder="מה שווה באירוע הזה? למי מתאים? מחיר?"></textarea>
-          </div>
-        </div>
-        <!-- Feedback fields -->
-        <div class="form-fields hidden" id="fieldsFeedback">
-          <div class="form-group">
-            <label class="form-label">מה תרצו לשתף? *</label>
-            <textarea class="form-textarea" name="feedback_text" placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea>
-          </div>
-        </div>
-        <!-- Common fields -->
-        <div class="form-group">
-          <label class="form-label">השם שלך (לא חובה)</label>
-          <input class="form-input" type="text" name="submitter_name" placeholder="כדי שנוכל לחזור אליכם">
-        </div>
-        <div class="form-group">
-          <label class="form-label">אימייל (לא חובה)</label>
-          <input class="form-input" type="email" name="submitter_email" dir="ltr" placeholder="email@example.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label">טלפון (לא חובה)</label>
-          <input class="form-input" type="tel" name="submitter_phone" dir="ltr" placeholder="+31 6...">
-        </div>
-        <input type="hidden" name="_subject" id="formSubject" value="הודעה חדשה - fun.israelis.nl">
-        <button type="submit" class="form-submit" id="submitBtn">שליחה 🚀</button>
-      </form>
-    </div>
-    <div class="form-success hidden" id="suggestionSuccess">
+      <div class="form-group">
+        <label class="form-label">שם (אופציונלי)</label>
+        <input class="form-input" type="text" name="name" placeholder="השם שלכם">
+      </div>
+      <div class="form-group">
+        <label class="form-label">אימייל (אופציונלי)</label>
+        <input class="form-input" type="email" name="email" placeholder="your@email.com" dir="ltr">
+      </div>
+      <button type="submit" class="form-submit">שליחה 🚀</button>
+    </form>
+    <div class="form-success" id="contactSuccess" style="display:none">
       <div class="form-success-emoji">🎉</div>
-      <div class="form-success-text">תודה רבה!</div>
-      <div class="form-success-sub">קיבלנו את ההמלצה שלכם ונבדוק אותה בהקדם.</div>
+      <div class="form-success-text">תודה רבה! קיבלנו את ההודעה שלכם.</div>
     </div>
   </div>
 </div>
 
-<script>
-// ===== ARTICLES DATA =====
-const ARTICLES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=478633181&single=true&output=csv';
-let ARTICLES = [];
-let activeCategory = 'all';
+<!-- FACEBOOK BROWSER MODAL -->
+<div class="fb-browser-modal-overlay" id="fbBrowserModal" onclick="if(event.target===this)closeFacebookBrowserModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+    <div style="font-size:48px;margin-bottom:12px;">🌐</div>
+    <div style="font-family:'Rubik',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px;">פתחו בדפדפן</div>
+    <div style="font-size:14px;color:#5A5A7A;line-height:1.6;margin-bottom:20px;">ההתחברות עם Google לא עובדת בדפדפן של פייסבוק.<br>לחצו למטה כדי לפתוח את האתר בדפדפן הרגיל שלכם.</div>
+    <button onclick="openInSystemBrowser()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#C850C0 0%,#9B30FF 40%,#4158D0 100%);color:white;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">פתחו ב-Chrome / Safari</button>
+    <button onclick="closeFacebookBrowserModal()" style="display:block;margin-top:12px;font-size:13px;color:#9898B0;cursor:pointer;border:none;background:none;font-family:'Heebo',sans-serif;text-decoration:underline;width:100%;">לא עכשיו</button>
+  </div>
+</div>
 
-// ===== CSV PARSER =====
+<!-- Firebase Auth -->
+<script src="auth.js"></script>
+<script>
+const ARTICLES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=478633181&single=true&output=csv';
+
+let articles = [];
+let activeFilter = 'all';
+
 function parseCSVLine(line) {
   const result = [];
   let current = '';
@@ -632,15 +785,35 @@ function parseCSVLine(line) {
   return result;
 }
 
+function splitCSVRows(text) {
+  // Split CSV text into logical rows, keeping multi-line quoted fields together
+  const rows = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+      current += ch;
+    } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+      if (ch === '\r' && i + 1 < text.length && text[i + 1] === '\n') i++;
+      if (current.trim()) rows.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  if (current.trim()) rows.push(current);
+  return rows;
+}
+
 function parseCSV(text) {
-  const lines = text.split('\n');
-  if (lines.length < 2) return [];
-  const headers = parseCSVLine(lines[0]);
+  const rows = splitCSVRows(text);
+  if (rows.length < 2) return [];
+  const headers = parseCSVLine(rows[0]);
   const results = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    const values = parseCSVLine(line);
+  for (let i = 1; i < rows.length; i++) {
+    const values = parseCSVLine(rows[i]);
     const obj = {};
     headers.forEach((h, idx) => { obj[h.trim().toLowerCase()] = (values[idx] || '').trim(); });
     results.push(obj);
@@ -648,193 +821,176 @@ function parseCSV(text) {
   return results;
 }
 
-// ===== IMAGE URL HELPER =====
-function getImageURL(img) {
-  if (!img) return null;
-  if (img.startsWith('http')) return img;
-  if (img.startsWith('/')) return img;
-  if (img.startsWith('images/')) return img;
-  return 'images/' + img;
-}
-
-// ===== DATE FORMATTING =====
-function formatHebrewDate(dateStr) {
+function formatDate(dateStr) {
   if (!dateStr) return '';
-  try {
-    const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' });
-  } catch { return dateStr; }
+  const d = new Date(dateStr + 'T00:00:00');
+  if (isNaN(d)) return dateStr;
+  const months = ['בינואר','בפברואר','במרץ','באפריל','במאי','ביוני','ביולי','באוגוסט','בספטמבר','באוקטובר','בנובמבר','בדצמבר'];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-// ===== LOAD ARTICLES =====
-async function loadArticles() {
-  try {
-    const cacheBust = Math.floor(Date.now() / 60000);
-    const resp = await fetch(ARTICLES_CSV_URL + '&_cb=' + cacheBust);
-    if (!resp.ok) throw new Error('Failed to fetch articles');
-    const text = await resp.text();
-    const rows = parseCSV(text);
-    ARTICLES = rows.filter(r => r.title).map(r => ({
-      title: r.title,
-      summary: r.summary || '',
-      image: getImageURL(r.image),
-      date: r.date || '',
-      link: r.link || '',
-      category: r.category || '',
-    }));
-
-    // Sort by date descending
-    ARTICLES.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
-    buildCategoryFilters();
-    renderArticles();
-  } catch (err) {
-    console.error('Error loading articles:', err);
-    document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('emptyState').style.display = 'block';
-  }
-}
-
-// ===== CATEGORY FILTERS =====
-function buildCategoryFilters() {
-  const categories = [...new Set(ARTICLES.map(a => a.category).filter(Boolean))];
-  if (categories.length === 0) return;
-
-  const container = document.getElementById('categoryFilters');
-  let html = '<button class="filter-pill active" onclick="filterByCategory(\'all\')">הכל</button>';
+function buildFilters() {
+  const categories = [...new Set(articles.map(a => a.category).filter(Boolean))];
+  const row = document.getElementById('filtersRow');
+  row.innerHTML = '<button class="filter-pill active" data-cat="all">הכל</button>';
   categories.forEach(cat => {
-    html += `<button class="filter-pill" onclick="filterByCategory('${cat}')">${cat}</button>`;
+    row.innerHTML += `<button class="filter-pill" data-cat="${cat}">${cat}</button>`;
   });
-  container.innerHTML = html;
+
+  row.addEventListener('click', (e) => {
+    const pill = e.target.closest('.filter-pill');
+    if (!pill) return;
+    activeFilter = pill.dataset.cat;
+    row.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('active', p.dataset.cat === activeFilter));
+    updateToggleBadge();
+    renderArticles();
+  });
 }
 
-function filterByCategory(cat) {
-  activeCategory = cat;
-  document.querySelectorAll('.filter-pill').forEach(pill => {
-    pill.classList.toggle('active', pill.textContent.trim() === (cat === 'all' ? 'הכל' : cat));
-  });
-  renderArticles();
+function slugify(title) {
+  return encodeURIComponent(title.replace(/\s+/g, '-'));
 }
 
-// ===== RENDER ARTICLES =====
 function renderArticles() {
   const grid = document.getElementById('articlesGrid');
-  const loading = document.getElementById('loadingState');
-  const empty = document.getElementById('emptyState');
-
-  loading.style.display = 'none';
-
-  const filtered = activeCategory === 'all'
-    ? ARTICLES
-    : ARTICLES.filter(a => a.category === activeCategory);
+  const noResults = document.getElementById('noResults');
+  const filtered = activeFilter === 'all' ? articles : articles.filter(a => a.category === activeFilter);
 
   if (filtered.length === 0) {
-    grid.style.display = 'none';
-    empty.style.display = 'block';
+    grid.innerHTML = '';
+    noResults.style.display = 'block';
     return;
   }
 
-  empty.style.display = 'none';
-  grid.style.display = 'grid';
-
-  grid.innerHTML = filtered.map(article => {
-    const imgHTML = article.image
-      ? `<div class="article-img img-loading" data-bg="${article.image}">${article.category ? `<span class="article-category-tag">${article.category}</span>` : ''}</div>`
-      : `<div class="article-img-placeholder">${article.category ? `<span class="article-category-tag" style="position:absolute;top:12px;right:12px;">${article.category}</span>` : ''}📝</div>`;
-
-    const linkHTML = article.link
-      ? `<a href="${article.link}" target="_blank" rel="noopener" class="article-link">קראו עוד</a>`
-      : '';
-
+  noResults.style.display = 'none';
+  grid.innerHTML = filtered.map(a => {
+    const hasContent = a.content && a.content.trim();
+    const href = hasContent ? `articles.html?article=${slugify(a.title)}` : (a.link || '#');
+    const target = hasContent ? '' : (a.link && a.link !== '#' ? 'target="_blank" rel="noopener"' : '');
     return `
-      <div class="article-card">
-        <div style="position:relative">${imgHTML}</div>
-        <div class="article-body">
-          <div class="article-title">${article.title}</div>
-          ${article.summary ? `<div class="article-summary">${article.summary}</div>` : ''}
-          <div class="article-meta">
-            ${article.date ? `<span class="article-date">📅 ${formatHebrewDate(article.date)}</span>` : '<span></span>'}
-          </div>
-          ${linkHTML}
+    <a class="article-card" href="${href}" ${target}>
+      <img class="article-img" src="${a.image || ''}" alt="${a.title}" onerror="this.style.display='none'">
+      <div class="article-body">
+        ${a.category ? `<span class="article-category">${a.category}</span>` : ''}
+        <div class="article-title">${a.title}</div>
+        <div class="article-summary">${a.summary || ''}</div>
+        <div class="article-date">${formatDate(a.date)}</div>
+      </div>
+    </a>
+  `;}).join('');
+}
+
+function showArticleDetail(article) {
+  const listView = document.getElementById('listView');
+  const detailView = document.getElementById('detailView');
+  const filtersToggle = document.getElementById('filtersToggle');
+  const filtersRow = document.getElementById('filtersRow');
+
+  listView.style.display = 'none';
+  filtersToggle.style.display = 'none';
+  filtersRow.style.display = 'none';
+  detailView.style.display = 'block';
+
+  const contentHtml = formatContent(article.content || '');
+  const hasLink = article.link && article.link !== '#';
+
+  detailView.innerHTML = `
+    <a class="article-detail-back" href="articles.html">→ חזרה למאמרים</a>
+    <div class="article-detail">
+      ${article.image ? `<img class="article-detail-hero" src="${article.image}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
+      <div class="article-detail-body">
+        <div class="article-detail-meta">
+          ${article.category ? `<span class="article-detail-category">${article.category}</span>` : ''}
+          <span class="article-detail-date">${formatDate(article.date)}</span>
+        </div>
+        <h1 class="article-detail-title">${article.title}</h1>
+        <div class="article-detail-summary">${article.summary || ''}</div>
+        <div class="article-detail-content">${contentHtml}</div>
+        ${hasLink ? `<a class="article-detail-link" href="${article.link}" target="_blank" rel="noopener">קראו עוד ←</a>` : ''}
+        <div class="article-detail-share">
+          <a class="share-btn" href="https://wa.me/?text=${encodeURIComponent(article.title + ' ' + window.location.href)}" target="_blank">📱 WhatsApp</a>
+          <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='הועתק!'">📋 העתקת קישור</button>
         </div>
       </div>
-    `;
-  }).join('');
+    </div>
+  `;
 
-  // Lazy load images
-  grid.querySelectorAll('.article-img[data-bg]').forEach(el => {
-    imgObserver.observe(el);
-  });
+  window.scrollTo({ top: 0 });
 }
 
-// ===== IMAGE LAZY LOADING =====
-const imgObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const el = entry.target;
-      const url = el.dataset.bg;
-      if (url) {
-        const img = new Image();
-        img.onload = () => { el.style.backgroundImage = `url(${url})`; el.classList.remove('img-loading'); };
-        img.onerror = () => { el.classList.remove('img-loading'); };
-        img.src = url;
-      }
-      imgObserver.unobserve(el);
+function formatContent(text) {
+  if (!text) return '';
+  // Convert markdown-like formatting
+  let html = text
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  return html;
+}
+
+function checkRoute() {
+  const params = new URLSearchParams(window.location.search);
+  const articleSlug = params.get('article');
+  if (articleSlug && articles.length > 0) {
+    const decoded = decodeURIComponent(articleSlug).replace(/-/g, ' ');
+    const article = articles.find(a => a.title === decoded || slugify(a.title) === articleSlug);
+    if (article) {
+      showArticleDetail(article);
+      return true;
     }
-  });
-}, { rootMargin: '200px' });
-
-// ===== SUGGESTION MODAL =====
-function openSuggestionModal(type) {
-  document.getElementById('suggestionModal').classList.add('active');
-  document.getElementById('suggestionFormContainer').classList.remove('hidden');
-  document.getElementById('suggestionSuccess').classList.add('hidden');
-  document.getElementById('suggestionForm').reset();
-  switchFormType(type || 'feedback');
+  }
+  return false;
 }
 
-function switchFormType(type) {
-  document.querySelectorAll('.form-type-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.form-type-btn[data-type="${type}"]`).classList.add('active');
-  document.getElementById('formTypeInput').value = type;
-
-  document.querySelectorAll('.form-fields').forEach(f => f.classList.add('hidden'));
-  const subjects = { event: 'אירוע חדש', feedback: 'פידבק' };
-  const subtitles = { event: 'יש לכם אירוע שווה? ספרו לנו!', feedback: 'נשמח לשמוע מה אתם חושבים' };
-  document.getElementById('modalSubtitle').textContent = subtitles[type];
-  document.getElementById('formSubject').value = `${subjects[type]} - fun.israelis.nl`;
-
-  if (type === 'event') document.getElementById('fieldsEvent').classList.remove('hidden');
-  else if (type === 'feedback') document.getElementById('fieldsFeedback').classList.remove('hidden');
+function toggleFiltersCollapse() {
+  document.getElementById('filtersToggle').classList.toggle('open');
+  document.getElementById('filtersRow').classList.toggle('open');
 }
 
-function closeSuggestionModal() {
-  document.getElementById('suggestionModal').classList.remove('active');
+function updateToggleBadge() {
+  const badge = document.getElementById('filtersActiveCount');
+  const toggle = document.getElementById('filtersToggle');
+  if (activeFilter !== 'all') {
+    badge.textContent = activeFilter;
+    toggle.classList.add('has-active');
+  } else {
+    badge.textContent = '';
+    toggle.classList.remove('has-active');
+  }
 }
 
-document.getElementById('suggestionModal').addEventListener('click', function(e) {
-  if (e.target === this) closeSuggestionModal();
+// Close filters on outside click
+document.addEventListener('click', (e) => {
+  const toggle = document.getElementById('filtersToggle');
+  const row = document.getElementById('filtersRow');
+  if (row.classList.contains('open') && !row.contains(e.target) && !toggle.contains(e.target)) {
+    row.classList.remove('open');
+    toggle.classList.remove('open');
+  }
 });
 
-document.getElementById('suggestionForm').addEventListener('submit', async function(e) {
+// Contact modal
+function openContactModal() {
+  document.getElementById('contactOverlay').classList.add('active');
+}
+function closeContactModal() {
+  document.getElementById('contactOverlay').classList.remove('active');
+}
+
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const btn = document.getElementById('submitBtn');
+  const form = e.target;
+  const btn = form.querySelector('.form-submit');
   btn.disabled = true;
   btn.textContent = 'שולח...';
-
   try {
-    const resp = await fetch(this.action, {
-      method: 'POST',
-      body: new FormData(this),
-      headers: { 'Accept': 'application/json' }
-    });
-    if (resp.ok) {
-      document.getElementById('suggestionFormContainer').classList.add('hidden');
-      document.getElementById('suggestionSuccess').classList.remove('hidden');
-      setTimeout(closeSuggestionModal, 3000);
-    } else {
-      throw new Error('Form submission failed');
-    }
+    const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
+    if (res.ok) {
+      form.style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    } else { throw new Error(); }
   } catch (err) {
     alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
     btn.disabled = false;
@@ -842,7 +998,49 @@ document.getElementById('suggestionForm').addEventListener('submit', async funct
   }
 });
 
-// ===== INIT =====
+// Auth callbacks
+function onUserLoggedIn() {
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.add('hidden');
+}
+function onUserLoggedOut() {
+  const banner = document.getElementById('signupBanner');
+  if (banner) banner.classList.remove('hidden');
+}
+
+// Load articles
+async function loadArticles() {
+  try {
+    const cacheBust = Math.floor(Date.now() / 60000);
+    const resp = await fetch(ARTICLES_SHEET_URL + '&_cb=' + cacheBust);
+    if (!resp.ok) throw new Error('Failed to fetch articles');
+    const text = await resp.text();
+    articles = parseCSV(text).filter(a => a.title);
+    // Sort by date descending
+    articles.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  } catch (err) {
+    console.error('Error loading articles:', err);
+    articles = [];
+  }
+
+  document.getElementById('loading').style.display = 'none';
+  if (!checkRoute()) {
+    buildFilters();
+    renderArticles();
+  }
+}
+
+// Handle browser back/forward
+window.addEventListener('popstate', () => {
+  if (!checkRoute()) {
+    document.getElementById('listView').style.display = '';
+    document.getElementById('detailView').style.display = 'none';
+    document.getElementById('filtersToggle').style.display = '';
+    document.getElementById('filtersRow').style.display = '';
+    renderArticles();
+  }
+});
+
 loadArticles();
 </script>
 </body>
