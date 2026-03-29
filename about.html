@@ -6,18 +6,12 @@
 <title>קצת עלינו - fun.israelis.nl</title>
 <meta name="description" content="פעילויות איכות למשפחות בהולנד - קצת עלינו">
 <meta property="og:title" content="קצת עלינו - fun.israelis.nl">
-<meta property="og:description" content="אירועים ופעילויות נבחרות בהולנד לכל המשפחה">
+<meta property="og:description" content="פעילויות איכות למשפחות בהולנד - קצת עלינו">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fun.israelis.nl/about.html">
 <meta property="og:site_name" content="fun.israelis.nl">
 <meta property="og:locale" content="he_IL">
-<meta property="og:image" content="https://fun.israelis.nl/images/og3.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="קצת עלינו - fun.israelis.nl">
-<meta name="twitter:description" content="אירועים ופעילויות נבחרות בהולנד לכל המשפחה">
-<meta name="twitter:image" content="https://fun.israelis.nl/images/og3.png">
+<meta property="og:image" content="https://fun.israelis.nl/images/og2.png">
 <link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="images/az.png">
@@ -109,60 +103,15 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 
 .hero {
   background: var(--gradient);
-  padding: 20px 20px 12px;
+  padding: 40px 20px 32px;
   text-align: center;
   color: white;
   position: relative;
-  overflow: hidden;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08) 0%, transparent 50%),
-              radial-gradient(circle at 70% 60%, rgba(46,204,64,0.06) 0%, transparent 40%);
-  pointer-events: none;
-}
-
-.hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
-
-.hero-nav-tabs-unified {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 16px 0;
-  max-width: 1000px;
-  margin: 0 auto;
-  flex-wrap: wrap;
-  position: relative;
-  z-index: 2;
-}
-.hero-tab {
-  padding: 7px 16px;
-  border-radius: 100px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.85);
-  text-decoration: none;
-  white-space: nowrap;
-  border: 1.5px solid rgba(255,255,255,0.3);
-  background: rgba(255,255,255,0.1);
-  transition: all 0.2s;
-  cursor: pointer;
-}
-.hero-tab:hover { background: rgba(255,255,255,0.25); color: white; border-color: rgba(255,255,255,0.5); }
-.hero-tab.active { background: white; color: var(--purple); border-color: white; font-weight: 700; }
-
-@media (max-width: 700px) {
-  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
-  .hero-tab { font-size: 12px; padding: 5px 10px; }
-}
-
-.hero-title { font-family: 'Rubik', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 6px; text-shadow: 2px 3px 8px rgba(0,0,0,0.15); line-height: 1.2; }
-.hero-subtitle { font-size: 16px; opacity: 0.9; }
+.hero-content { max-width: 700px; margin: 0 auto; }
+.hero-title { font-family: 'Rubik', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+.hero-subtitle { font-size: 15px; opacity: 0.9; }
 
 .hero-back {
   display: inline-block;
@@ -251,6 +200,84 @@ footer {
   font-size: 13px;
 }
 footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
+
+/* Contact modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text-lighter);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.modal-close:hover { background: var(--bg); }
+.modal-title { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.modal-subtitle { font-size: 13px; color: var(--text-light); margin-bottom: 18px; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  direction: rtl;
+}
+.form-input:focus, .form-textarea:focus { outline: none; border-color: var(--purple); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(155,48,255,0.25);
+  margin-top: 6px;
+}
+.form-submit:hover { transform: translateY(-1px); }
+.form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.form-success { text-align: center; padding: 30px 10px; }
+.form-success-emoji { font-size: 48px; margin-bottom: 10px; }
+.form-success-text { font-size: 16px; font-weight: 600; color: var(--text); }
 
 @media (max-width: 700px) {
   .about-section { grid-template-columns: 1fr; padding: 24px; gap: 20px; }
@@ -389,8 +416,8 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 
 /* Desktop: larger text for readability */
 @media (min-width: 701px) {
-  .hero-title { font-size: 36px; }
-  .hero-subtitle { font-size: 18px; }
+  .hero-title { font-size: 32px; }
+  .hero-subtitle { font-size: 17px; }
   .nav-logo { font-size: 17px; }
   .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
   .about-block-title { font-size: 18px; }
@@ -404,17 +431,43 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 
 <div class="hero">
   <div class="hero-content">
-    <h1 class="hero-title">אז מה עושים היום?</h1>
-    <p class="hero-subtitle">פעילויות איכות עם המשפחה בהולנד בסופ״ש</p>
+    <div class="hero-nav-tabs">
+      <a href="index.html" class="hero-nav-tab">אירועים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="places.html" class="hero-nav-tab">מקומות</a>
+      <div class="hero-nav-divider"></div>
+      <a href="holidays.html" class="hero-nav-tab">מתי חופש?</a>
+      <div class="hero-nav-divider"></div>
+      <a href="articles.html" class="hero-nav-tab">מאמרים</a>
+      <div class="hero-nav-divider"></div>
+      <a href="about.html" class="hero-nav-tab active">עלינו</a>
+      <div class="hero-nav-divider"></div>
+      <button class="hero-auth-btn" id="authBtn" onclick="signInWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+        התחברו
+      </button>
+      <a href="index.html" class="hero-profile-btn" id="profileBtn">
+        <div class="hero-profile-avatar" id="profileAvatar">?</div>
+        <span id="profileName">הפרופיל</span>
+      </a>
+    </div>
+    <h1 class="hero-title">קצת עלינו</h1>
+    <p class="hero-subtitle">מי אנחנו ומה תמצאו כאן</p>
   </div>
-  <div class="hero-nav-tabs-unified">
-    <a href="index.html" class="hero-tab">🏠 עמוד הבית</a>
-    <a href="places.html" class="hero-tab">📍 מקומות מומלצים</a>
-    <a href="holidays.html" class="hero-tab">📅 לוח חופשות</a>
-    <a href="weather.html" class="hero-tab">🌤️ תחזית מזג אוויר</a>
-    <a href="articles.html" class="hero-tab">📝 כתבות</a>
-    <a href="about.html" class="hero-tab active">🤝 נעים להכיר</a>
-    <a href="#" class="hero-tab" onclick="event.preventDefault(); openSuggestionModal('feedback')">💬 צרו קשר</a>
+</div>
+
+<!-- STICKY NAV -->
+<div class="sticky-nav">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 16px 0;max-width:1400px;margin:0 auto;">
+    <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
+  </div>
+  <div class="nav-tabs-row">
+    <a href="index.html" class="nav-tab-pill">אירועים</a>
+    <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
+    <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
+    <a href="articles.html" class="nav-tab-pill">📝 מאמרים</a>
+    <a href="about.html" class="nav-tab-pill active">🧡 עלינו</a>
+    <button class="nav-tab-pill" onclick="openContactModal()">💬 צרו קשר</button>
   </div>
 </div>
 
@@ -450,7 +503,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
       <div class="about-block-icon">💡</div>
       <div class="about-block-title">יש לכם המלצה?</div>
       <div class="about-text">
-        יודעים על אירוע שווה שלא מופיע כאן? <a href="index.html" style="cursor:pointer;color:var(--purple);font-weight:600;text-decoration:none;">שלחו לנו המלצה</a> ונוסיף אותו!
+        יודעים על אירוע שווה שלא מופיע כאן? <a onclick="openContactModal()" style="cursor:pointer;color:var(--purple);font-weight:600;text-decoration:none;">שלחו לנו המלצה</a> ונוסיף אותו!
         <br>ובינתיים, בקרו ב<a href="places.html" style="color:var(--purple);font-weight:600;text-decoration:none;">מקומות שאנחנו ממליצים</a> 📍
       </div>
     </div>
@@ -476,6 +529,35 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
 </footer>
 
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactOverlay" onclick="if(event.target===this)closeContactModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeContactModal()">✕</button>
+    <div class="modal-title">💬 צרו קשר</div>
+    <div class="modal-subtitle">שלחו לנו הודעה ונחזור אליכם</div>
+    <form id="contactForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
+      <input type="hidden" name="_type" value="feedback">
+      <div class="form-group">
+        <label class="form-label">הודעה *</label>
+        <textarea class="form-textarea" name="message" required placeholder="מה תרצו לספר לנו?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">שם (אופציונלי)</label>
+        <input class="form-input" type="text" name="name" placeholder="השם שלכם">
+      </div>
+      <div class="form-group">
+        <label class="form-label">אימייל (אופציונלי)</label>
+        <input class="form-input" type="email" name="email" placeholder="your@email.com" dir="ltr">
+      </div>
+      <button type="submit" class="form-submit">שליחה 🚀</button>
+    </form>
+    <div class="form-success" id="contactSuccess" style="display:none">
+      <div class="form-success-emoji">🎉</div>
+      <div class="form-success-text">תודה רבה! קיבלנו את ההודעה שלכם.</div>
+    </div>
+  </div>
+</div>
+
 <!-- FACEBOOK BROWSER MODAL -->
 <div class="fb-browser-modal-overlay" id="fbBrowserModal" onclick="if(event.target===this)closeFacebookBrowserModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:20px;">
   <div style="background:white;border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
@@ -490,10 +572,37 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 <!-- Firebase Auth -->
 <script src="auth.js"></script>
 <script>
-function onUserLoggedIn(needsProfile, isFreshLogin) {
+// Contact modal
+function openContactModal() {
+  document.getElementById('contactOverlay').classList.add('active');
+}
+function closeContactModal() {
+  document.getElementById('contactOverlay').classList.remove('active');
+}
+
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('.form-submit');
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+  try {
+    const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
+    if (res.ok) {
+      form.style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    } else { throw new Error(); }
+  } catch (err) {
+    alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
+    btn.disabled = false;
+    btn.textContent = 'שליחה 🚀';
+  }
+});
+
+function onUserLoggedIn() {
   const cta = document.getElementById('signupCta');
   if (cta) cta.classList.add('hidden');
-  if (isFreshLogin) window.location.href = 'index.html';
+  window.location.href = 'index.html';
 }
 function onUserLoggedOut() {
   const cta = document.getElementById('signupCta');

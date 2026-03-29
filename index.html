@@ -6,18 +6,18 @@
 <title>אז מה עושים היום? -fun.israelis.nl</title>
 <meta name="description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
 <meta property="og:title" content="אז מה עושים היום">
-<meta property="og:description" content="אירועים ופעילויות נבחרות בהולנד לכל המשפחה – כל סופ״ש מתעדכן">
+<meta property="og:description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fun.israelis.nl">
 <meta property="og:site_name" content="fun.israelis.nl">
 <meta property="og:locale" content="he_IL">
-<meta property="og:image" content="https://fun.israelis.nl/images/og3.png">
+<meta property="og:image" content="https://fun.israelis.nl/images/og2.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="אז מה עושים היום">
-<meta name="twitter:description" content="אירועים ופעילויות נבחרות בהולנד לכל המשפחה – כל סופ״ש מתעדכן">
-<meta name="twitter:image" content="https://fun.israelis.nl/images/og3.png">
+<meta name="twitter:description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
+<meta name="twitter:image" content="https://fun.israelis.nl/images/og2.png">
 <link rel="icon" type="image/svg+xml" href="images/Button-Purple.svg">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="images/az.png">
@@ -71,69 +71,10 @@ body {
 .hero {
   background: var(--gradient);
   color: white;
-  padding: 20px 20px 12px;
+  padding: 10px 20px 8px;
   text-align: center;
   position: relative;
   overflow: hidden;
-}
-
-.hero-auth-corner {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;
-}
-
-.auth-btn-hero {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border: 2px solid rgba(255,255,255,0.5);
-  border-radius: 100px;
-  background: rgba(255,255,255,0.15);
-  color: white;
-  font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  backdrop-filter: blur(8px);
-}
-.auth-btn-hero:hover { background: rgba(255,255,255,0.3); border-color: white; }
-.auth-btn-hero img { width: 18px; height: 18px; }
-
-.profile-btn-hero {
-  display: none;
-  border: 2px solid rgba(255,255,255,0.5);
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  cursor: pointer;
-  transition: all 0.2s;
-  padding: 2px;
-  backdrop-filter: blur(8px);
-}
-.profile-btn-hero:hover { border-color: white; background: rgba(255,255,255,0.3); }
-
-.profile-avatar-hero {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--gradient);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  background-size: cover;
-  background-position: center;
-}
-
-@media (max-width: 700px) {
-  .auth-btn-hero .auth-btn-hero-text { display: none; }
-  .auth-btn-hero { padding: 6px 10px; }
 }
 
 .hero::before {
@@ -146,7 +87,7 @@ body {
   pointer-events: none;
 }
 
-.hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; padding-top: 18px; }
+.hero-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
 
 .hero-badge {
   display: inline-flex;
@@ -159,29 +100,25 @@ body {
   font-family: 'Rubik', sans-serif;
   font-weight: 700;
   font-size: 13px;
+  transform: rotate(-2deg);
   box-shadow: 0 3px 12px rgba(46,204,64,0.3);
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  z-index: 3;
+  margin-bottom: 14px;
 }
-
-.hero-content { padding-top: 32px; }
 
 .hero-title {
   font-family: 'Rubik', sans-serif;
-  font-size: 32px;
-  font-weight: 800;
+  font-size: 44px;
+  font-weight: 900;
   letter-spacing: -0.5px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   text-shadow: 2px 3px 8px rgba(0,0,0,0.15);
   line-height: 1.2;
 }
 
 .hero-subtitle {
-  font-size: 16px;
+  font-size: 18px;
   opacity: 0.9;
+  margin-bottom: 14px;
 }
 
 .hero-desc {
@@ -191,38 +128,6 @@ body {
   font-weight: 300;
   max-width: 460px;
   margin: 0 auto;
-}
-
-.hero-nav-tabs-unified {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 16px 0;
-  max-width: 1000px;
-  margin: 0 auto;
-  flex-wrap: wrap;
-}
-
-.hero-tab {
-  padding: 7px 16px;
-  border-radius: 100px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.85);
-  text-decoration: none;
-  white-space: nowrap;
-  border: 1.5px solid rgba(255,255,255,0.3);
-  background: rgba(255,255,255,0.1);
-  transition: all 0.2s;
-  cursor: pointer;
-}
-.hero-tab:hover { background: rgba(255,255,255,0.25); color: white; border-color: rgba(255,255,255,0.5); }
-.hero-tab.active { background: white; color: var(--purple); border-color: white; font-weight: 700; }
-
-@media (max-width: 700px) {
-  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
-  .hero-tab { font-size: 12px; padding: 5px 10px; }
 }
 
 /* ===== STICKY NAV ===== */
@@ -238,11 +143,10 @@ body {
 .nav-bar-outer {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 8px 16px 0;
-  gap: 6px;
+  padding: 8px 16px;
+  gap: 10px;
 }
 
 .nav-bar {
@@ -251,10 +155,82 @@ body {
   gap: 10px;
   flex: 1;
   min-width: 0;
-  flex-wrap: wrap;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
+.nav-bar::-webkit-scrollbar { display: none; }
 
+.nav-menu-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.nav-menu-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--text-light);
+}
+
+.nav-menu-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+.nav-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  border: 1px solid var(--border);
+  min-width: 180px;
+  z-index: 200;
+  overflow: hidden;
+}
+
+.nav-menu.open { display: block; }
+
+.nav-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.nav-menu-item:hover { background: var(--bg); }
+.nav-menu-item:not(:last-child) { border-bottom: 1px solid var(--border); }
+
+.nav-logo {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 
 .liked-toggle {
   display: flex;
@@ -354,6 +330,33 @@ body {
   flex-shrink: 0;
 }
 
+.weekend-active-btn {
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: var(--gradient);
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s;
+  font-family: 'Heebo', sans-serif;
+}
+
+.weekend-active-btn:hover { opacity: 0.9; }
+.weekend-active-btn .wk-dates { font-size: 13px; font-weight: 700; line-height: 1; margin: 0; }
+.weekend-active-btn .wk-count {
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.25);
+  color: white;
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+.weekend-active-btn .wk-arrow { font-size: 10px; opacity: 0.8; transition: transform 0.2s; }
 .weekend-picker.open .wk-arrow { transform: rotate(180deg); }
 
 .weekend-dropdown {
@@ -442,11 +445,15 @@ body {
 .filters-row {
   display: flex;
   gap: 5px;
-  width: 100%;
-  flex-wrap: wrap;
-  padding: 4px 16px 6px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0;
   justify-content: flex-start;
 }
+
+.filters-row::-webkit-scrollbar { display: none; }
 
 .filter-pill {
   white-space: nowrap;
@@ -460,6 +467,7 @@ body {
   color: var(--text-light);
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .filter-pill:hover:not(.disabled) { border-color: var(--purple); color: var(--purple); }
@@ -468,249 +476,68 @@ body {
 .liked-filter-count { font-size: 10px; font-weight: 700; }
 .liked-filter-count:empty { display: none; }
 
-/* Filter toggle button (mobile only) */
-.filter-toggle-btn {
+/* Mobile collapsible filters */
+.filters-toggle {
   display: none;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 100px;
   border: 1.5px solid var(--border);
   background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-light);
   cursor: pointer;
-  transition: all 0.2s;
+  white-space: nowrap;
   flex-shrink: 0;
-  padding: 0;
+  transition: all 0.2s;
 }
-.filter-toggle-btn:hover { border-color: var(--purple); color: var(--purple); }
-.filter-toggle-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
-.filter-toggle-icon { font-size: 14px; line-height: 1; }
-.filter-toggle-badge {
-  display: none;
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  min-width: 14px;
-  height: 14px;
-  border-radius: 100px;
+
+.filters-toggle:hover { border-color: var(--purple); color: var(--purple); }
+.filters-toggle.has-active { border-color: var(--purple); color: var(--purple); }
+
+.filters-toggle .toggle-arrow {
+  font-size: 8px;
+  transition: transform 0.2s;
+}
+
+.filters-toggle.open .toggle-arrow { transform: rotate(180deg); }
+
+.filters-active-count {
   background: var(--purple);
   color: white;
   font-size: 9px;
   font-weight: 700;
-  font-family: 'Heebo', sans-serif;
-  line-height: 14px;
+  padding: 1px 6px;
+  border-radius: 100px;
+  min-width: 16px;
   text-align: center;
-  padding: 0 3px;
-}
-.filter-toggle-badge.has-filters { display: block; }
-
-/* ===== FILTER TOGGLE STRIP ===== */
-.filter-strip-toggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 10px 16px;
-  border: none;
-  border-top: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(155,48,255,0.04) 0%, white 100%);
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: 'Heebo', sans-serif;
-}
-.filter-strip-toggle:active { background: rgba(155,48,255,0.06); }
-
-.filter-strip-label {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
 }
 
-.filter-strip-arrow {
-  font-size: 12px;
-  color: var(--purple);
-  transition: transform 0.3s;
-  font-weight: 700;
-}
-.filter-strip-toggle.open .filter-strip-arrow { transform: rotate(180deg); }
-
-.filter-strip-summary {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--purple);
-  background: rgba(155,48,255,0.08);
-  padding: 2px 10px;
-  border-radius: 100px;
-}
-.filter-strip-summary:empty { display: none; }
+.filters-active-count:empty { display: none; }
 
 @media (max-width: 700px) {
-  .filter-strip-toggle { display: flex; }
-}
-
-/* ===== LOCATION & DRIVE/DURATION FILTERS ===== */
-.location-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 10px 20px;
-  border-top: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(155,48,255,0.02) 0%, white 100%);
-}
-
-.filter-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg);
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-
-.filter-group-icon {
-  font-size: 18px;
-  line-height: 1;
-}
-
-.filter-group-label {
-  font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  white-space: nowrap;
-}
-
-.location-select {
-  padding: 6px 14px;
-  border-radius: 100px;
-  border: 1.5px solid var(--border);
-  font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  background: white;
-  cursor: pointer;
-  direction: rtl;
-  transition: border-color 0.2s;
-}
-.location-select:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(155,48,255,0.1); }
-.location-select:hover { border-color: var(--purple-dark); }
-
-.location-detect-btn {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border);
-  background: white;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-.location-detect-btn:hover { border-color: var(--purple); background: rgba(155,48,255,0.05); transform: scale(1.1); }
-
-.filter-group-divider {
-  width: 1px;
-  height: 24px;
-  background: var(--border);
-  margin: 0 2px;
-}
-
-.drive-pills, .duration-pills { display: flex; gap: 4px; }
-.drive-pill, .duration-pill {
-  padding: 6px 12px;
-  border-radius: 100px;
-  border: 1.5px solid var(--border);
-  background: white;
-  font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-light);
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.drive-pill:hover { border-color: var(--blue); color: var(--blue); background: rgba(65,88,208,0.04); }
-.drive-pill.active { background: var(--blue); color: white; border-color: var(--blue); font-weight: 600; box-shadow: 0 2px 8px rgba(65,88,208,0.25); }
-.duration-pill:hover { border-color: #E08F00; color: #E08F00; background: rgba(249,168,37,0.04); }
-.duration-pill.active { background: #E08F00; color: white; border-color: #E08F00; font-weight: 600; box-shadow: 0 2px 8px rgba(249,168,37,0.25); }
-
-.event-meta-badges {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 4px;
-}
-.event-drive-badge {
-  font-family: 'Heebo', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--blue);
-  background: rgba(65,88,208,0.08);
-  padding: 2px 10px;
-  border-radius: 100px;
-}
-.event-duration-badge {
-  font-family: 'Heebo', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: #E08F00;
-  background: rgba(249,168,37,0.1);
-  padding: 2px 10px;
-  border-radius: 100px;
-}
-
-@media (max-width: 700px) {
-  .location-row {
-    gap: 12px;
-    padding: 14px 16px;
-    justify-content: center;
-    flex-direction: column;
-    transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
-    max-height: 600px;
-    opacity: 1;
-    overflow: hidden;
-  }
-  .location-row.collapsed {
-    max-height: 0;
-    opacity: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-top-color: transparent;
-  }
-  .filter-group {
-    padding: 10px 14px;
-    gap: 10px;
-    width: 100%;
+  .filters-toggle { display: flex; }
+  .filters-row {
+    display: none;
     flex-wrap: wrap;
-    justify-content: center;
-    border-radius: 14px;
+    overflow-x: visible;
+    width: 100%;
+    padding: 8px 0 0;
   }
-  .filter-group-icon { font-size: 22px; }
-  .filter-group-label { font-size: 14px; font-weight: 700; }
-  .drive-pills, .duration-pills { flex-wrap: wrap; justify-content: center; gap: 8px; width: 100%; }
-  .drive-pill, .duration-pill {
-    font-size: 16px;
-    padding: 12px 20px;
-    min-width: 56px;
-    text-align: center;
-    border-radius: 14px;
-    font-weight: 600;
-    border-width: 2px;
+  .filters-row.open {
+    display: flex;
   }
-  .location-select { font-size: 16px; padding: 10px 16px; border-radius: 14px; min-height: 44px; }
-  .location-detect-btn { width: 44px; height: 44px; font-size: 20px; }
-  .filter-group-divider { display: none; }
-  .filter-toggle-btn { display: none; }
+  .filters-row .filter-pill {
+    flex-shrink: 0;
+  }
+  .nav-bar {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    overflow: visible;
+  }
 }
 
 /* ===== CONTENT ===== */
@@ -870,10 +697,9 @@ body {
 .event-body {
   padding: 16px 20px;
   flex: 1;
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
-  gap: 4px;
 }
 
 .event-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
@@ -904,17 +730,16 @@ body {
   color: var(--text-light);
   line-height: 1.55;
   font-weight: 300;
-  margin-bottom: 4px;
+  flex: 1;
+  margin-bottom: 8px;
 }
 
 .event-footer {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-self: end;
-  border-top: 1px solid rgba(155,48,255,0.06);
-  padding-top: 10px;
-  margin-top: 4px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .event-details {
@@ -929,9 +754,10 @@ body {
 .event-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
   margin-top: 4px;
-  flex-wrap: wrap;
+  width: 100%;
+  flex-wrap: nowrap;
 }
 
 @media (max-width: 700px) {
@@ -939,7 +765,6 @@ body {
     justify-content: flex-end;
     padding: 12px 0 24px;
     margin: 8px 0;
-    width: 100%;
     border-top: 1px solid rgba(155,48,255,0.06);
     border-bottom: 1px solid rgba(155,48,255,0.06);
   }
@@ -947,13 +772,17 @@ body {
 
 @media (min-width: 701px) {
   .event-inner { position: relative; }
-  .event-body { padding-left: 0; }
-  .event-actions-icons { display: none; }
-  .event-actions-btns { width: 100%; justify-content: center; gap: 8px; }
-}
-
-@media (max-width: 700px) {
-  .event-actions-btns { display: none; }
+  .event-body { padding-left: 230px; }
+  .event-actions {
+    position: absolute;
+    top: 45%;
+    transform: translateY(-50%);
+    left: 20px;
+    right: auto;
+    width: auto;
+    margin: 0;
+    gap: 10px;
+  }
 }
 
 .action-icon {
@@ -1036,17 +865,16 @@ body {
 .btn-s {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 7px;
+  padding: 10px 20px;
   border-radius: 22px;
   font-family: 'Heebo', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   border: none;
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;
-  white-space: nowrap;
 }
 
 .btn-wa { background: linear-gradient(135deg, #25D366, #20BD5A); color: white; box-shadow: 0 2px 6px rgba(37,211,102,0.25); }
@@ -1057,51 +885,6 @@ body {
 .btn-nav:hover { background: #3367D6; }
 .btn-lnk { background: var(--gradient-soft); color: var(--purple); border: 1px solid rgba(155,48,255,0.15); }
 .btn-lnk:hover { border-color: var(--purple); }
-
-.like-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 22px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  border: 2px solid #ddd;
-  background: #f5f5f5;
-  cursor: pointer;
-  transition: all 0.25s;
-  color: #aaa;
-}
-.like-row .btn-like {
-  font-size: 16px;
-  line-height: 1;
-  filter: grayscale(1) opacity(0.4);
-  transition: all 0.25s;
-}
-.like-row:hover {
-  border-color: #f0a0b0;
-  background: #fff5f6;
-  color: #e74c7a;
-}
-.like-row:hover .btn-like {
-  filter: grayscale(0) opacity(0.8);
-}
-.like-row.liked {
-  background: #e74c7a;
-  border-color: #d4366a;
-  color: white;
-  box-shadow: 0 2px 8px rgba(231,76,122,0.3);
-}
-.like-row.liked .btn-like {
-  filter: grayscale(0) opacity(1);
-}
-.like-row.liked:hover {
-  background: #d4366a;
-  border-color: #c02e5e;
-}
-.like-row .like-count { font-size: 12px; pointer-events: none; }
-.like-row.liked .like-count { color: rgba(255,255,255,0.85); }
 
 /* ===== CALENDAR VIEW ===== */
 .view-panel { display: none; }
@@ -1250,94 +1033,6 @@ body {
   border-color: var(--purple);
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(155,48,255,0.25);
-}
-
-/* ===== ARTICLES PREVIEW ===== */
-.articles-preview-section {
-  margin-top: 24px;
-  background: white;
-  border-radius: var(--radius);
-  padding: 22px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-}
-.articles-preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-.articles-preview-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-}
-.articles-preview-link {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--purple);
-  text-decoration: none;
-}
-.articles-preview-link:hover { text-decoration: underline; }
-.articles-preview-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-}
-.article-preview-card {
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  border: 1px solid var(--border);
-  transition: transform 0.2s, box-shadow 0.2s;
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-.article-preview-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
-.article-preview-img {
-  width: 100%;
-  height: 140px;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--border);
-}
-.article-preview-img-placeholder {
-  width: 100%;
-  height: 140px;
-  background: var(--gradient-soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 36px;
-}
-.article-preview-body {
-  padding: 12px 14px 14px;
-}
-.article-preview-title {
-  font-family: 'Rubik', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 4px;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.article-preview-summary {
-  font-size: 13px;
-  color: var(--text-light);
-  line-height: 1.6;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .form-type-selector {
@@ -2208,21 +1903,21 @@ body {
   .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
   .auth-btn .auth-btn-text { display: none; }
   .auth-btn { padding: 7px 12px; }
-  .filters-row { gap: 6px; padding: 8px 12px 8px; }
-  .filter-pill { padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 12px; min-height: 38px; }
 }
 
 /* Desktop: larger text for readability */
 @media (min-width: 701px) {
-  .hero-title { font-size: 36px; }
-  .hero-subtitle { font-size: 18px; }
+  .hero-title { font-size: 48px; }
+  .hero-subtitle { font-size: 20px; }
   .hero-badge { font-size: 15px; }
-.nav-tab-pill { font-size: 17px; padding: 7px 18px; }
-  .event-title { font-size: 22px; }
-  .event-desc { font-size: 17px; }
-  .event-details { font-size: 15px; }
-  .etag { font-size: 14px; }
-  .filter-pill { font-size: 15px; }
+  .hero-desc { font-size: 17px; }
+  .nav-logo { font-size: 17px; }
+  .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
+  .event-title { font-size: 19px; }
+  .event-desc { font-size: 15px; }
+  .event-details { font-size: 13px; }
+  .etag { font-size: 12px; }
+  .filter-pill { font-size: 13px; }
   .results-count { font-size: 15px; }
   .results-weekend-label { font-size: 16px; }
   .loading-text { font-size: 16px; }
@@ -2238,28 +1933,10 @@ body {
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-auth-corner">
-    <button class="auth-btn-hero" id="authBtnHero" onclick="signInWithGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-      <span class="auth-btn-hero-text">התחברו</span>
-    </button>
-    <button class="profile-btn-hero" id="profileBtnHero" onclick="openProfileModal()">
-      <div class="profile-avatar-hero" id="profileAvatarHero">?</div>
-    </button>
-  </div>
   <div class="hero-content">
     <div class="hero-badge">כל סופ״ש! 🎉</div>
     <h1 class="hero-title">אז מה עושים היום?</h1>
     <p class="hero-subtitle">פעילויות איכות עם המשפחה בהולנד בסופ״ש</p>
-  </div>
-  <div class="hero-nav-tabs-unified">
-    <a href="index.html" class="hero-tab active">🏠 עמוד הבית</a>
-    <a href="places.html" class="hero-tab">📍 מקומות מומלצים</a>
-    <a href="holidays.html" class="hero-tab">📅 לוח חופשות</a>
-    <a href="weather.html" class="hero-tab">🌤️ תחזית מזג אוויר</a>
-    <a href="articles.html" class="hero-tab">📝 כתבות</a>
-    <a href="about.html" class="hero-tab">🤝 נעים להכיר</a>
-    <a href="#" class="hero-tab" onclick="event.preventDefault(); openSuggestionModal('feedback')">💬 צרו קשר</a>
   </div>
 </div>
 
@@ -2276,67 +1953,67 @@ body {
 <nav class="sticky-nav">
   <div class="nav-bar-outer">
     <div class="nav-bar">
+      <a href="index.html" class="nav-logo" style="text-decoration:none;cursor:pointer">🎪 אז מה עושים?</a>
+
       <div class="weekend-picker" id="weekendPicker">
-        <div class="weekend-dropdown" style="display:none;">
+        <button class="weekend-active-btn" id="weekendActiveBtn">
+          <span class="wk-dates" id="weekendActiveDates"></span>
+          <span class="wk-count" id="weekendActiveCount"></span>
+          <span class="wk-arrow">▼</span>
+        </button>
+        <div class="weekend-dropdown">
           <div class="weekend-chips" id="weekendChips"></div>
         </div>
       </div>
+
+      <button class="filters-toggle" id="filtersToggle" onclick="toggleFiltersCollapse()">
+        סינון <span class="filters-active-count" id="filtersActiveCount"></span> <span class="toggle-arrow">▼</span>
+      </button>
+      <div class="filters-row" id="filters">
+        <button class="filter-pill active" data-filter="all">הכל</button>
+        <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
+        <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
+        <button class="filter-pill" data-filter="free">🆓 חינם</button>
+        <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
+        <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
+        <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
+        <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
+        <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
+        <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
+        <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
+      </div>
+
+      <div class="view-toggles">
+        <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
+        <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
+      </div>
     </div>
 
-    <div class="filters-row" id="filters">
-      <button class="filter-pill active" data-filter="all">הכל</button>
-      <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
-      <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
-      <button class="filter-pill" data-filter="free">🆓 חינם</button>
-      <button class="filter-pill" data-filter="market">🛍️ שווקים</button>
-      <button class="filter-pill" data-filter="workshop">🎨 סדנאות</button>
-      <button class="filter-pill" data-filter="outdoor">🌳 בחוץ</button>
-      <button class="filter-pill" data-filter="theater">🎭 הצגות</button>
-      <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
-      <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
-      <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
-    </div>
-    <button class="filter-strip-toggle open" id="filterStripToggle" onclick="toggleFilterStrip()">
-      <span class="filter-strip-label">🚗 זמן נסיעה ופעילות</span>
-      <span class="filter-strip-summary" id="filterStripSummary"></span>
-      <span class="filter-strip-arrow">▼</span>
+    <!-- Auth / Profile -->
+    <button class="auth-btn" id="authBtn" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      <span class="auth-btn-text">התחברו</span>
     </button>
-    <div class="location-row" id="locationRow">
-      <div class="filter-group" title="בחרו עיר לחישוב מרחק נסיעה">
-        <span class="filter-group-icon">📍</span>
-        <span class="filter-group-label">אנחנו יוצאים מ</span>
-        <select class="location-select" id="citySelect" onchange="setUserCity(this.value)" title="בחרו את העיר שלכם"></select>
-        <button class="location-detect-btn" onclick="detectLocation()" title="זיהוי מיקום אוטומטי">📡</button>
-      </div>
-      <div class="filter-group-divider"></div>
-      <div class="filter-group" title="סננו לפי זמן נסיעה מהעיר שנבחרה">
-        <span class="filter-group-icon">🚗</span>
-        <span class="filter-group-label">נשמח לנסוע לא יותר מ</span>
-        <div class="drive-pills">
-          <button class="drive-pill" data-minutes="15" onclick="setMaxDrive(15)" title="עד 15 דקות נסיעה">15׳</button>
-          <button class="drive-pill" data-minutes="20" onclick="setMaxDrive(20)" title="עד 20 דקות נסיעה">20׳</button>
-          <button class="drive-pill" data-minutes="30" onclick="setMaxDrive(30)" title="עד 30 דקות נסיעה">30׳</button>
-          <button class="drive-pill" data-minutes="45" onclick="setMaxDrive(45)" title="עד 45 דקות נסיעה">45׳</button>
-          <button class="drive-pill" data-minutes="60" onclick="setMaxDrive(60)" title="עד שעה נסיעה">שעה</button>
-          <button class="drive-pill active" data-minutes="" onclick="setMaxDrive(null)" title="לא משנה כמה רחוק">זורמים</button>
-        </div>
-      </div>
-      <div class="filter-group-divider"></div>
-      <div class="filter-group" title="סננו לפי משך הפעילות">
-        <span class="filter-group-icon">⏱️</span>
-        <span class="filter-group-label">מינימום זמן שנדרש לבילוי כזה</span>
-        <div class="duration-pills">
-          <button class="duration-pill" data-hours="1" onclick="setMaxDuration(1)" title="פעילויות עד שעה">שעה</button>
-          <button class="duration-pill" data-hours="2" onclick="setMaxDuration(2)" title="פעילויות עד שעתיים">שעתיים</button>
-          <button class="duration-pill" data-hours="3" onclick="setMaxDuration(3)" title="פעילויות עד 3 שעות">שלוש</button>
-          <button class="duration-pill" data-hours="4" onclick="setMaxDuration(4)" title="פעילויות עד חצי יום">חצי יום</button>
-        </div>
+    <button class="profile-btn" id="profileBtn" onclick="openProfileModal()">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+      <span id="profileName">הפרופיל שלי</span>
+    </button>
+
+    <!-- Hamburger (mobile - shows tabs + contact) -->
+    <div class="nav-menu-wrapper">
+      <button class="nav-menu-btn" id="menuBtn" onclick="document.getElementById('navMenu').classList.toggle('open')">☰</button>
+      <div class="nav-menu" id="navMenu">
+        <button class="nav-menu-item" onclick="document.getElementById('navMenu').classList.remove('open'); openSuggestionModal('feedback')">💬 צרו קשר</button>
+        <button class="nav-menu-item" id="authBtnMobile" onclick="document.getElementById('navMenu').classList.remove('open'); signInWithGoogle()">🔑 התחברו עם Google</button>
       </div>
     </div>
-    <div class="view-toggles">
-      <button class="view-btn active" data-view="calendar"><span class="view-icon">📋</span> רשימה</button>
-      <button class="view-btn" data-view="map"><span class="view-icon">🗺️</span> מפה</button>
-    </div>
+  </div>
+  <div class="nav-tabs-row">
+    <a href="index.html" class="nav-tab-pill active">אירועים</a>
+    <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
+    <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
+    <a href="articles.html" class="nav-tab-pill">📝 מאמרים</a>
+    <a href="about.html" class="nav-tab-pill">🧡 עלינו</a>
   </div>
 </nav>
 
@@ -2376,18 +2053,11 @@ body {
       <button class="request-option" onclick="openSuggestionModal('event')">🎪 הוסיפו אירוע</button>
       <button class="request-option" onclick="openSuggestionModal('feedback')">💭 פידבק</button>
       <a href="places.html" class="request-option" style="text-decoration:none">📍 מקומות מומלצים</a>
-      <a href="holidays.html" class="request-option" style="text-decoration:none">📅 לוח חופשות</a>
+      <a href="holidays.html" class="request-option" style="text-decoration:none">📅 מתי חופש?</a>
     </div>
   </div>
 
-  <!-- ARTICLES PREVIEW -->
-  <div class="articles-preview-section">
-    <div class="articles-preview-header">
-      <span class="articles-preview-title">📝 כתבות ומאמרים</span>
-      <a href="articles.html" class="articles-preview-link">לכל הכתבות &larr;</a>
-    </div>
-    <div class="articles-preview-grid" id="articlesPreview"></div>
-  </div>
+
 
     <div class="about-block">
       <div class="about-block-icon">🔍</div>
@@ -2444,7 +2114,7 @@ body {
         <div class="form-fields" id="fieldsEvent">
           <div class="form-group">
             <label class="form-label">שם האירוע *</label>
-            <input class="form-input" type="text" name="event_name" required placeholder="למשל: פסטיבל האור באיינדהובן">
+            <input class="form-input" type="text" name="event_name" placeholder="למשל: פסטיבל האור באיינדהובן">
           </div>
           <div class="form-group">
             <label class="form-label">מתי?</label>
@@ -2467,7 +2137,7 @@ body {
         <div class="form-fields hidden" id="fieldsFeedback">
           <div class="form-group">
             <label class="form-label">מה תרצו לשתף? *</label>
-            <textarea class="form-textarea" name="feedback_text" required placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea>
+            <textarea class="form-textarea" name="feedback_text" placeholder="רעיונות, הצעות לשיפור, באגים, או כל דבר אחר"></textarea>
           </div>
         </div>
         <!-- Common fields -->
@@ -2526,207 +2196,6 @@ let activeWeekend = null;
 let activeView = 'calendar';
 let map = null;
 let markers = [];
-let userLat = null;
-let userLng = null;
-let maxDriveMinutes = null;
-let maxDurationHours = null;
-
-// ===== DUTCH CITIES =====
-const DUTCH_CITIES = [
-  { name: 'אמסטרדם', en: 'Amsterdam', lat: 52.3676, lng: 4.9041 },
-  { name: 'רוטרדם', en: 'Rotterdam', lat: 51.9225, lng: 4.4792 },
-  { name: 'דן האג', en: 'Den Haag', lat: 52.0705, lng: 4.3007 },
-  { name: 'אוטרכט', en: 'Utrecht', lat: 52.0907, lng: 5.1214 },
-  { name: 'איינדהובן', en: 'Eindhoven', lat: 51.4416, lng: 5.4697 },
-  { name: 'חרונינגן', en: 'Groningen', lat: 53.2194, lng: 6.5665 },
-  { name: 'אלמרה', en: 'Almere', lat: 52.3508, lng: 5.2647 },
-  { name: 'ארנהם', en: 'Arnhem', lat: 51.9851, lng: 5.8987 },
-  { name: 'מאסטריכט', en: 'Maastricht', lat: 50.8514, lng: 5.6910 },
-  { name: 'ליידן', en: 'Leiden', lat: 52.1601, lng: 4.4970 },
-  { name: 'הארלם', en: 'Haarlem', lat: 52.3874, lng: 4.6462 },
-  { name: 'אמרספורט', en: 'Amersfoort', lat: 52.1561, lng: 5.3878 },
-  { name: 'אמסטלפיין', en: 'Amstelveen', lat: 52.3012, lng: 4.8637 },
-];
-
-function findCityByProfile(profileCity) {
-  if (!profileCity) return null;
-  return DUTCH_CITIES.find(c => c.en === profileCity || c.name === profileCity);
-}
-
-// ===== DISTANCE & DURATION UTILITIES =====
-function haversineKm(lat1, lng1, lat2, lng2) {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat / 2) ** 2 +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLng / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-function estimateDriveMinutes(km) {
-  return Math.round((km * 1.35) / 70 * 60);
-}
-
-function recomputeEventDistances() {
-  events.forEach(e => {
-    if (userLat != null && userLng != null && e.lat && e.lng) {
-      const km = haversineKm(userLat, userLng, e.lat, e.lng);
-      e._distKm = Math.round(km);
-      e._driveMin = estimateDriveMinutes(km);
-    } else {
-      e._distKm = null;
-      e._driveMin = null;
-    }
-  });
-}
-
-function formatDuration(hours) {
-  if (hours == null || isNaN(hours)) return null;
-  if (hours <= 0.5) return 'עד חצי שעה';
-  if (hours <= 0.75) return 'כ-45 דק׳';
-  if (hours === 1) return 'כשעה';
-  if (hours === 1.5) return 'שעה וחצי';
-  if (hours === 2) return 'כשעתיים';
-  if (hours === 2.5) return 'שעתיים וחצי';
-  if (hours === 3) return 'כ-3 שעות';
-  if (hours <= 4) return `כ-${hours} שעות`;
-  return 'חצי יום+';
-}
-
-// ===== CITY & LOCATION =====
-function populateCitySelect() {
-  const sel = document.getElementById('citySelect');
-  if (!sel) return;
-  sel.innerHTML = '<option value="">בחרו עיר...</option>';
-  DUTCH_CITIES.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c.name;
-    opt.textContent = c.name;
-    sel.appendChild(opt);
-  });
-}
-
-function setUserCity(cityName) {
-  if (!cityName) { cityName = 'אמסטרדם'; document.getElementById('citySelect').value = cityName; }
-  const city = DUTCH_CITIES.find(c => c.name === cityName);
-  if (city) { userLat = city.lat; userLng = city.lng; }
-  if (typeof currentUser !== 'undefined' && currentUser && typeof saveProfile === 'function') {
-    saveProfile({ city: cityName });
-  }
-  localStorage.setItem('places_city', cityName);
-  recomputeEventDistances();
-  render();
-}
-
-function detectLocation() {
-  if (!navigator.geolocation) { alert('הדפדפן לא תומך בזיהוי מיקום'); return; }
-  navigator.geolocation.getCurrentPosition(pos => {
-    userLat = pos.coords.latitude;
-    userLng = pos.coords.longitude;
-    let nearest = DUTCH_CITIES[0], minDist = Infinity;
-    DUTCH_CITIES.forEach(c => { const d = haversineKm(userLat, userLng, c.lat, c.lng); if (d < minDist) { minDist = d; nearest = c; } });
-    document.getElementById('citySelect').value = nearest.name;
-    localStorage.setItem('places_city', nearest.name);
-    if (typeof currentUser !== 'undefined' && currentUser && typeof saveProfile === 'function') saveProfile({ city: nearest.name });
-    recomputeEventDistances();
-    render();
-  }, () => { alert('לא הצלחנו לזהות את המיקום שלכם'); });
-}
-
-// ===== FILTER STRIP TOGGLE =====
-let _filterStripOpen = true;
-
-function toggleFilterStrip() {
-  const row = document.getElementById('locationRow');
-  const strip = document.getElementById('filterStripToggle');
-  if (!row || !strip) return;
-  _filterStripOpen = !_filterStripOpen;
-  row.classList.toggle('collapsed', !_filterStripOpen);
-  strip.classList.toggle('open', _filterStripOpen);
-  updateFilterSummary();
-}
-
-function updateFilterSummary() {
-  const summary = document.getElementById('filterStripSummary');
-  if (!summary) return;
-  const parts = [];
-  if (maxDriveMinutes !== null) {
-    parts.push('🚗 ' + (maxDriveMinutes === 60 ? 'שעה' : maxDriveMinutes + ' דק׳'));
-  }
-  if (maxDurationHours !== null) {
-    const labels = {1: 'שעה', 2: 'שעתיים', 3: '3 שעות', 4: 'חצי יום'};
-    parts.push('⏱️ ' + (labels[maxDurationHours] || maxDurationHours + ' שעות'));
-  }
-  summary.textContent = parts.join('  |  ');
-}
-
-function updateFilterBadge() {
-  updateFilterSummary();
-}
-
-window.addEventListener('resize', function() {
-  if (window.innerWidth > 700) {
-    const row = document.getElementById('locationRow');
-    row.classList.remove('collapsed');
-    _filterStripOpen = true;
-    const strip = document.getElementById('filterStripToggle');
-    if (strip) strip.classList.add('open');
-  }
-});
-
-// Auto-collapse filters on scroll (mobile)
-(function() {
-  let lastScrollY = 0;
-  let ticking = false;
-  window.addEventListener('scroll', function() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(function() {
-      const row = document.getElementById('locationRow');
-      const strip = document.getElementById('filterStripToggle');
-      if (!row || window.innerWidth > 700) { ticking = false; return; }
-      const scrollY = window.scrollY || window.pageYOffset;
-      if (scrollY > 150 && scrollY > lastScrollY && _filterStripOpen) {
-        _filterStripOpen = false;
-        row.classList.add('collapsed');
-        if (strip) strip.classList.remove('open');
-        updateFilterSummary();
-      }
-      lastScrollY = scrollY;
-      ticking = false;
-    });
-  });
-})();
-
-function setMaxDrive(minutes) {
-  maxDriveMinutes = minutes;
-  document.querySelectorAll('.drive-pill').forEach(p => {
-    p.classList.toggle('active', p.dataset.minutes === String(minutes || ''));
-  });
-  render();
-  updateFilterBadge();
-}
-
-function setMaxDuration(hours) {
-  maxDurationHours = hours;
-  document.querySelectorAll('.duration-pill').forEach(p => {
-    p.classList.toggle('active', p.dataset.hours === String(hours || ''));
-  });
-  render();
-  updateFilterBadge();
-}
-
-function initCityFromProfile() {
-  let city = null;
-  if (typeof userProfile !== 'undefined' && userProfile && userProfile.city) city = userProfile.city;
-  if (!city) city = localStorage.getItem('places_city');
-  if (!city) city = 'אמסטרדם';
-  const sel = document.getElementById('citySelect');
-  const match = findCityByProfile(city);
-  if (match) { sel.value = match.name; userLat = match.lat; userLng = match.lng; }
-  else { sel.value = 'אמסטרדם'; userLat = DUTCH_CITIES[0].lat; userLng = DUTCH_CITIES[0].lng; }
-}
 
 // ===== LOAD DATA FROM GOOGLE SHEET =====
 function parseCSV(text) {
@@ -2804,7 +2273,6 @@ function rowToEvent(row, id) {
     lat: parseFloat(row.lat) || 0,
     lng: parseFloat(row.lng) || 0,
     museumkaart: (row.museumkaart || '').toUpperCase() === 'TRUE',
-    duration: row.duration ? parseFloat(row.duration) : null,
   };
 }
 
@@ -2828,7 +2296,6 @@ async function loadEvents() {
     console.error('Error loading events:', err);
     events = [];
   }
-  recomputeEventDistances();
   document.getElementById('loadingState').classList.add('hidden');
   buildWeekendChips();
   render();
@@ -2869,7 +2336,7 @@ function eventOnWeekend(e, satStr, sunStr) {
 
 function buildWeekendChips() {
   const container = document.getElementById('weekendChips');
-  const weekends = getUpcomingWeekends(1);
+  const weekends = getUpcomingWeekends(8);
   const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
 
   const firstWithEvents = weekends.findIndex(w => w.eventCount > 0);
@@ -2896,15 +2363,13 @@ function buildWeekendChips() {
 
 function updateWeekendActiveBtn() {
   if (!activeWeekend) return;
-  const datesEl = document.getElementById('weekendActiveDates');
-  const countEl = document.getElementById('weekendActiveCount');
-  if (!datesEl) return;
   const hebrewMonths = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
   const satD = activeWeekend.satDate;
   const sunD = activeWeekend.sunDate;
   const dates = `${satD.getDate()}-${sunD.getDate()} ${hebrewMonths[satD.getMonth()]}`;
-  datesEl.textContent = dates;
-  if (countEl) countEl.textContent = `${activeWeekend.eventCount} אירועים`;
+  document.getElementById('weekendActiveDates').textContent = dates;
+  const countEl = document.getElementById('weekendActiveCount');
+  countEl.textContent = `${activeWeekend.eventCount} אירועים`;
 }
 
 // ===== FILTER =====
@@ -2922,23 +2387,10 @@ function eventMatchesFilters(e) {
 function getFilteredEvents() {
   if (!activeWeekend) return [];
   const { sat, sun } = activeWeekend;
-  let filtered = events.filter(e => {
+  return events.filter(e => {
     if (!eventOnWeekend(e, sat, sun)) return false;
     return eventMatchesFilters(e);
   });
-  // Drive time filter
-  if (maxDriveMinutes != null && userLat != null) {
-    filtered = filtered.filter(e => e._driveMin != null && e._driveMin <= maxDriveMinutes);
-  }
-  // Duration filter
-  if (maxDurationHours != null) {
-    filtered = filtered.filter(e => e.duration != null && e.duration <= maxDurationHours);
-  }
-  // Sort by distance when location is set
-  if (userLat != null && userLng != null) {
-    filtered.sort((a, b) => (a._distKm || 9999) - (b._distKm || 9999));
-  }
-  return filtered;
 }
 
 // ===== CARD HTML =====
@@ -2967,13 +2419,9 @@ function cardHTML(e, i) {
           ${e.museumkaart ? '<span class="etag etag-museum">🏛️ Museumkaart</span>' : ''}
           <span class="etag etag-age">👶 ${e.ages}</span>
         </div>
-        ${(e._driveMin != null || e.duration) ? `<div class="event-meta-badges">
-          ${e._driveMin != null ? `<span class="event-drive-badge">🚗 ${e._driveMin} דק׳ (${e._distKm} ק״מ)</span>` : ''}
-          ${e.duration ? `<span class="event-duration-badge">⏱️ ${formatDuration(e.duration)}</span>` : ''}
-        </div>` : ''}
         <h3 class="event-title">${e.title}</h3>
         <p class="event-desc">${e.desc}</p>
-        <div class="event-actions event-actions-icons">
+        <div class="event-actions">
               <a class="action-icon action-icon-wa" href="https://wa.me/?text=${whatsappText}" target="_blank" title="שיתוף בוואטסאפ">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="">
                 <span class="action-icon-label">שיתוף</span>
@@ -2997,10 +2445,9 @@ function cardHTML(e, i) {
             <span class="event-detail">💰 ${e.price}</span>
             <span class="event-detail event-weather" data-lat="${e.lat}" data-lng="${e.lng}" data-date="${e.date}"></span>
           </div>
-          <div class="event-actions event-actions-btns">
+          <div class="event-actions">
             <div class="like-row ${isLiked(e.id) ? 'liked' : ''}" data-event-id="${e.id}" onclick="toggleLike(${e.id}, this)">
               <span class="btn-like ${isLiked(e.id) ? 'liked' : ''}">❤️</span>
-              <span class="like-label">${isLiked(e.id) ? 'אהבתי!' : 'לייק'}</span>
               <span class="like-count" id="likeCount-${e.id}">${getLikeCountDisplay(e.id)}</span>
             </div>
             <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:14px;height:14px;" loading="lazy" decoding="async"> שיתוף עם חברים</a>
@@ -3047,13 +2494,7 @@ function renderCalendar() {
 
   relevantWeekends.forEach((w, wIdx) => {
     const weekendEvents = events.filter(e => eventOnWeekend(e, w.sat, w.sun));
-    let filtered = weekendEvents.filter(e => eventMatchesFilters(e));
-    if (maxDriveMinutes != null && userLat != null) {
-      filtered = filtered.filter(e => e._driveMin != null && e._driveMin <= maxDriveMinutes);
-    }
-    if (maxDurationHours != null) {
-      filtered = filtered.filter(e => e.duration != null && e.duration <= maxDurationHours);
-    }
+    const filtered = weekendEvents.filter(e => eventMatchesFilters(e));
 
     if (!filtered.length) return;
 
@@ -3145,7 +2586,6 @@ function renderMap() {
     marker.bindPopup(`
       <div class="popup-title">${e.title}</div>
       <div class="popup-desc">${e.desc}</div>
-      ${e._driveMin != null || e.duration ? `<div class="popup-meta" style="color:#4158D0;font-weight:600;">${e._driveMin != null ? `🚗 ${e._driveMin} דק׳` : ''}${e._driveMin != null && e.duration ? ' · ' : ''}${e.duration ? `⏱️ ${formatDuration(e.duration)}` : ''}</div>` : ''}
       <div class="popup-meta">📍 ${e.location} · ${e.time} · ${e.price}</div>
       <div class="popup-links">
         ${e.link ? `<a class="popup-link" href="${e.link}" target="_blank">🔗 לאירוע</a>` : ''}
@@ -3325,10 +2765,6 @@ function saveLikes(likes) {
   localStorage.setItem('fun_likes', JSON.stringify(likes));
 }
 
-function getLikeCountDisplay(id) {
-  return '';
-}
-
 function isLiked(id) {
   return !!getLikes()[id];
 }
@@ -3344,7 +2780,7 @@ function toggleLike(id, el) {
   saveLikes(likes);
   updateLikedToggleCount();
 
-  // Sync all like icons for this event (mobile circle icons)
+  // Sync all like icons for this event
   document.querySelectorAll(`.action-icon-like[data-event-id="${id}"]`).forEach(r => {
     if (likes[id]) {
       r.classList.add('liked');
@@ -3352,21 +2788,6 @@ function toggleLike(id, el) {
     } else {
       r.classList.remove('liked');
       r.querySelector('span').textContent = '🤍';
-    }
-  });
-
-  // Sync desktop text-button like rows
-  document.querySelectorAll(`.like-row[data-event-id="${id}"]`).forEach(r => {
-    const heart = r.querySelector('.btn-like');
-    const label = r.querySelector('.like-label');
-    if (likes[id]) {
-      r.classList.add('liked');
-      if (heart) heart.classList.add('liked');
-      if (label) label.textContent = 'אהבתי!';
-    } else {
-      r.classList.remove('liked');
-      if (heart) heart.classList.remove('liked');
-      if (label) label.textContent = 'לייק';
     }
   });
 }
@@ -3395,8 +2816,8 @@ function fmtDay(s) {
   const d=new Date(s+'T00:00:00');
   const today=new Date(); today.setHours(0,0,0,0);
   const diff=Math.floor((d-today)/86400000);
-  if(diff===0) return 'היום - יום '+days[d.getDay()];
-  if(diff===1) return 'מחר - יום '+days[d.getDay()];
+  if(diff===0) return 'היום';
+  if(diff===1) return 'מחר';
   return 'יום '+days[d.getDay()];
 }
 
@@ -3405,8 +2826,8 @@ function fmtDayFull(s) {
   const d=new Date(s+'T00:00:00');
   const today=new Date(); today.setHours(0,0,0,0);
   const diff=Math.floor((d-today)/86400000);
-  if(diff===0) return '🟢 היום - יום '+days[d.getDay()];
-  if(diff===1) return '🔵 מחר - יום '+days[d.getDay()];
+  if(diff===0) return '🟢 היום';
+  if(diff===1) return '🔵 מחר';
   return (d.getDay()===6?'🟣 ':'🔵 ')+'יום '+days[d.getDay()];
 }
 
@@ -3435,9 +2856,6 @@ function openSuggestionModal(type) {
   document.getElementById('suggestionFormContainer').classList.remove('hidden');
   document.getElementById('suggestionSuccess').classList.add('hidden');
   document.getElementById('suggestionForm').reset();
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = false;
-  btn.textContent = 'שליחה 🚀';
   switchFormType(type || 'event');
 }
 
@@ -3452,15 +2870,8 @@ function switchFormType(type) {
   document.getElementById('modalSubtitle').textContent = subtitles[type];
   document.getElementById('formSubject').value = `${subjects[type]} - fun.israelis.nl`;
 
-  if (type === 'event') {
-    document.getElementById('fieldsEvent').classList.remove('hidden');
-    document.querySelector('[name="event_name"]').required = true;
-    document.querySelector('[name="feedback_text"]').required = false;
-  } else if (type === 'feedback') {
-    document.getElementById('fieldsFeedback').classList.remove('hidden');
-    document.querySelector('[name="event_name"]').required = false;
-    document.querySelector('[name="feedback_text"]').required = true;
-  }
+  if (type === 'event') document.getElementById('fieldsEvent').classList.remove('hidden');
+  else if (type === 'feedback') document.getElementById('fieldsFeedback').classList.remove('hidden');
 }
 
 function closeSuggestionModal() {
@@ -3515,24 +2926,22 @@ document.querySelectorAll('.view-btn').forEach(btn => {
 });
 
 // Weekend picker toggle
-const weekendActiveBtn = document.getElementById('weekendActiveBtn');
-if (weekendActiveBtn) {
-  weekendActiveBtn.addEventListener('click', () => {
-    const picker = document.getElementById('weekendPicker');
-    const dropdown = picker.querySelector('.weekend-dropdown');
-    const isOpen = dropdown.classList.contains('open');
-    if (isOpen) {
-      dropdown.classList.remove('open');
-      picker.classList.remove('open');
-    } else {
-      const rect = weekendActiveBtn.getBoundingClientRect();
-      dropdown.style.top = (rect.bottom + 6) + 'px';
-      dropdown.style.right = (window.innerWidth - rect.right) + 'px';
-      dropdown.classList.add('open');
-      picker.classList.add('open');
-    }
-  });
-}
+document.getElementById('weekendActiveBtn').addEventListener('click', () => {
+  const picker = document.getElementById('weekendPicker');
+  const dropdown = picker.querySelector('.weekend-dropdown');
+  const isOpen = dropdown.classList.contains('open');
+  if (isOpen) {
+    dropdown.classList.remove('open');
+    picker.classList.remove('open');
+  } else {
+    const btn = document.getElementById('weekendActiveBtn');
+    const rect = btn.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + 6) + 'px';
+    dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+    dropdown.classList.add('open');
+    picker.classList.add('open');
+  }
+});
 
 // Weekend chip selection
 document.getElementById('weekendChips').addEventListener('click', (e) => {
@@ -3585,16 +2994,46 @@ document.getElementById('filters').addEventListener('click', (e) => {
     }
   }
   updateFilterAvailability();
+  updateFiltersToggleBadge();
   render();
 });
 
+// Mobile collapsible filters
+function toggleFiltersCollapse() {
+  const toggle = document.getElementById('filtersToggle');
+  const row = document.getElementById('filters');
+  toggle.classList.toggle('open');
+  row.classList.toggle('open');
+}
+
+function updateFiltersToggleBadge() {
+  const badge = document.getElementById('filtersActiveCount');
+  const toggle = document.getElementById('filtersToggle');
+  if (!badge) return;
+  const count = activeFilters.size;
+  badge.textContent = count > 0 ? count : '';
+  toggle.classList.toggle('has-active', count > 0);
+}
+
 // Close dropdowns on click outside
 document.addEventListener('click', (e) => {
+  const menu = document.getElementById('navMenu');
+  const menuBtn = document.getElementById('menuBtn');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !menuBtn.contains(e.target)) {
+    menu.classList.remove('open');
+  }
   const picker = document.getElementById('weekendPicker');
   const wkDropdown = picker.querySelector('.weekend-dropdown');
   if (wkDropdown.classList.contains('open') && !picker.contains(e.target)) {
     wkDropdown.classList.remove('open');
     picker.classList.remove('open');
+  }
+  // Close mobile filters on outside click
+  const filtersToggle = document.getElementById('filtersToggle');
+  const filtersRow = document.getElementById('filters');
+  if (filtersRow.classList.contains('open') && !filtersRow.contains(e.target) && !filtersToggle.contains(e.target)) {
+    filtersRow.classList.remove('open');
+    filtersToggle.classList.remove('open');
   }
 });
 
@@ -3695,39 +3134,7 @@ renderCalendar = function() { _origRenderCalendar(); observeImages(); };
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
-populateCitySelect();
-initCityFromProfile();
 loadEvents();
-
-// ===== ARTICLES PREVIEW =====
-(async function loadArticlesPreview() {
-  try {
-    const ARTICLES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=478633181&single=true&output=csv';
-    const cb = Math.floor(Date.now() / 60000);
-    const resp = await fetch(ARTICLES_CSV + '&_cb=' + cb);
-    if (!resp.ok) return;
-    const text = await resp.text();
-    const rows = parseCSV(text);
-    const articles = rows.filter(r => r.title).map(r => ({
-      title: r.title,
-      summary: r.summary || '',
-      image: r.image ? (r.image.startsWith('http') ? r.image : (r.image.startsWith('images/') ? r.image : 'images/' + r.image)) : null,
-      link: r.link || 'articles.html',
-    }));
-    if (articles.length === 0) { document.querySelector('.articles-preview-section').style.display = 'none'; return; }
-    const latest = articles.slice(0, 3);
-    const container = document.getElementById('articlesPreview');
-    container.innerHTML = latest.map(a => {
-      const imgHTML = a.image
-        ? `<div class="article-preview-img" style="background-image:url(${a.image})"></div>`
-        : `<div class="article-preview-img-placeholder">📝</div>`;
-      return `<a href="${a.link}" target="_blank" rel="noopener" class="article-preview-card">${imgHTML}<div class="article-preview-body"><div class="article-preview-title">${a.title}</div>${a.summary ? `<div class="article-preview-summary">${a.summary}</div>` : ''}</div></a>`;
-    }).join('');
-  } catch (e) {
-    const section = document.querySelector('.articles-preview-section');
-    if (section) section.style.display = 'none';
-  }
-})();
 </script>
 
 <!-- PROFILE / ONBOARDING MODAL -->
@@ -3852,16 +3259,6 @@ loadEvents();
 // ===== AUTH INTEGRATION FOR INDEX PAGE =====
 
 function onUserLoggedIn(needsProfileCompletion) {
-  // Sync city from profile
-  if (userProfile && userProfile.city) {
-    const match = findCityByProfile(userProfile.city);
-    if (match) {
-      document.getElementById('citySelect').value = match.name;
-      userLat = match.lat; userLng = match.lng;
-      recomputeEventDistances();
-      render();
-    }
-  }
   // Remove blur gate
   document.querySelectorAll('.event-card.gated').forEach(card => {
     card.classList.remove('gated');
@@ -4041,18 +3438,6 @@ async function handleProfileSubmit(e) {
       disclaimerAccepted: document.getElementById('profileFormDisclaimer').checked,
       favorites: userProfile?.favorites || JSON.parse(localStorage.getItem('likedEvents') || '[]')
     });
-
-    // Sync city filter from saved profile
-    const savedCity = document.getElementById('profileFormCity').value;
-    if (savedCity) {
-      const match = findCityByProfile(savedCity);
-      if (match) {
-        document.getElementById('citySelect').value = match.name;
-        userLat = match.lat; userLng = match.lng;
-        recomputeEventDistances();
-        render();
-      }
-    }
 
     submitBtn.textContent = 'נשמר!';
     setTimeout(() => {
