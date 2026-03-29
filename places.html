@@ -347,6 +347,51 @@ body {
   background-position: center;
 }
 
+/* ===== FILTER TOGGLE STRIP ===== */
+.filter-strip-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(155,48,255,0.04) 0%, white 100%);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Heebo', sans-serif;
+}
+.filter-strip-toggle:active { background: rgba(155,48,255,0.06); }
+
+.filter-strip-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.filter-strip-arrow {
+  font-size: 12px;
+  color: var(--purple);
+  transition: transform 0.3s;
+  font-weight: 700;
+}
+.filter-strip-toggle.open .filter-strip-arrow { transform: rotate(180deg); }
+
+.filter-strip-summary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--purple);
+  background: rgba(155,48,255,0.08);
+  padding: 2px 10px;
+  border-radius: 100px;
+}
+.filter-strip-summary:empty { display: none; }
+
+@media (max-width: 700px) {
+  .filter-strip-toggle { display: flex; }
+}
+
 /* ===== LOCATION & DRIVE TIME ROW ===== */
 .location-row {
   display: flex;
@@ -927,31 +972,39 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 @media (max-width: 700px) {
   .hero-title { font-size: 28px; }
   .hero-subtitle { font-size: 14px; }
-  .filters-row { gap: 6px; }
-  .filter-pill { padding: 6px 14px; font-size: 12px; }
+  .filters-row { gap: 6px; padding: 8px 12px 8px; }
+  .filter-pill { padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 12px; min-height: 38px; }
   .search-row { max-width: 100%; }
   .nav-inner { padding: 8px 16px; }
   .nav-top { flex-direction: column; gap: 8px; }
   .content { padding: 10px 16px 40px; }
   .map-container { padding: 10px 16px; }
-  .location-select { font-size: 12px; padding: 5px 10px; }
-  .drive-pill { font-size: 14px; padding: 8px 16px; min-width: 48px; text-align: center; }
-  .duration-pill { font-size: 14px; padding: 8px 16px; min-width: 48px; text-align: center; }
-  .drive-label, .location-label, .duration-label { font-size: 14px; font-weight: 700; }
-  .drive-pills, .duration-pills { gap: 6px; }
+  .location-select { font-size: 16px; padding: 10px 16px; border-radius: 14px; min-height: 44px; }
+  .drive-pill, .duration-pill {
+    font-size: 16px;
+    padding: 12px 20px;
+    min-width: 56px;
+    text-align: center;
+    border-radius: 14px;
+    font-weight: 600;
+    border-width: 2px;
+  }
+  .drive-label, .location-label, .duration-label { font-size: 15px; font-weight: 700; }
+  .drive-pills, .duration-pills { gap: 8px; }
   .filter-toggle-btn { display: none; }
   .location-row {
     transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
-    max-height: 500px;
+    max-height: 600px;
     opacity: 1;
     overflow: hidden;
+    gap: 12px;
   }
   .location-row.collapsed {
     max-height: 0;
     opacity: 0;
     padding-top: 0;
     padding-bottom: 0;
-    border-top: none;
+    border-top-color: transparent;
   }
 }
 
@@ -1223,19 +1276,12 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
       <button class="filter-pill" data-cat="restaurant" onclick="toggleFilter('restaurant')"><span class="filter-dot" style="background:var(--restaurant)"></span> 🍽️ מסעדות עם ילדים <span class="filter-count" id="countRestaurant"></span></button>
       <button class="filter-pill" data-cat="museum" onclick="toggleFilter('museum')"><span class="filter-dot" style="background:var(--museum)"></span> 🏛️ מוזיאונים עם ילדים <span class="filter-count" id="countMuseum"></span></button>
       <button class="filter-pill" data-cat="playground" onclick="toggleFilter('playground')"><span class="filter-dot" style="background:var(--playground)"></span> 🛝 גני שעשועים <span class="filter-count" id="countPlayground"></span></button>
-      <button class="profile-btn-nav" id="profileBtnNav" onclick="openProfileModal()">
-        <div class="profile-avatar-nav" id="profileAvatarNav">?</div>
-        <span id="profileNameNav">הפרופיל שלי</span>
-      </button>
-      <button class="auth-btn-nav" id="authBtnNav" onclick="signInWithGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-        התחברו
-      </button>
-      <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleLocationRow()" aria-label="סינון נוסף" aria-expanded="false">
-        <span class="filter-toggle-icon">⚙</span>
-        <span class="filter-toggle-badge" id="filterToggleBadge"></span>
-      </button>
     </div>
+    <button class="filter-strip-toggle open" id="filterStripToggle" onclick="toggleFilterStrip()">
+      <span class="filter-strip-label">🚗 זמן נסיעה ופעילות</span>
+      <span class="filter-strip-summary" id="filterStripSummary"></span>
+      <span class="filter-strip-arrow">▼</span>
+    </button>
     <div class="location-row" id="locationRow">
       <div class="location-selector">
         <span class="location-label">📍 מאיפה יוצאים?</span>
@@ -1548,32 +1594,44 @@ function detectLocation() {
   });
 }
 
-function toggleLocationRow() {
+// ===== FILTER STRIP TOGGLE =====
+let _filterStripOpen = true;
+
+function toggleFilterStrip() {
   const row = document.getElementById('locationRow');
-  const btn = document.getElementById('filterToggleBtn');
-  const isExpanded = row.classList.contains('expanded');
-  row.classList.toggle('expanded', !isExpanded);
-  btn.classList.toggle('active', !isExpanded);
-  btn.setAttribute('aria-expanded', String(!isExpanded));
+  const strip = document.getElementById('filterStripToggle');
+  if (!row || !strip) return;
+  _filterStripOpen = !_filterStripOpen;
+  row.classList.toggle('collapsed', !_filterStripOpen);
+  strip.classList.toggle('open', _filterStripOpen);
+  updateFilterSummary();
+}
+
+function updateFilterSummary() {
+  const summary = document.getElementById('filterStripSummary');
+  if (!summary) return;
+  const parts = [];
+  if (maxDriveMinutes !== null) {
+    parts.push('🚗 ' + (maxDriveMinutes === 60 ? 'שעה' : maxDriveMinutes + ' דק׳'));
+  }
+  if (maxDurationHours !== null) {
+    const labels = {1: 'שעה', 2: 'שעתיים', 3: '3 שעות', 4: 'חצי יום'};
+    parts.push('⏱️ ' + (labels[maxDurationHours] || maxDurationHours + ' שעות'));
+  }
+  summary.textContent = parts.join('  |  ');
 }
 
 function updateFilterBadge() {
-  const badge = document.getElementById('filterToggleBadge');
-  if (!badge) return;
-  let count = 0;
-  if (maxDriveMinutes !== null) count++;
-  if (maxDurationHours !== null) count++;
-  badge.textContent = count > 0 ? count : '';
-  badge.classList.toggle('has-filters', count > 0);
+  updateFilterSummary();
 }
 
 window.addEventListener('resize', function() {
   if (window.innerWidth > 700) {
     const row = document.getElementById('locationRow');
-    const btn = document.getElementById('filterToggleBtn');
-    row.classList.remove('expanded');
     row.classList.remove('collapsed');
-    if (btn) btn.classList.remove('active');
+    _filterStripOpen = true;
+    const strip = document.getElementById('filterStripToggle');
+    if (strip) strip.classList.add('open');
   }
 });
 
@@ -1586,12 +1644,14 @@ window.addEventListener('resize', function() {
     ticking = true;
     requestAnimationFrame(function() {
       const row = document.getElementById('locationRow');
+      const strip = document.getElementById('filterStripToggle');
       if (!row || window.innerWidth > 700) { ticking = false; return; }
       const scrollY = window.scrollY || window.pageYOffset;
-      if (scrollY > 120 && scrollY > lastScrollY) {
+      if (scrollY > 150 && scrollY > lastScrollY && _filterStripOpen) {
+        _filterStripOpen = false;
         row.classList.add('collapsed');
-      } else if (scrollY < lastScrollY) {
-        row.classList.remove('collapsed');
+        if (strip) strip.classList.remove('open');
+        updateFilterSummary();
       }
       lastScrollY = scrollY;
       ticking = false;

@@ -506,6 +506,51 @@ body {
 }
 .filter-toggle-badge.has-filters { display: block; }
 
+/* ===== FILTER TOGGLE STRIP ===== */
+.filter-strip-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(155,48,255,0.04) 0%, white 100%);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Heebo', sans-serif;
+}
+.filter-strip-toggle:active { background: rgba(155,48,255,0.06); }
+
+.filter-strip-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.filter-strip-arrow {
+  font-size: 12px;
+  color: var(--purple);
+  transition: transform 0.3s;
+  font-weight: 700;
+}
+.filter-strip-toggle.open .filter-strip-arrow { transform: rotate(180deg); }
+
+.filter-strip-summary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--purple);
+  background: rgba(155,48,255,0.08);
+  padding: 2px 10px;
+  border-radius: 100px;
+}
+.filter-strip-summary:empty { display: none; }
+
+@media (max-width: 700px) {
+  .filter-strip-toggle { display: flex; }
+}
+
 /* ===== LOCATION & DRIVE/DURATION FILTERS ===== */
 .location-row {
   display: flex;
@@ -626,12 +671,12 @@ body {
 
 @media (max-width: 700px) {
   .location-row {
-    gap: 10px;
-    padding: 10px 14px;
+    gap: 12px;
+    padding: 14px 16px;
     justify-content: center;
     flex-direction: column;
     transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
-    max-height: 500px;
+    max-height: 600px;
     opacity: 1;
     overflow: hidden;
   }
@@ -640,21 +685,30 @@ body {
     opacity: 0;
     padding-top: 0;
     padding-bottom: 0;
-    border-top: none;
+    border-top-color: transparent;
   }
   .filter-group {
-    padding: 8px 12px;
-    gap: 8px;
+    padding: 10px 14px;
+    gap: 10px;
     width: 100%;
     flex-wrap: wrap;
     justify-content: center;
+    border-radius: 14px;
   }
-  .filter-group-icon { font-size: 18px; }
-  .filter-group-label { font-size: 13px; font-weight: 700; }
-  .drive-pills, .duration-pills { flex-wrap: wrap; justify-content: center; gap: 6px; }
-  .drive-pill, .duration-pill { font-size: 14px; padding: 8px 16px; min-width: 48px; text-align: center; }
-  .location-select { font-size: 14px; padding: 8px 14px; }
-  .location-detect-btn { width: 34px; height: 34px; font-size: 18px; }
+  .filter-group-icon { font-size: 22px; }
+  .filter-group-label { font-size: 14px; font-weight: 700; }
+  .drive-pills, .duration-pills { flex-wrap: wrap; justify-content: center; gap: 8px; width: 100%; }
+  .drive-pill, .duration-pill {
+    font-size: 16px;
+    padding: 12px 20px;
+    min-width: 56px;
+    text-align: center;
+    border-radius: 14px;
+    font-weight: 600;
+    border-width: 2px;
+  }
+  .location-select { font-size: 16px; padding: 10px 16px; border-radius: 14px; min-height: 44px; }
+  .location-detect-btn { width: 44px; height: 44px; font-size: 20px; }
   .filter-group-divider { display: none; }
   .filter-toggle-btn { display: none; }
 }
@@ -2154,8 +2208,8 @@ body {
   .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
   .auth-btn .auth-btn-text { display: none; }
   .auth-btn { padding: 7px 12px; }
-  .filters-row { gap: 4px; }
-  .filter-pill { padding: 3px 8px; font-size: 10px; }
+  .filters-row { gap: 6px; padding: 8px 12px 8px; }
+  .filter-pill { padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 12px; min-height: 38px; }
 }
 
 /* Desktop: larger text for readability */
@@ -2229,16 +2283,6 @@ body {
       </div>
     </div>
 
-    <!-- Auth / Profile -->
-    <button class="auth-btn" id="authBtn" onclick="signInWithGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-      <span class="auth-btn-text">התחברו</span>
-    </button>
-    <button class="profile-btn" id="profileBtn" onclick="openProfileModal()">
-      <div class="profile-avatar" id="profileAvatar">?</div>
-      <span id="profileName">הפרופיל שלי</span>
-    </button>
-
     <div class="filters-row" id="filters">
       <button class="filter-pill active" data-filter="all">הכל</button>
       <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
@@ -2251,11 +2295,12 @@ body {
       <button class="filter-pill" data-filter="music">🎵 מוזיקה</button>
       <button class="filter-pill" data-filter="indoor">🏠 בפנים</button>
       <button class="filter-pill" data-filter="sport">⚽ ספורט</button>
-      <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleLocationRow()" aria-label="סינון נוסף" aria-expanded="false">
-        <span class="filter-toggle-icon">⚙</span>
-        <span class="filter-toggle-badge" id="filterToggleBadge"></span>
-      </button>
     </div>
+    <button class="filter-strip-toggle open" id="filterStripToggle" onclick="toggleFilterStrip()">
+      <span class="filter-strip-label">🚗 זמן נסיעה ופעילות</span>
+      <span class="filter-strip-summary" id="filterStripSummary"></span>
+      <span class="filter-strip-arrow">▼</span>
+    </button>
     <div class="location-row" id="locationRow">
       <div class="filter-group" title="בחרו עיר לחישוב מרחק נסיעה">
         <span class="filter-group-icon">📍</span>
@@ -2589,32 +2634,44 @@ function detectLocation() {
   }, () => { alert('לא הצלחנו לזהות את המיקום שלכם'); });
 }
 
-function toggleLocationRow() {
+// ===== FILTER STRIP TOGGLE =====
+let _filterStripOpen = true;
+
+function toggleFilterStrip() {
   const row = document.getElementById('locationRow');
-  const btn = document.getElementById('filterToggleBtn');
-  const isExpanded = row.classList.contains('expanded');
-  row.classList.toggle('expanded', !isExpanded);
-  btn.classList.toggle('active', !isExpanded);
-  btn.setAttribute('aria-expanded', String(!isExpanded));
+  const strip = document.getElementById('filterStripToggle');
+  if (!row || !strip) return;
+  _filterStripOpen = !_filterStripOpen;
+  row.classList.toggle('collapsed', !_filterStripOpen);
+  strip.classList.toggle('open', _filterStripOpen);
+  updateFilterSummary();
+}
+
+function updateFilterSummary() {
+  const summary = document.getElementById('filterStripSummary');
+  if (!summary) return;
+  const parts = [];
+  if (maxDriveMinutes !== null) {
+    parts.push('🚗 ' + (maxDriveMinutes === 60 ? 'שעה' : maxDriveMinutes + ' דק׳'));
+  }
+  if (maxDurationHours !== null) {
+    const labels = {1: 'שעה', 2: 'שעתיים', 3: '3 שעות', 4: 'חצי יום'};
+    parts.push('⏱️ ' + (labels[maxDurationHours] || maxDurationHours + ' שעות'));
+  }
+  summary.textContent = parts.join('  |  ');
 }
 
 function updateFilterBadge() {
-  const badge = document.getElementById('filterToggleBadge');
-  if (!badge) return;
-  let count = 0;
-  if (maxDriveMinutes !== null) count++;
-  if (maxDurationHours !== null) count++;
-  badge.textContent = count > 0 ? count : '';
-  badge.classList.toggle('has-filters', count > 0);
+  updateFilterSummary();
 }
 
 window.addEventListener('resize', function() {
   if (window.innerWidth > 700) {
     const row = document.getElementById('locationRow');
-    const btn = document.getElementById('filterToggleBtn');
-    row.classList.remove('expanded');
     row.classList.remove('collapsed');
-    if (btn) btn.classList.remove('active');
+    _filterStripOpen = true;
+    const strip = document.getElementById('filterStripToggle');
+    if (strip) strip.classList.add('open');
   }
 });
 
@@ -2627,12 +2684,14 @@ window.addEventListener('resize', function() {
     ticking = true;
     requestAnimationFrame(function() {
       const row = document.getElementById('locationRow');
+      const strip = document.getElementById('filterStripToggle');
       if (!row || window.innerWidth > 700) { ticking = false; return; }
       const scrollY = window.scrollY || window.pageYOffset;
-      if (scrollY > 120 && scrollY > lastScrollY) {
+      if (scrollY > 150 && scrollY > lastScrollY && _filterStripOpen) {
+        _filterStripOpen = false;
         row.classList.add('collapsed');
-      } else if (scrollY < lastScrollY) {
-        row.classList.remove('collapsed');
+        if (strip) strip.classList.remove('open');
+        updateFilterSummary();
       }
       lastScrollY = scrollY;
       ticking = false;
