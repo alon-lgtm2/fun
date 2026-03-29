@@ -1,0 +1,31 @@
+{
+  "name": "אז מה עושים היום",
+  "short_name": "מה עושים?",
+  "description": "פעילויות שוות בסופ\"ש למשפחות בהולנד",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#9B30FF",
+  "dir": "rtl",
+  "lang": "he",
+  "icons": [
+    {
+      "src": "images/az.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/az.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/az.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

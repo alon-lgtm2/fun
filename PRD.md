@@ -4,22 +4,27 @@
 A Hebrew-language web app for Israeli families living in the Netherlands to discover weekend events and activities. Curated, time-bound, local events — not general attractions.
 
 ## Target Audience
-- Israeli parents with kids, living in the Netherlands
+- Israeli families living in the Netherlands (not limited to children — quality activities for all family members)
 
 ## Current State (Live)
-- Single HTML file (`index.html`) — no build step
+- Six HTML pages (`index.html`, `places.html`, `articles.html`, `holidays.html`, `weather.html`, `about.html`) — no build step
 - Data fetched from a published Google Sheet on each page load
 - Two views: List (calendar-grouped) and Map (Leaflet)
 - Weekend selector (upcoming 8 weekends) with auto-advance on scroll
 - Category filters with automatic disable for empty categories
-- Like button with community counter (localStorage-based)
+- Like button (localStorage-based)
 - Weather display per event (Open-Meteo API)
 - WhatsApp sharing with site footer branding
 - Feedback form with tabs (add event / feedback) via Formspree
 - Empty "add event" card at end of event list
 - Hebrew RTL layout, mobile-friendly with fat-finger CTAs
+- Desktop-optimized font sizes for readability (min-width: 701px)
+- Prominent home navigation ("🎪 אז מה עושים?") on all sub-pages
+- Auth redirect to home page when users authenticate from sub-pages
+- Map zoom controls hidden on mobile to prevent card overlap
 - Hosted on GitHub Pages with custom domain
 - Umami analytics
+- Firebase authentication (Google sign-in)
 
 ## Data Source
 - Events manually curated in a Google Sheet
@@ -61,9 +66,15 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 - Empty card at end of event list invites submissions
 
 ### SEO & Branding
-- Open Graph meta tags with cover image
+- Open Graph meta tags with `og3.png` image — positioned as quality family activities
+- OG description: "פעילויות איכות עם המשפחה בהולנד בסופ״ש"
 - Purple button SVG favicon
 - Umami analytics tracking
+
+### Navigation
+- Sticky nav bar with home logo link on all pages
+- Tab pills: אירועים, 📍 מקומות, 📝 כתבות, 📅 מתי חופש?, 🌤️ תחזית מזג אוויר, 🧡 עלינו
+- Holidays section branded as "מתי חופש?" (catchy phrasing instead of generic "חגים")
 
 ## Architecture
 
@@ -98,14 +109,34 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 | O | lng | 5.4697 |
 | P | Museumkaart | TRUE / FALSE |
 
+### Articles Sheet Schema (gid=478633181)
+| Column | Field | Example |
+|--------|-------|---------|
+| A | title | 10 טיפים לחיסכון בהולנד |
+| B | summary | איך לחסוך כסף על קניות, ביטוחים ומיסים |
+| C | image | https://picsum.photos/seed/savings/800/600 |
+| D | date | 2026-03-25 |
+| E | link | https://example.com/article |
+| F | category | טיפים / אוכל / טיולים / תרבות / חינוך / אירועים |
+
 ### File Structure
 ```
 fun/
-├── index.html              # Main app (single file)
+├── index.html              # Home page — weekend events
+├── places.html             # Recommended places map
+├── articles.html           # Articles and tips (כתבות)
+├── holidays.html           # Holidays & vacations (מתי חופש?)
+├── weather.html            # Weather forecast page
+├── about.html              # About page
+├── auth.js                 # Firebase authentication & profile management
+├── likes-backend.gs        # Google Apps Script backend for likes
 ├── CNAME                   # Custom domain config
+├── manifest.json           # PWA manifest
+├── sw.js                   # Service worker
 ├── images/                 # Event images
 │   ├── Button-Purple.svg   # Favicon
-│   └── og-cover.png        # OG image
+│   ├── og3.png             # OG image (current)
+│   └── ...                 # Event images
 ├── PRD.md                  # This file
 └── DEPLOY-INSTRUCTIONS.md  # Deploy guide
 ```
@@ -123,4 +154,5 @@ fun/
 ## Service Credentials
 - **Umami**: `<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>`
 - **Formspree**: `https://formspree.io/f/mnjgwgzn`
-- **Google Sheet CSV**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=0&single=true&output=csv`
+- **Google Sheet CSV (events)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=0&single=true&output=csv`
+- **Google Sheet CSV (articles)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=478633181&single=true&output=csv`
