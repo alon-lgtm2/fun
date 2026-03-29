@@ -785,15 +785,35 @@ function parseCSVLine(line) {
   return result;
 }
 
+function splitCSVRows(text) {
+  // Split CSV text into logical rows, keeping multi-line quoted fields together
+  const rows = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+      current += ch;
+    } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+      if (ch === '\r' && i + 1 < text.length && text[i + 1] === '\n') i++;
+      if (current.trim()) rows.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  if (current.trim()) rows.push(current);
+  return rows;
+}
+
 function parseCSV(text) {
-  const lines = text.split('\n');
-  if (lines.length < 2) return [];
-  const headers = parseCSVLine(lines[0]);
+  const rows = splitCSVRows(text);
+  if (rows.length < 2) return [];
+  const headers = parseCSVLine(rows[0]);
   const results = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    const values = parseCSVLine(line);
+  for (let i = 1; i < rows.length; i++) {
+    const values = parseCSVLine(rows[i]);
     const obj = {};
     headers.forEach((h, idx) => { obj[h.trim().toLowerCase()] = (values[idx] || '').trim(); });
     results.push(obj);
