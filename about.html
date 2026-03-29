@@ -201,6 +201,84 @@ footer {
 }
 footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 
+/* Contact modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text-lighter);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.modal-close:hover { background: var(--bg); }
+.modal-title { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.modal-subtitle { font-size: 13px; color: var(--text-light); margin-bottom: 18px; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  direction: rtl;
+}
+.form-input:focus, .form-textarea:focus { outline: none; border-color: var(--purple); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(155,48,255,0.25);
+  margin-top: 6px;
+}
+.form-submit:hover { transform: translateY(-1px); }
+.form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.form-success { text-align: center; padding: 30px 10px; }
+.form-success-emoji { font-size: 48px; margin-bottom: 10px; }
+.form-success-text { font-size: 16px; font-weight: 600; color: var(--text); }
+
 @media (max-width: 700px) {
   .about-section { grid-template-columns: 1fr; padding: 24px; gap: 20px; }
 }
@@ -386,6 +464,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
     <a href="places.html" class="nav-tab-pill">📍 מקומות</a>
     <a href="holidays.html" class="nav-tab-pill">📅 מתי חופש?</a>
     <a href="about.html" class="nav-tab-pill active">🧡 עלינו</a>
+    <button class="nav-tab-pill" onclick="openContactModal()">💬 צרו קשר</button>
   </div>
 </div>
 
@@ -421,7 +500,7 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
       <div class="about-block-icon">💡</div>
       <div class="about-block-title">יש לכם המלצה?</div>
       <div class="about-text">
-        יודעים על אירוע שווה שלא מופיע כאן? <a href="index.html" style="cursor:pointer;color:var(--purple);font-weight:600;text-decoration:none;">שלחו לנו המלצה</a> ונוסיף אותו!
+        יודעים על אירוע שווה שלא מופיע כאן? <a onclick="openContactModal()" style="cursor:pointer;color:var(--purple);font-weight:600;text-decoration:none;">שלחו לנו המלצה</a> ונוסיף אותו!
         <br>ובינתיים, בקרו ב<a href="places.html" style="color:var(--purple);font-weight:600;text-decoration:none;">מקומות שאנחנו ממליצים</a> 📍
       </div>
     </div>
@@ -447,6 +526,35 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
 </footer>
 
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactOverlay" onclick="if(event.target===this)closeContactModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeContactModal()">✕</button>
+    <div class="modal-title">💬 צרו קשר</div>
+    <div class="modal-subtitle">שלחו לנו הודעה ונחזור אליכם</div>
+    <form id="contactForm" action="https://formspree.io/f/mnjgwgzn" method="POST">
+      <input type="hidden" name="_type" value="feedback">
+      <div class="form-group">
+        <label class="form-label">הודעה *</label>
+        <textarea class="form-textarea" name="message" required placeholder="מה תרצו לספר לנו?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">שם (אופציונלי)</label>
+        <input class="form-input" type="text" name="name" placeholder="השם שלכם">
+      </div>
+      <div class="form-group">
+        <label class="form-label">אימייל (אופציונלי)</label>
+        <input class="form-input" type="email" name="email" placeholder="your@email.com" dir="ltr">
+      </div>
+      <button type="submit" class="form-submit">שליחה 🚀</button>
+    </form>
+    <div class="form-success" id="contactSuccess" style="display:none">
+      <div class="form-success-emoji">🎉</div>
+      <div class="form-success-text">תודה רבה! קיבלנו את ההודעה שלכם.</div>
+    </div>
+  </div>
+</div>
+
 <!-- FACEBOOK BROWSER MODAL -->
 <div class="fb-browser-modal-overlay" id="fbBrowserModal" onclick="if(event.target===this)closeFacebookBrowserModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:20px;">
   <div style="background:white;border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
@@ -461,6 +569,33 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 <!-- Firebase Auth -->
 <script src="auth.js"></script>
 <script>
+// Contact modal
+function openContactModal() {
+  document.getElementById('contactOverlay').classList.add('active');
+}
+function closeContactModal() {
+  document.getElementById('contactOverlay').classList.remove('active');
+}
+
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('.form-submit');
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+  try {
+    const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
+    if (res.ok) {
+      form.style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    } else { throw new Error(); }
+  } catch (err) {
+    alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
+    btn.disabled = false;
+    btn.textContent = 'שליחה 🚀';
+  }
+});
+
 function onUserLoggedIn() {
   const cta = document.getElementById('signupCta');
   if (cta) cta.classList.add('hidden');
