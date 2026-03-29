@@ -336,6 +336,156 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
   border-top: 1px solid var(--border);
 }
 
+/* Article detail view */
+.article-detail {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.article-detail-hero {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.article-detail-body {
+  padding: 32px 28px;
+}
+
+.article-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+}
+
+.article-detail-back:hover { border-color: var(--purple); color: var(--purple); }
+
+.article-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.article-detail-category {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: rgba(155,48,255,0.08);
+  color: var(--purple);
+}
+
+.article-detail-date {
+  font-size: 13px;
+  color: var(--text-lighter);
+}
+
+.article-detail-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.article-detail-summary {
+  font-size: 16px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.article-detail-content {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.article-detail-content h2,
+.article-detail-content h3 {
+  font-family: 'Rubik', sans-serif;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.article-detail-content a {
+  color: var(--purple);
+  font-weight: 600;
+}
+
+.article-detail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  padding: 10px 20px;
+  border-radius: 100px;
+  background: var(--gradient);
+  color: white;
+  text-decoration: none;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+
+.article-detail-link:hover { transform: translateY(-1px); }
+
+.article-detail-share {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.share-btn {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.share-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+@media (max-width: 700px) {
+  .article-detail-body { padding: 20px 16px; }
+  .article-detail-title { font-size: 22px; }
+  .article-detail-summary { font-size: 14px; }
+  .article-detail-content { font-size: 14px; }
+  .article-detail-hero { max-height: 250px; }
+}
+
 /* Loading */
 .loading {
   text-align: center;
@@ -554,8 +704,11 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   <div class="filters-row" id="filtersRow"></div>
 
   <div class="loading" id="loading">טוען מאמרים...</div>
-  <div class="articles-grid" id="articlesGrid"></div>
-  <div class="no-results" id="noResults" style="display:none">לא נמצאו מאמרים בקטגוריה זו</div>
+  <div id="listView">
+    <div class="articles-grid" id="articlesGrid"></div>
+    <div class="no-results" id="noResults" style="display:none">לא נמצאו מאמרים בקטגוריה זו</div>
+  </div>
+  <div id="detailView" style="display:none"></div>
 </div>
 
 <footer>
@@ -674,6 +827,10 @@ function buildFilters() {
   });
 }
 
+function slugify(title) {
+  return encodeURIComponent(title.replace(/\s+/g, '-'));
+}
+
 function renderArticles() {
   const grid = document.getElementById('articlesGrid');
   const noResults = document.getElementById('noResults');
@@ -686,8 +843,12 @@ function renderArticles() {
   }
 
   noResults.style.display = 'none';
-  grid.innerHTML = filtered.map(a => `
-    <a class="article-card" href="${a.link || '#'}" ${a.link && a.link !== '#' ? 'target="_blank" rel="noopener"' : ''}>
+  grid.innerHTML = filtered.map(a => {
+    const hasContent = a.content && a.content.trim();
+    const href = hasContent ? `articles.html?article=${slugify(a.title)}` : (a.link || '#');
+    const target = hasContent ? '' : (a.link && a.link !== '#' ? 'target="_blank" rel="noopener"' : '');
+    return `
+    <a class="article-card" href="${href}" ${target}>
       <img class="article-img" src="${a.image || ''}" alt="${a.title}" onerror="this.style.display='none'">
       <div class="article-body">
         ${a.category ? `<span class="article-category">${a.category}</span>` : ''}
@@ -696,7 +857,71 @@ function renderArticles() {
         <div class="article-date">${formatDate(a.date)}</div>
       </div>
     </a>
-  `).join('');
+  `;}).join('');
+}
+
+function showArticleDetail(article) {
+  const listView = document.getElementById('listView');
+  const detailView = document.getElementById('detailView');
+  const filtersToggle = document.getElementById('filtersToggle');
+  const filtersRow = document.getElementById('filtersRow');
+
+  listView.style.display = 'none';
+  filtersToggle.style.display = 'none';
+  filtersRow.style.display = 'none';
+  detailView.style.display = 'block';
+
+  const contentHtml = formatContent(article.content || '');
+  const hasLink = article.link && article.link !== '#';
+
+  detailView.innerHTML = `
+    <a class="article-detail-back" href="articles.html">→ חזרה למאמרים</a>
+    <div class="article-detail">
+      ${article.image ? `<img class="article-detail-hero" src="${article.image}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
+      <div class="article-detail-body">
+        <div class="article-detail-meta">
+          ${article.category ? `<span class="article-detail-category">${article.category}</span>` : ''}
+          <span class="article-detail-date">${formatDate(article.date)}</span>
+        </div>
+        <h1 class="article-detail-title">${article.title}</h1>
+        <div class="article-detail-summary">${article.summary || ''}</div>
+        <div class="article-detail-content">${contentHtml}</div>
+        ${hasLink ? `<a class="article-detail-link" href="${article.link}" target="_blank" rel="noopener">קראו עוד ←</a>` : ''}
+        <div class="article-detail-share">
+          <a class="share-btn" href="https://wa.me/?text=${encodeURIComponent(article.title + ' ' + window.location.href)}" target="_blank">📱 WhatsApp</a>
+          <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='הועתק!'">📋 העתקת קישור</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  window.scrollTo({ top: 0 });
+}
+
+function formatContent(text) {
+  if (!text) return '';
+  // Convert markdown-like formatting
+  let html = text
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  return html;
+}
+
+function checkRoute() {
+  const params = new URLSearchParams(window.location.search);
+  const articleSlug = params.get('article');
+  if (articleSlug && articles.length > 0) {
+    const decoded = decodeURIComponent(articleSlug).replace(/-/g, ' ');
+    const article = articles.find(a => a.title === decoded || slugify(a.title) === articleSlug);
+    if (article) {
+      showArticleDetail(article);
+      return true;
+    }
+  }
+  return false;
 }
 
 function toggleFiltersCollapse() {
@@ -779,9 +1004,22 @@ async function loadArticles() {
   }
 
   document.getElementById('loading').style.display = 'none';
-  buildFilters();
-  renderArticles();
+  if (!checkRoute()) {
+    buildFilters();
+    renderArticles();
+  }
 }
+
+// Handle browser back/forward
+window.addEventListener('popstate', () => {
+  if (!checkRoute()) {
+    document.getElementById('listView').style.display = '';
+    document.getElementById('detailView').style.display = 'none';
+    document.getElementById('filtersToggle').style.display = '';
+    document.getElementById('filtersRow').style.display = '';
+    renderArticles();
+  }
+});
 
 loadArticles();
 </script>
