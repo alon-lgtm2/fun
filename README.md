@@ -1,6 +1,6 @@
 # fun.israelis.nl
 
-אז מה עושים היום? — A Hebrew RTL website for Israeli families in the Netherlands, listing weekend events, recommended places, holidays, and more.
+אז מה עושים היום? — A Hebrew RTL website for Israeli families in the Netherlands, listing weekend events, recommended places, articles, holidays, and more.
 
 **Live site:** [https://fun.israelis.nl](https://fun.israelis.nl)
 
@@ -12,8 +12,8 @@
 |------|------|-------------|
 | Home | `index.html` | Weekend events with filtering, weekend picker, and hamburger menu navigation |
 | Recommended Places | `places.html` | Interactive Leaflet map of family-friendly restaurants, museums, and playgrounds |
-| Holidays & Vacations | `holidays.html` | Dutch official holidays (2026-2027), school vacations by region, and important info |
-| Articles | `articles.html` | Hebrew articles and tips about life in the Netherlands |
+| Articles | `articles.html` | Articles and tips loaded from Google Sheets, with category filters, article detail view, and full content support |
+| Holidays & Vacations | `holidays.html` | Dutch official holidays (2026-2027), school vacations by region, with dynamic upcoming highlighting |
 | Weather Forecast | `weather.html` | Weekend weather forecast for Dutch cities using Open-Meteo API |
 | About | `about.html` | About the site and team |
 
@@ -23,11 +23,12 @@
 - **RTL layout** — full right-to-left Hebrew UI using `dir="rtl"` and flexbox
 - **PWA support** — `manifest.json` + `sw.js` service worker for installability
 - **Authentication** — Firebase (Google Sign-in) with Firestore for user data
+- **Contact modal** — available on all pages via Formspree
 - **Analytics** — Umami Cloud (`cloud.umami.is`)
 
 ## Data Sources
 
-Event and place data is loaded dynamically from Google Sheets, published as CSV:
+Event, place, and article data is loaded dynamically from Google Sheets, published as CSV:
 
 | Data | Sheet GID | Used in |
 |------|-----------|---------|
@@ -44,11 +45,14 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 | Column | Description |
 |--------|-------------|
 | `title` | Article title (Hebrew) |
-| `summary` | Short description/summary |
-| `image` | Image URL or path |
-| `date` | Publication date (YYYY-MM-DD) |
-| `link` | URL to full article |
-| `category` | Category for filtering (e.g. טיפים, אוכל, טיולים, תרבות) |
+| `summary` | Short summary for card display |
+| `image` | Image URL or path (e.g. `/images/imyotzim.jpg`) |
+| `date` | Publication date (YYYY-MM-DD), sorted newest first |
+| `link` | External URL (optional, used if no content) |
+| `category` | Category for filtering (e.g. טיפים, אוכל, טיולים, תרבות, קהילה) |
+| `content` | Full article text (optional). Supports markdown: `## headings`, `**bold**`, `*italic*`, `[links](url)` |
+
+If `content` is provided, clicking the article card opens a detail page on the site with hero image, formatted content, and share buttons. Otherwise, it links externally.
 
 ### Places sheet columns (gid=993728456)
 | Column | Description |
@@ -64,7 +68,8 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 ### index.html (Home)
 - **Sticky navigation bar** — single compact inline bar with logo (links home), weekend picker, filter pills, and hamburger menu
 - **Weekend picker** — dropdown to select and browse upcoming weekends
-- **Hamburger menu** — links to Places, Holidays, About, and Contact
+- **Collapsible filters on mobile** — toggle button with active filter count badge
+- **Hamburger menu** — links to Places, Articles, Holidays, About, and Contact
 - **Event cards** — clickable images linking to event details, with action icons (share, navigate, info, like)
 - **Image retry** — automatically retries failed background images up to 3 times with cache-busting
 - **CSV data loading** — events fetched from Google Sheets on page load
@@ -73,21 +78,25 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 
 ### places.html (Recommended Places)
 - **Leaflet interactive map** — markers for all places with category-colored pins
-- **Category filters** — filter by מסעדות עם ילדים (restaurants), מוזיאונים עם ילדים (museums), גני שעשועים (playgrounds)
+- **Category filters** — filter by restaurants, museums, playgrounds (collapsible on mobile)
 - **Search** — text search across place names and descriptions
 - **List/Map toggle** — switch between map view and scrollable list
-- **Share button** — share the places page URL
-- **Dynamic data** — places loaded from Google Sheets CSV (gid=993728456)
+- **Dynamic data** — places loaded from Google Sheets CSV
 
-### articles.html (Articles)
-- **Article cards** — grid layout with lazy-loaded images, category tags, and date
-- **Category filtering** — dynamic filter pills generated from article data
-- **CSV data loading** — articles fetched from Google Sheets (gid=478633181)
-- **Date sorting** — articles sorted newest first
+### articles.html (Articles & Tips)
+- **Card grid** — responsive grid with image, category badge, title, summary, date
+- **Category filters** — auto-generated from article data (collapsible on mobile)
+- **Article detail view** — full article with hero image, formatted content, share buttons
+- **Content formatting** — supports markdown headings, bold, italic, links
+- **Multi-line CSV parsing** — handles long-form article content from Google Sheets
+- **WhatsApp & link sharing** — share buttons on article detail page
+- **Sorted by date** — newest articles first
 
 ### holidays.html (מתי חופש? — Holidays & Vacations)
 - **Three tabs** — official holidays, school vacations by region, important info
-- Self-contained tab-switching JS
+- **Dynamic highlighting** — automatically highlights the next upcoming holiday with purple "הבא" badge
+- **School vacation highlighting** — highlights the next upcoming school vacation
+- **Contact modal** — direct feedback form
 - Navigation label: "📅 מתי חופש?"
 
 ### weather.html (Weather Forecast)
@@ -96,6 +105,7 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 
 ### about.html (About)
 - **2-column grid** with 4 info blocks + disclaimer
+- **Contact modal** — direct feedback form
 - Prominent home link in sticky nav
 
 ## Tech Stack
@@ -105,10 +115,10 @@ Events are parsed via `parseCSV()` in `index.html`. Each row represents a weeken
 | HTML/CSS/JS | All inline, no framework |
 | [Heebo](https://fonts.google.com/specimen/Heebo) + [Rubik](https://fonts.google.com/specimen/Rubik) | Hebrew-optimized fonts |
 | [Leaflet.js](https://leafletjs.com/) 1.9.4 | Interactive map on places page |
-| [Google Sheets CSV](https://support.google.com/docs/answer/183965) | Dynamic data source for events and places |
 | [Firebase](https://firebase.google.com/) 10.12.0 | Authentication (Google Sign-in) and Firestore database |
+| [Google Sheets CSV](https://support.google.com/docs/answer/183965) | Dynamic data source for events, places, and articles |
 | [Open-Meteo API](https://open-meteo.com/) | Weather forecasts (free, no API key required) |
-| [Formspree](https://formspree.io/) | Community feedback and event submission forms |
+| [Formspree](https://formspree.io/) | Contact/feedback forms on all pages |
 | [Umami](https://umami.is/) | Privacy-friendly analytics |
 | PWA (manifest + SW) | Mobile installability |
 
@@ -141,8 +151,8 @@ git push origin main
 fun/
 ├── index.html          # Home page — weekend events
 ├── places.html         # Recommended places map
-├── articles.html       # Articles and tips
-├── holidays.html       # Holidays & vacations
+├── articles.html       # Articles and tips (מאמרים)
+├── holidays.html       # Holidays & vacations (מתי חופש?)
 ├── weather.html        # Weather forecast page
 ├── about.html          # About page
 ├── auth.js             # Firebase authentication & profile management
@@ -150,10 +160,11 @@ fun/
 ├── manifest.json       # PWA manifest
 ├── sw.js               # Service worker
 ├── CNAME               # Custom domain config
-├── images/             # Event images, icons, OG tags
+├── images/             # Event & article images
 │   ├── Button-Purple.svg
 │   ├── az.png          # App icon
-│   ├── og3.png         # Open Graph image (current)
+│   ├── og3.png         # Open Graph image
+│   ├── imyotzim.jpg    # Article image
 │   └── ...             # Event images
 └── .claude/
     └── launch.json     # Dev server config

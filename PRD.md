@@ -12,24 +12,27 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 - Two views: List (calendar-grouped) and Map (Leaflet)
 - Weekend selector (upcoming 8 weekends) with auto-advance on scroll
 - Category filters with automatic disable for empty categories
+- Collapsible filters on mobile (toggle button with active filter badge)
 - Like button (localStorage-based)
 - Weather display per event (Open-Meteo API)
 - WhatsApp sharing with site footer branding
-- Feedback form with tabs (add event / feedback) via Formspree
-- Empty "add event" card at end of event list
+- Contact/feedback modal on all pages via Formspree
+- Articles page with detail view, full content support, and category filters
+- Holidays page with dynamic upcoming holiday/vacation highlighting
 - Hebrew RTL layout, mobile-friendly with fat-finger CTAs
 - Desktop-optimized font sizes for readability (min-width: 701px)
 - Prominent home navigation ("🎪 אז מה עושים?") on all sub-pages
 - Auth redirect to home page when users authenticate from sub-pages
 - Map zoom controls hidden on mobile to prevent card overlap
 - Hosted on GitHub Pages with custom domain
+- Firebase Auth (Google sign-in) with user profiles
+- PWA support (manifest.json + service worker)
 - Umami analytics
-- Firebase authentication (Google sign-in)
 
-## Data Source
-- Events manually curated in a Google Sheet
+## Data Sources
+- Events, places, and articles manually curated in Google Sheets
 - Published as CSV, fetched client-side on load
-- Add a row = add an event (no deploy needed)
+- Add a row = add content (no deploy needed)
 - Event images stored in `/images` folder in the repo
 
 ## Features
@@ -45,6 +48,8 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 - Unavailable filters automatically grayed out
 - Toggle filters off by clicking again
 - Auto-advance to next weekend on scroll past events
+- Collapsible filter row on mobile with toggle button and active count/label badge
+- Filters auto-close when tapping outside
 
 ### Event Cards
 - Image from Google Sheet or gradient fallback
@@ -54,6 +59,22 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 - Action buttons: like, WhatsApp share, more details, navigation
 - Mobile-optimized touch targets
 
+### Articles
+- Card grid with image, category badge, title, summary, date
+- Category filters auto-generated from article data
+- Full article detail view with hero image, formatted content, share buttons
+- Content supports markdown: `## headings`, `**bold**`, `*italic*`, `[links](url)`
+- Multi-line CSV content parsing for long-form articles
+- Articles sorted by date (newest first)
+- Articles with `content` column open on-site; articles without link externally
+- WhatsApp and copy-link sharing on detail page
+
+### Holidays
+- Three tabs: official holidays, school vacations by region, important info
+- Dynamic highlighting of next upcoming official holiday with purple "הבא" badge
+- Dynamic highlighting of next upcoming school vacation
+- Date-based JS logic (no hardcoded highlights)
+
 ### Sharing
 - WhatsApp share per event with formatted text
 - Footer text on all shares: "לפעילויות נוספות בקרו ב'אז מה עושים היום?' https://fun.israelis.nl"
@@ -61,6 +82,7 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 ### Community Feedback
 - "שתפו את דעתכם" section with two options: add event, feedback
 - Modal form with tab switching between event/feedback types
+- Contact modal ("💬 צרו קשר") accessible from nav tabs on all pages
 - Optional name, email, phone fields
 - Submitted via Formspree
 - Empty card at end of event list invites submissions
@@ -73,7 +95,7 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 
 ### Navigation
 - Sticky nav bar with home logo link on all pages
-- Tab pills: אירועים, 📍 מקומות, 📝 כתבות, 📅 מתי חופש?, 🌤️ תחזית מזג אוויר, 🧡 עלינו
+- Tab pills: אירועים, 📍 מקומות, 📝 מאמרים, 📅 מתי חופש?, 🌤️ תחזית מזג אוויר, 🧡 עלינו, 💬 צרו קשר
 - Holidays section branded as "מתי חופש?" (catchy phrasing instead of generic "חגים")
 
 ## Architecture
@@ -84,12 +106,15 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 - **Weather**: Open-Meteo API (free, no key needed)
 - **Data**: Google Sheets (published as CSV) → fetched client-side
 - **Images**: Stored in `/images` in the repo, referenced by path in the Sheet
-- **Forms**: Formspree
+- **Forms**: Formspree (contact modal on all pages)
+- **Auth**: Firebase (Google sign-in) with Firestore
 - **Analytics**: Umami
-- **Hosting**: GitHub Pages (`stage` for staging, `main` for production)
+- **Hosting**: GitHub Pages (`main` for production)
 - **Domain**: fun.israelis.nl (CNAME → alon-lgtm2.github.io)
 
-### Google Sheet Schema
+### Google Sheet Schemas
+
+#### Events (gid=0)
 | Column | Field | Example |
 |--------|-------|---------|
 | A | title | פסטיבל האור - Glow Eindhoven |
@@ -109,22 +134,34 @@ A Hebrew-language web app for Israeli families living in the Netherlands to disc
 | O | lng | 5.4697 |
 | P | Museumkaart | TRUE / FALSE |
 
-### Articles Sheet Schema (gid=478633181)
+#### Places (gid=993728456)
 | Column | Field | Example |
 |--------|-------|---------|
-| A | title | 10 טיפים לחיסכון בהולנד |
-| B | summary | איך לחסוך כסף על קניות, ביטוחים ומיסים |
-| C | image | https://picsum.photos/seed/savings/800/600 |
-| D | date | 2026-03-25 |
-| E | link | https://example.com/article |
-| F | category | טיפים / אוכל / טיולים / תרבות / חינוך / אירועים |
+| name | Place name | מסעדת שקשוקה |
+| desc | Short description | מסעדה ישראלית באמסטרדם |
+| cat | Category | restaurant / museum / playground |
+| lat | Latitude | 52.3676 |
+| lng | Longitude | 4.9041 |
+
+#### Articles (gid=478633181)
+| Column | Field | Example |
+|--------|-------|---------|
+| title | Article title | 10 טיפים לחיסכון בהולנד |
+| summary | Short summary | איך לחסוך כסף על קניות, ביטוחים ומיסים |
+| image | Image URL or path | /images/imyotzim.jpg |
+| date | Publish date | 2026-03-25 |
+| link | External link (optional) | https://example.com |
+| category | Category tag | טיפים / חינוך / אירועים / אוכל / טיולים / תרבות / קהילה |
+| content | Full article text (optional) | Supports markdown: `## headings`, `**bold**`, `*italic*`, `[links](url)` |
+
+Articles are sorted by date (newest first). If `content` is provided, clicking the card opens a full article detail page on the site with hero image, formatted content, and share buttons. If not, it links externally.
 
 ### File Structure
 ```
 fun/
 ├── index.html              # Home page — weekend events
 ├── places.html             # Recommended places map
-├── articles.html           # Articles and tips (כתבות)
+├── articles.html           # Articles and tips (מאמרים)
 ├── holidays.html           # Holidays & vacations (מתי חופש?)
 ├── weather.html            # Weather forecast page
 ├── about.html              # About page
@@ -133,11 +170,13 @@ fun/
 ├── CNAME                   # Custom domain config
 ├── manifest.json           # PWA manifest
 ├── sw.js                   # Service worker
-├── images/                 # Event images
+├── images/                 # Event & article images
 │   ├── Button-Purple.svg   # Favicon
 │   ├── og3.png             # OG image (current)
+│   ├── imyotzim.jpg        # Article image
 │   └── ...                 # Event images
 ├── PRD.md                  # This file
+├── README.md               # Project readme
 └── DEPLOY-INSTRUCTIONS.md  # Deploy guide
 ```
 
@@ -152,7 +191,9 @@ fun/
 - Multi-language support
 
 ## Service Credentials
-- **Umami**: `<script defer src="https://cloud.umami.is/script.js" data-website-id="fe4e09f5-6b61-4820-8704-716ef86776b6"></script>`
+- **Umami**: `data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"`
 - **Formspree**: `https://formspree.io/f/mnjgwgzn`
-- **Google Sheet CSV (events)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=0&single=true&output=csv`
-- **Google Sheet CSV (articles)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=478633181&single=true&output=csv`
+- **Google Sheet (published CSV base)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?single=true&output=csv`
+  - Events: `&gid=0`
+  - Places: `&gid=993728456`
+  - Articles: `&gid=478633181`
