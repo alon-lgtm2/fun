@@ -848,7 +848,7 @@ function buildFilters() {
 }
 
 function slugify(title) {
-  return encodeURIComponent(title.replace(/\s+/g, '-'));
+  return encodeURIComponent(title);
 }
 
 function renderArticles() {
@@ -932,10 +932,10 @@ function formatContent(text) {
 
 function checkRoute() {
   const params = new URLSearchParams(window.location.search);
-  const articleSlug = params.get('article');
+  const articleSlug = params.get('article'); // URLSearchParams already decodes
   if (articleSlug && articles.length > 0) {
-    const decoded = decodeURIComponent(articleSlug).replace(/-/g, ' ');
-    const article = articles.find(a => a.title === decoded || slugify(a.title) === articleSlug);
+    // Direct match (new URLs) or hyphen-as-space fallback (old URLs)
+    const article = articles.find(a => a.title === articleSlug || a.title === articleSlug.replace(/-/g, ' '));
     if (article) {
       showArticleDetail(article);
       return true;
