@@ -3158,10 +3158,10 @@ function eventMatchesFilters(e) {
 }
 
 function getFilteredEvents() {
-  const today = localDateStr(new Date());
+  const { start: windowStart, end: windowEnd } = getActiveWindow();
   let filtered = events.filter(e => {
     const endDate = e.endDate || e.date;
-    if (endDate < today) return false;
+    if (endDate < windowStart || e.date > windowEnd) return false;
     return eventMatchesFilters(e);
   });
   if (maxDriveMinutes != null && userLat != null) {
@@ -3217,7 +3217,7 @@ function cardHTML(e, i) {
                 <span>${isLiked(e.id) ? '❤️' : '🤍'}</span>
                 <span class="action-icon-label">לייק</span>
               </div>
-              ${e.link ? `<a class="action-icon action-icon-info" href="${e.link}" target="_blank" title="לפרטים נוספים">
+              ${e.link ? `<a class="action-icon action-icon-info" href="${e.link}" target="_blank" title="לפרטים">
                 <span>ℹ️</span>
                 <span class="action-icon-label">פרטים</span>
               </a>` : ''}
@@ -3239,7 +3239,7 @@ function cardHTML(e, i) {
               <span class="like-count" id="likeCount-${e.id}">${getLikeCountDisplay(e.id)}</span>
             </div>
             <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:14px;height:14px;" loading="lazy" decoding="async"> שיתוף עם חברים</a>
-            ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">לפרטים נוספים</a>` : ''}
+            ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">לפרטים</a>` : ''}
             ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 לניווט</a>` : ''}
           </div>
         </div>
@@ -3261,6 +3261,7 @@ function renderList() {
 function renderCalendar() {
   const el = document.getElementById('calendarPanel');
   const today = localDateStr(new Date());
+  const { start: windowStart } = getActiveWindow();
 
   const allFiltered = getFilteredEvents();
   updateResultsBar(allFiltered);
@@ -3270,7 +3271,7 @@ function renderCalendar() {
   // Group events by date (expand multi-day events across each day)
   const groups = {};
   allFiltered.forEach(e => {
-    const start = e.date >= today ? e.date : today;
+    const start = e.date >= windowStart ? e.date : windowStart;
     const end = e.endDate || e.date;
     let d = new Date(start + 'T00:00:00');
     const endD = new Date(end + 'T00:00:00');
@@ -3448,8 +3449,8 @@ function retryFailedImages() {
 }
 
 function updateFilterAvailability() {
-  const today = localDateStr(new Date());
-  const upcomingEvents = events.filter(e => (e.endDate || e.date) >= today);
+  const { start: windowStart, end: windowEnd } = getActiveWindow();
+  const upcomingEvents = events.filter(e => (e.endDate || e.date) >= windowStart && e.date <= windowEnd);
 
   // Current filtered set (events matching ALL active filters)
   const currentFiltered = upcomingEvents.filter(e => eventMatchesFilters(e));
@@ -3609,6 +3610,20 @@ function fmtDayFull(s) {
 
 function localDateStr(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// Returns the rolling Thu–Wed window to display.
+// On Thursday the window resets to the new week (Thu → next Wed).
+function getActiveWindow() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const day = today.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+  const daysBack = (day - 4 + 7) % 7; // days since most recent Thursday
+  const windowStart = new Date(today);
+  windowStart.setDate(today.getDate() - daysBack);
+  const windowEnd = new Date(windowStart);
+  windowEnd.setDate(windowStart.getDate() + 6); // the following Wednesday
+  return { start: localDateStr(windowStart), end: localDateStr(windowEnd) };
 }
 
 function getEventDates(e, minDate, maxDate) {
