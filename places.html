@@ -1674,15 +1674,16 @@ let distanceCircle = null;
 
 // ===== DUTCH CITIES =====
 const DUTCH_CITIES = [
+  { name: 'אמסטלווין', lat: 52.3084, lng: 4.8610 },
   { name: 'אמסטרדם', lat: 52.3676, lng: 4.9041 },
-  { name: 'אוטרכט', lat: 52.0907, lng: 5.1214 },
   { name: 'הארלם', lat: 52.3874, lng: 4.6462 },
+  { name: 'אוטרכט', lat: 52.0907, lng: 5.1214 },
+  { name: 'דן האג', lat: 52.0705, lng: 4.3007 },
+  { name: 'איינדהובן', lat: 51.4416, lng: 5.4697 },
+  { name: 'חרונינגן', lat: 53.2194, lng: 6.5665 },
   { name: 'אלמרה', lat: 52.3508, lng: 5.2647 },
   { name: 'אמרספורט', lat: 52.1561, lng: 5.3878 },
-  { name: 'איינדהובן', lat: 51.4416, lng: 5.4697 },
   { name: 'ארנהם', lat: 51.9851, lng: 5.8987 },
-  { name: 'דן האג', lat: 52.0705, lng: 4.3007 },
-  { name: 'חרונינגן', lat: 53.2194, lng: 6.5665 },
   { name: 'ליידן', lat: 52.1601, lng: 4.4970 },
   { name: 'מאסטריכט', lat: 50.8514, lng: 5.6910 },
   { name: 'רוטרדם', lat: 51.9225, lng: 4.4792 },
@@ -1730,8 +1731,8 @@ function populateCitySelect() {
 
 function setUserCity(cityName) {
   if (!cityName) {
-    // Default to Amsterdam
-    cityName = 'אמסטרדם';
+    // Default to Amstelveen
+    cityName = 'אמסטלווין';
     document.getElementById('citySelect').value = cityName;
   }
   const city = DUTCH_CITIES.find(c => c.name === cityName);
@@ -1899,7 +1900,7 @@ function initCityFromProfile() {
   }
   // 3. Default to Amsterdam
   if (!city) {
-    city = 'אמסטרדם';
+    city = 'אמסטלווין';
   }
   const sel = document.getElementById('citySelect');
   // Check if city is in our list
@@ -1909,7 +1910,7 @@ function initCityFromProfile() {
     userLat = match.lat;
     userLng = match.lng;
   } else {
-    sel.value = 'אמסטרדם';
+    sel.value = 'אמסטלווין';
     userLat = DUTCH_CITIES[0].lat;
     userLng = DUTCH_CITIES[0].lng;
   }
@@ -1991,15 +1992,15 @@ function updateActiveChips() {
   container.innerHTML = '';
   const citySelect = document.getElementById('citySelect');
   const cityName = citySelect ? citySelect.value : '';
-  if (cityName && cityName !== 'אמסטרדם') {
+  if (cityName && cityName !== 'אמסטלווין') {
     const chip = document.createElement('button');
     chip.className = 'active-chip chip-city';
     chip.innerHTML = '📍 ' + cityName + ' <span class="chip-x">✕</span>';
     chip.onclick = function() {
       const sel = document.getElementById('citySelect');
       const sheetSel = document.getElementById('sheetCitySelect');
-      if (sel) { sel.value = 'אמסטרדם'; setUserCity('אמסטרדם'); }
-      if (sheetSel) sheetSel.value = 'אמסטרדם';
+      if (sel) { sel.value = 'אמסטלווין'; setUserCity('אמסטלווין'); }
+      if (sheetSel) sheetSel.value = 'אמסטלווין';
       updateActiveChips();
     };
     container.appendChild(chip);
