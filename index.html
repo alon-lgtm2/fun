@@ -3177,7 +3177,7 @@ function getFilteredEvents() {
 }
 
 // ===== CARD HTML =====
-function cardHTML(e, i) {
+function cardHTML(e, i, displayDate) {
   const dateLabel = fmtShort(e.date) + (e.endDate ? '-' + fmtShort(e.endDate) : '');
   const shareText = `${e.title}\n${e.location}\n${dateLabel} | ${e.time}\n${e.price}\n${e.link ? e.link + '\n' : ''}\nלפעילויות נוספות בקרו ב"אז מה עושים היום?"\nhttps://fun.israelis.nl`;
   const whatsappText = encodeURIComponent(shareText);
@@ -3191,7 +3191,7 @@ function cardHTML(e, i) {
     <div class="event-inner">
       <div class="event-img ${imgUrl ? 'img-loading' : ''}" ${imgUrl ? `data-bg="${imgUrl}"` : `style="${noImgStyle}"`} data-type-emoji="${typeEmoji(e.type)}">
         ${!imgUrl ? `<span>${typeEmoji(e.type)}</span>` : ''}
-        <div class="event-day-badge">${fmtDay(e.date)} ${e.time}</div>
+        <div class="event-day-badge">${fmtDay(displayDate || e.date)} ${e.time}</div>
       </div>
       ${e.link ? '</a>' : ''}
       <div class="event-body">
@@ -3296,7 +3296,7 @@ function renderCalendar() {
           <span class="cal-day-date">${fmtLong(date)}</span>
           <span class="cal-day-count">${groups[date].length} אירועים</span>
         </div>
-        <div class="cal-events">${groups[date].map(e => cardHTML(e, idx++)).join('')}</div>
+        <div class="cal-events">${groups[date].map(e => cardHTML(e, idx++, date)).join('')}</div>
       </div>`;
   });
 
