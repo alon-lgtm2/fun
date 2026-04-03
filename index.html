@@ -2742,19 +2742,19 @@ let maxDurationHours = null;
 
 // ===== DUTCH CITIES =====
 const DUTCH_CITIES = [
+  { name: 'אמסטלפיין', en: 'Amstelveen', lat: 52.3012, lng: 4.8637 },
   { name: 'אמסטרדם', en: 'Amsterdam', lat: 52.3676, lng: 4.9041 },
-  { name: 'רוטרדם', en: 'Rotterdam', lat: 51.9225, lng: 4.4792 },
-  { name: 'דן האג', en: 'Den Haag', lat: 52.0705, lng: 4.3007 },
+  { name: 'הארלם', en: 'Haarlem', lat: 52.3874, lng: 4.6462 },
   { name: 'אוטרכט', en: 'Utrecht', lat: 52.0907, lng: 5.1214 },
-  { name: 'איינדהובן', en: 'Eindhoven', lat: 51.4416, lng: 5.4697 },
+  { name: 'דן האג', en: 'Den Haag', lat: 52.0705, lng: 4.3007 },
   { name: 'חרונינגן', en: 'Groningen', lat: 53.2194, lng: 6.5665 },
+  { name: 'איינדהובן', en: 'Eindhoven', lat: 51.4416, lng: 5.4697 },
+  { name: 'רוטרדם', en: 'Rotterdam', lat: 51.9225, lng: 4.4792 },
   { name: 'אלמרה', en: 'Almere', lat: 52.3508, lng: 5.2647 },
   { name: 'ארנהם', en: 'Arnhem', lat: 51.9851, lng: 5.8987 },
   { name: 'מאסטריכט', en: 'Maastricht', lat: 50.8514, lng: 5.6910 },
   { name: 'ליידן', en: 'Leiden', lat: 52.1601, lng: 4.4970 },
-  { name: 'הארלם', en: 'Haarlem', lat: 52.3874, lng: 4.6462 },
   { name: 'אמרספורט', en: 'Amersfoort', lat: 52.1561, lng: 5.3878 },
-  { name: 'אמסטלפיין', en: 'Amstelveen', lat: 52.3012, lng: 4.8637 },
 ];
 
 function findCityByProfile(profileCity) {
@@ -3881,15 +3881,15 @@ loadEvents();
         <label class="profile-form-label">עיר / אזור *</label>
         <select class="profile-form-select" id="profileFormCity" required>
           <option value="">בחרו אזור</option>
-          <option value="Amsterdam">Amsterdam</option>
-          <option value="Rotterdam">Rotterdam</option>
-          <option value="Den Haag">Den Haag</option>
-          <option value="Utrecht">Utrecht</option>
-          <option value="Eindhoven">Eindhoven</option>
           <option value="Amstelveen">Amstelveen</option>
+          <option value="Amsterdam">Amsterdam</option>
           <option value="Haarlem">Haarlem</option>
-          <option value="Leiden">Leiden</option>
+          <option value="Utrecht">Utrecht</option>
+          <option value="Den Haag">Den Haag</option>
           <option value="Groningen">Groningen</option>
+          <option value="Eindhoven">Eindhoven</option>
+          <option value="Rotterdam">Rotterdam</option>
+          <option value="Leiden">Leiden</option>
           <option value="Noord-Holland">Noord-Holland (other)</option>
           <option value="Zuid-Holland">Zuid-Holland (other)</option>
           <option value="Noord-Brabant">Noord-Brabant</option>
