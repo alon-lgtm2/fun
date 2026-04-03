@@ -366,8 +366,9 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 700px) {
-  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
-  .hero-tab { font-size: 12px; padding: 5px 10px; }
+  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 14px; flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .hero-nav-tabs-unified::-webkit-scrollbar { display: none; }
+  .hero-tab { font-size: 12px; padding: 5px 10px; flex-shrink: 0; }
   .weekend-summary { grid-template-columns: 1fr; }
   .city-forecast { grid-template-columns: 1fr; }
   .weather-icon { font-size: 40px; }

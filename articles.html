@@ -655,8 +655,17 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
 .signup-soft-banner-btn img { width: 14px; height: 14px; }
 
 @media (max-width: 700px) {
-  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
-  .hero-tab { font-size: 12px; padding: 5px 10px; }
+  .hero-nav-tabs-unified {
+    gap: 6px;
+    padding: 8px 12px 14px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .hero-nav-tabs-unified::-webkit-scrollbar { display: none; }
+  .hero-tab { font-size: 12px; padding: 5px 10px; flex-shrink: 0; }
   .auth-btn-hero span { display: none; }
   .auth-btn-hero { padding: 6px 10px; }
   .articles-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }

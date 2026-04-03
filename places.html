@@ -1314,8 +1314,9 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .auth-btn-hero .auth-btn-hero-text { display: none; }
   .auth-btn-hero { padding: 6px 10px; }
   .nav-tab-pill { font-size: 12px; padding: 5px 12px; }
-  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
-  .hero-tab { font-size: 12px; padding: 5px 10px; }
+  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 14px; flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .hero-nav-tabs-unified::-webkit-scrollbar { display: none; }
+  .hero-tab { font-size: 12px; padding: 5px 10px; flex-shrink: 0; }
 }
 
 /* Desktop: larger text for readability */

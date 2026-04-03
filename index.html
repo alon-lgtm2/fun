@@ -221,8 +221,17 @@ body {
 .hero-tab.active { background: white; color: var(--purple); border-color: white; font-weight: 700; }
 
 @media (max-width: 700px) {
-  .hero-nav-tabs-unified { gap: 6px; padding: 8px 12px 0; }
-  .hero-tab { font-size: 12px; padding: 5px 10px; }
+  .hero-nav-tabs-unified {
+    gap: 6px;
+    padding: 8px 12px 14px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .hero-nav-tabs-unified::-webkit-scrollbar { display: none; }
+  .hero-tab { font-size: 12px; padding: 5px 10px; flex-shrink: 0; }
 }
 
 /* ===== STICKY NAV ===== */
@@ -604,6 +613,8 @@ body {
   .view-toggles { margin-inline-start: auto; }
   .nav-bar { display: none; }
   .nav-bar-outer { padding: 8px 8px 8px; align-items: center; }
+  .view-btn { padding: 4px 10px; font-size: 0; }
+  .view-btn .view-icon { font-size: 18px; }
 }
 
 /* ===== BOTTOM SHEET FOR FILTERS ===== */
