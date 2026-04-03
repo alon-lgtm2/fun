@@ -264,13 +264,13 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 /* Articles grid */
 .articles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
 }
 
 .article-card {
   background: white;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
@@ -288,13 +288,13 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 
 .article-img {
   width: 100%;
-  height: 180px;
+  height: 130px;
   object-fit: cover;
   background: var(--gradient-soft);
 }
 
 .article-body {
-  padding: 16px;
+  padding: 10px 12px 12px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -302,37 +302,41 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 
 .article-category {
   display: inline-block;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: 100px;
   background: rgba(155,48,255,0.08);
   color: var(--purple);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   align-self: flex-start;
 }
 
 .article-title {
   font-family: 'Rubik', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 6px;
-  line-height: 1.4;
+  margin-bottom: 4px;
+  line-height: 1.35;
 }
 
 .article-summary {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-light);
-  line-height: 1.6;
+  line-height: 1.5;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .article-date {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-lighter);
-  margin-top: 12px;
-  padding-top: 10px;
+  margin-top: 8px;
+  padding-top: 7px;
   border-top: 1px solid var(--border);
 }
 
@@ -421,15 +425,21 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
   font-size: 15px;
   color: var(--text);
   line-height: 1.8;
-  white-space: pre-line;
 }
+
+.article-detail-content p {
+  margin-bottom: 12px;
+}
+.article-detail-content p:last-child { margin-bottom: 0; }
 
 .article-detail-content h2,
 .article-detail-content h3 {
   font-family: 'Rubik', sans-serif;
-  margin-top: 18px;
+  margin-top: 20px;
   margin-bottom: 6px;
 }
+.article-detail-content h2:first-child,
+.article-detail-content h3:first-child { margin-top: 0; }
 
 .article-detail-content a {
   color: var(--purple);
@@ -651,6 +661,8 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .filters-toggle { display: flex; }
   .filters-row { display: none; }
   .filters-row.open { display: flex; }
+  .articles-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .article-img { height: 110px; }
 }
 
 @media (min-width: 701px) {
@@ -659,8 +671,8 @@ footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
   .nav-logo { font-size: 17px; }
   .nav-tab-pill { font-size: 15px; padding: 7px 18px; }
   .filter-pill { font-size: 13px; padding: 8px 18px; }
-  .article-title { font-size: 18px; }
-  .article-summary { font-size: 14px; }
+  .article-title { font-size: 15px; }
+  .article-summary { font-size: 13px; }
 }
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="9ac642c3-4ea0-48e5-869b-2e0a39d6a03e"></script>
@@ -953,13 +965,38 @@ function showArticleDetail(article) {
 
 function formatContent(text) {
   if (!text) return '';
-  // Convert markdown-like formatting
-  let html = text
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = text.split('\n');
+  let html = '';
+  let paraLines = [];
+
+  function flushPara() {
+    if (!paraLines.length) return;
+    const inner = paraLines.join('<br>');
+    html += '<p>' + inner + '</p>';
+    paraLines = [];
+  }
+
+  function inlineFormat(s) {
+    return s
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  }
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) {
+      flushPara();
+      continue;
+    }
+    const h3 = line.match(/^### (.+)$/);
+    if (h3) { flushPara(); html += '<h3>' + inlineFormat(h3[1]) + '</h3>'; continue; }
+    const h2 = line.match(/^## (.+)$/);
+    if (h2) { flushPara(); html += '<h2>' + inlineFormat(h2[1]) + '</h2>'; continue; }
+    paraLines.push(inlineFormat(line));
+  }
+  flushPara();
   return html;
 }
 
