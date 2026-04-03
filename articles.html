@@ -198,7 +198,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 .content {
   max-width: 900px;
   margin: 0 auto;
-  padding: 24px 20px 60px;
+  padding: 20px 20px 40px;
 }
 
 /* Filters */
@@ -355,7 +355,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 }
 
 .article-detail-body {
-  padding: 32px 28px;
+  padding: 22px 20px;
 }
 
 .article-detail-back {
@@ -382,7 +382,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
@@ -405,14 +405,14 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
   font-size: 26px;
   font-weight: 800;
   color: var(--text);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   line-height: 1.3;
 }
 
 .article-detail-summary {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-light);
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   line-height: 1.6;
   font-weight: 500;
 }
@@ -427,8 +427,8 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 .article-detail-content h2,
 .article-detail-content h3 {
   font-family: 'Rubik', sans-serif;
-  margin-top: 24px;
-  margin-bottom: 8px;
+  margin-top: 18px;
+  margin-bottom: 6px;
 }
 
 .article-detail-content a {
@@ -440,7 +440,7 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 24px;
+  margin-top: 20px;
   padding: 10px 20px;
   border-radius: 100px;
   background: var(--gradient);
@@ -454,32 +454,52 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 
 .article-detail-link:hover { transform: translateY(-1px); }
 
+/* Share bar */
 .article-detail-share {
+  margin-top: 24px;
+  padding: 18px 20px;
+  background: var(--gradient-soft);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(155,48,255,0.1);
+}
+
+.share-bar-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-lighter);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.share-bar-buttons {
   display: flex;
   gap: 8px;
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
 }
 
 .share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 16px;
   border-radius: 100px;
-  border: 1.5px solid var(--border);
-  background: white;
+  border: none;
   font-family: 'Heebo', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-light);
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: transform 0.15s, opacity 0.15s;
+  white-space: nowrap;
 }
-
-.share-btn:hover { border-color: var(--purple); color: var(--purple); }
+.share-btn:hover { transform: translateY(-1px); opacity: 0.9; }
+.share-btn-wa { background: #25D366; color: white; }
+.share-btn-fb { background: #1877F2; color: white; }
+.share-btn-copy { background: white; color: var(--text); border: 1.5px solid var(--border); }
 
 @media (max-width: 700px) {
-  .article-detail-body { padding: 20px 16px; }
+  .article-detail-body { padding: 16px 14px; }
   .article-detail-title { font-size: 22px; }
   .article-detail-summary { font-size: 14px; }
   .article-detail-content { font-size: 14px; }
@@ -908,8 +928,21 @@ function showArticleDetail(article) {
         <div class="article-detail-content">${contentHtml}</div>
         ${hasLink ? `<a class="article-detail-link" href="${article.link}" target="_blank" rel="noopener">קראו עוד ←</a>` : ''}
         <div class="article-detail-share">
-          <a class="share-btn" href="https://wa.me/?text=${encodeURIComponent(article.title + ' ' + window.location.href)}" target="_blank">📱 WhatsApp</a>
-          <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='הועתק!'">📋 העתקת קישור</button>
+          <div class="share-bar-label">שתפו עם חברים</div>
+          <div class="share-bar-buttons">
+            <a class="share-btn share-btn-wa" href="https://wa.me/?text=${encodeURIComponent(article.title + '\n' + window.location.href)}" target="_blank">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp
+            </a>
+            <a class="share-btn share-btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Facebook
+            </a>
+            <button class="share-btn share-btn-copy" onclick="navigator.clipboard.writeText(window.location.href);this.innerHTML='✓ הועתק!'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              העתקת קישור
+            </button>
+          </div>
         </div>
       </div>
     </div>
