@@ -519,6 +519,85 @@ body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--tex
 .share-btn-fb { background: #1877F2; color: white; }
 .share-btn-copy { background: white; color: var(--text); border: 1.5px solid var(--border); }
 
+/* Image credit / copyright */
+.article-detail-image-wrap { position: relative; }
+.article-detail-credit {
+  font-size: 11px;
+  color: var(--text-lighter);
+  padding: 6px 20px;
+  text-align: left;
+  direction: ltr;
+}
+.article-detail-disclaimer {
+  font-size: 11px;
+  color: var(--text-lighter);
+  padding: 4px 20px 0;
+  line-height: 1.5;
+}
+
+/* Report error */
+.report-error-section {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(155,48,255,0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.report-error-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--text-lighter);
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.report-error-btn:hover { border-color: #e74c3c; color: #e74c3c; }
+.report-error-form { display: none; margin-top: 12px; }
+.report-error-form.open { display: block; }
+.report-error-form textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  resize: vertical;
+  direction: rtl;
+}
+.report-error-form textarea:focus { outline: none; border-color: var(--purple); }
+.report-error-actions { display: flex; gap: 8px; margin-top: 8px; }
+.report-error-send {
+  padding: 7px 18px;
+  border: none;
+  border-radius: 100px;
+  background: #e74c3c;
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.report-error-send:hover { opacity: 0.9; }
+.report-error-cancel {
+  padding: 7px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  background: white;
+  color: var(--text-lighter);
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+}
+
 @media (max-width: 700px) {
   .article-detail-body { padding: 16px 14px; }
   .article-detail-title { font-size: 22px; }
@@ -927,10 +1006,16 @@ function showArticleDetail(article) {
   const contentHtml = formatContent(article.content || '');
   const hasLink = article.link && article.link !== '#';
 
+  const imageCredit = article.image_credit || '';
+
   detailView.innerHTML = `
     <a class="article-detail-back" href="articles.html">→ חזרה למאמרים</a>
     <div class="article-detail">
-      ${article.image ? `<img class="article-detail-hero" src="${article.image}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
+      ${article.image ? `
+        <div class="article-detail-image-wrap">
+          <img class="article-detail-hero" src="${article.image}" alt="${article.title}" onerror="this.parentElement.style.display='none'">
+          ${imageCredit ? `<div class="article-detail-credit">${imageCredit}</div>` : ''}
+        </div>` : ''}
       <div class="article-detail-body">
         <div class="article-detail-meta">
           ${article.category ? `<span class="article-detail-category">${article.category}</span>` : ''}
@@ -955,6 +1040,19 @@ function showArticleDetail(article) {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
               העתקת קישור
             </button>
+          </div>
+        </div>
+        <div class="report-error-section">
+          <button class="report-error-btn" onclick="toggleReportError()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            מצאתם טעות?
+          </button>
+        </div>
+        <div class="report-error-form" id="reportErrorForm">
+          <textarea id="reportErrorMsg" placeholder="תארו את הטעות שמצאתם..."></textarea>
+          <div class="report-error-actions">
+            <button class="report-error-send" onclick="sendErrorReport('${article.title.replace(/'/g, "\\'")}')">שליחה</button>
+            <button class="report-error-cancel" onclick="toggleReportError()">ביטול</button>
           </div>
         </div>
       </div>
@@ -1048,6 +1146,37 @@ function openContactModal() {
 }
 function closeContactModal() {
   document.getElementById('contactOverlay').classList.remove('active');
+}
+
+function toggleReportError() {
+  const form = document.getElementById('reportErrorForm');
+  form.classList.toggle('open');
+  if (form.classList.contains('open')) {
+    document.getElementById('reportErrorMsg').focus();
+  }
+}
+
+async function sendErrorReport(articleTitle) {
+  const msg = document.getElementById('reportErrorMsg').value.trim();
+  if (!msg) { document.getElementById('reportErrorMsg').focus(); return; }
+  const btn = document.querySelector('.report-error-send');
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+  try {
+    const data = new FormData();
+    data.append('_type', 'error_report');
+    data.append('article', articleTitle);
+    data.append('message', msg);
+    data.append('url', window.location.href);
+    const res = await fetch('https://formspree.io/f/mnjgwgzn', { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+    if (res.ok) {
+      document.getElementById('reportErrorForm').innerHTML = '<div style="color:var(--green);font-size:13px;font-weight:700;padding:8px 0;">✓ תודה! קיבלנו את הדיווח ונבדוק בהקדם.</div>';
+    } else { throw new Error(); }
+  } catch (err) {
+    alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
+    btn.disabled = false;
+    btn.textContent = 'שליחה';
+  }
 }
 
 document.getElementById('contactForm').addEventListener('submit', async (e) => {
