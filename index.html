@@ -3228,8 +3228,13 @@ function getImageURL(image) {
   // Strip path-only values like "/images/" or "images/" with no actual filename
   const stripped = image.replace(/^\/?(images\/?)$/, '');
   if (!stripped) return '';
-  if (stripped.startsWith('http') || stripped.startsWith('/') || stripped.startsWith('images/')) return stripped;
-  return 'images/' + stripped;
+  // External URLs – use as-is
+  if (stripped.startsWith('http')) return stripped;
+  // Local paths – resolve to production domain so images work on staging too
+  const PROD_BASE = 'https://fun.israelis.nl';
+  if (stripped.startsWith('/')) return PROD_BASE + stripped;
+  if (stripped.startsWith('images/')) return PROD_BASE + '/' + stripped;
+  return PROD_BASE + '/images/' + stripped;
 }
 
 async function loadEvents() {
