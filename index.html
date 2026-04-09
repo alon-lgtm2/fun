@@ -1205,6 +1205,72 @@ body {
 }
 .action-icon-nav:hover { box-shadow: 0 5px 16px rgba(66,133,244,0.4); }
 
+.action-icon-report {
+  background: #fff;
+  border: 2px solid #e8e0f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  font-size: 16px;
+}
+.action-icon-report:hover { border-color: #e74c3c; background: #fff5f5; }
+
+.report-event-form {
+  display: none;
+  margin-top: 10px;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+}
+.report-event-form.open { display: block; }
+.report-event-form textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  resize: vertical;
+  direction: rtl;
+  box-sizing: border-box;
+}
+.report-event-form textarea:focus { outline: none; border-color: var(--purple); }
+.report-event-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.report-event-send {
+  padding: 7px 18px;
+  border: none;
+  border-radius: 100px;
+  background: #e74c3c;
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.report-event-send:hover { opacity: 0.9; }
+.report-event-cancel {
+  padding: 7px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  background: white;
+  color: var(--text-lighter);
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-s.btn-report {
+  background: white;
+  color: var(--text-lighter);
+  border: 1.5px solid var(--border);
+  font-size: 12px;
+}
+.btn-s.btn-report:hover { border-color: #e74c3c; color: #e74c3c; }
+
 .action-icon-label {
   position: absolute;
   bottom: -20px;
@@ -3264,6 +3330,10 @@ function cardHTML(e, i, displayDate) {
                 <span>🧭</span>
                 <span class="action-icon-label">ניווט</span>
               </a>` : ''}
+              <div class="action-icon action-icon-report" onclick="toggleReportEvent(${e.id})" title="דיווח על טעות">
+                <span>⚠️</span>
+                <span class="action-icon-label">דיווח</span>
+              </div>
         </div>
         <div class="event-footer">
           <div class="event-details">
@@ -3280,6 +3350,14 @@ function cardHTML(e, i, displayDate) {
             <a class="btn-s btn-wa" href="https://wa.me/?text=${whatsappText}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" style="width:14px;height:14px;" loading="lazy" decoding="async"> שיתוף עם חברים</a>
             ${e.link ? `<a class="btn-s btn-lnk" href="${e.link}" target="_blank">לפרטים</a>` : ''}
             ${navUrl ? `<a class="btn-s btn-nav" href="${navUrl}" target="_blank">🧭 לניווט</a>` : ''}
+            <button class="btn-s btn-report" onclick="toggleReportEvent(${e.id})">⚠️ דיווח על טעות</button>
+          </div>
+        </div>
+        <div class="report-event-form" id="reportEventForm-${e.id}">
+          <textarea id="reportEventMsg-${e.id}" placeholder="תארו את הטעות או אי הדיוק שמצאתם..."></textarea>
+          <div class="report-event-actions">
+            <button class="report-event-send" onclick="sendEventReport(${e.id}, '${e.title.replace(/'/g, "\\'")}')">שליחה</button>
+            <button class="report-event-cancel" onclick="toggleReportEvent(${e.id})">ביטול</button>
           </div>
         </div>
       </div>
@@ -4246,6 +4324,57 @@ document.getElementById('profileModal').addEventListener('click', function(e) {
 document.getElementById('signinModal').addEventListener('click', function(e) {
   if (e.target === this) dismissSigninModal();
 });
+
+// ===== REPORT EVENT =====
+function toggleReportEvent(eventId) {
+  // Close any other open report forms
+  document.querySelectorAll('.report-event-form.open').forEach(f => {
+    if (f.id !== `reportEventForm-${eventId}`) f.classList.remove('open');
+  });
+  const form = document.getElementById(`reportEventForm-${eventId}`);
+  if (!form) return;
+  form.classList.toggle('open');
+  if (form.classList.contains('open')) {
+    const ta = document.getElementById(`reportEventMsg-${eventId}`);
+    if (ta) ta.focus();
+  }
+}
+
+async function sendEventReport(eventId, eventTitle) {
+  const ta = document.getElementById(`reportEventMsg-${eventId}`);
+  const msg = ta ? ta.value.trim() : '';
+  if (!msg) { if (ta) ta.focus(); return; }
+
+  const form = document.getElementById(`reportEventForm-${eventId}`);
+  const btn = form.querySelector('.report-event-send');
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+
+  try {
+    const data = new FormData();
+    data.append('_type', 'event_report');
+    data.append('event_id', eventId);
+    data.append('event_title', eventTitle);
+    data.append('message', msg);
+    data.append('url', window.location.href);
+
+    const res = await fetch('https://formspree.io/f/mnjgwgzn', {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (res.ok) {
+      form.innerHTML = '<div style="color:var(--green);font-size:13px;font-weight:700;padding:8px 0;">✓ תודה! קיבלנו את הדיווח ונבדוק בהקדם.</div>';
+    } else {
+      throw new Error();
+    }
+  } catch (err) {
+    alert('שגיאה בשליחה. נסו שוב מאוחר יותר.');
+    btn.disabled = false;
+    btn.textContent = 'שליחה';
+  }
+}
 </script>
 </body>
 </html>
