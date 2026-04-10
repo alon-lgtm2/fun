@@ -4018,8 +4018,8 @@ loadEvents();
   const section = document.querySelector('.articles-preview-section');
   try {
     const ARTICLES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=478633181&single=true&output=csv';
-    const cb = Math.floor(Date.now() / 60000);
-    const resp = await fetch(ARTICLES_CSV + '&_cb=' + cb);
+    // Force fresh fetch on every page load: per-load cache buster + no-store.
+    const resp = await fetch(ARTICLES_CSV + '&_cb=' + Date.now(), { cache: 'no-store' });
     if (!resp.ok) return;
     const text = await resp.text();
     const rows = parseCSV(text);
