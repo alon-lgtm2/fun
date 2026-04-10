@@ -1543,10 +1543,71 @@ body {
   text-decoration: none;
 }
 .articles-preview-link:hover { text-decoration: underline; }
+.articles-preview-carousel {
+  position: relative;
+}
 .articles-preview-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
+  transition: opacity 0.18s ease;
+}
+.articles-preview-grid.is-switching {
+  opacity: 0;
+}
+.articles-carousel-btn {
+  position: absolute;
+  top: 70px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background 0.2s, transform 0.2s, opacity 0.2s;
+  padding: 0;
+}
+.articles-carousel-btn:hover:not(:disabled) {
+  background: var(--bg);
+  transform: scale(1.08);
+}
+.articles-carousel-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.articles-carousel-prev { right: -14px; }
+.articles-carousel-next { left: -14px; }
+@media (max-width: 700px) {
+  .articles-carousel-prev { right: 4px; }
+  .articles-carousel-next { left: 4px; }
+}
+.articles-preview-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+.articles-preview-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.articles-preview-dot.active {
+  background: var(--purple);
+  transform: scale(1.3);
 }
 .article-preview-card {
   background: var(--bg);
@@ -2700,7 +2761,12 @@ body {
       <span class="articles-preview-title">📝 מאמרים</span>
       <a href="articles.html" class="articles-preview-link">לכל המאמרים &larr;</a>
     </div>
-    <div class="articles-preview-grid" id="articlesPreview"></div>
+    <div class="articles-preview-carousel">
+      <button type="button" class="articles-carousel-btn articles-carousel-prev" id="articlesCarouselPrev" aria-label="הקודם">&#x2192;</button>
+      <div class="articles-preview-grid" id="articlesPreview"></div>
+      <button type="button" class="articles-carousel-btn articles-carousel-next" id="articlesCarouselNext" aria-label="הבא">&#x2190;</button>
+    </div>
+    <div class="articles-preview-dots" id="articlesPreviewDots"></div>
   </div>
 
     <div class="about-block">
@@ -3949,30 +4015,81 @@ loadEvents();
 
 // ===== ARTICLES PREVIEW =====
 (async function loadArticlesPreview() {
+  const section = document.querySelector('.articles-preview-section');
   try {
     const ARTICLES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=478633181&single=true&output=csv';
-    const cb = Math.floor(Date.now() / 60000);
-    const resp = await fetch(ARTICLES_CSV + '&_cb=' + cb);
+    // Force fresh fetch on every page load: per-load cache buster + no-store.
+    const resp = await fetch(ARTICLES_CSV + '&_cb=' + Date.now(), { cache: 'no-store' });
     if (!resp.ok) return;
     const text = await resp.text();
     const rows = parseCSV(text);
-    const articles = rows.filter(r => r.title).map(r => ({
-      title: r.title,
-      summary: r.summary || '',
-      image: r.image ? (r.image.startsWith('http') ? r.image : (r.image.startsWith('images/') ? r.image : 'images/' + r.image)) : null,
-      link: r.link || 'articles.html',
-    }));
-    if (articles.length === 0) { document.querySelector('.articles-preview-section').style.display = 'none'; return; }
-    const latest = articles.slice(0, 3);
-    const container = document.getElementById('articlesPreview');
-    container.innerHTML = latest.map(a => {
-      const imgHTML = a.image
-        ? `<div class="article-preview-img" style="background-image:url(${a.image})"></div>`
-        : `<div class="article-preview-img-placeholder">📝</div>`;
-      return `<a href="${a.link}" target="_blank" rel="noopener" class="article-preview-card">${imgHTML}<div class="article-preview-body"><div class="article-preview-title">${a.title}</div>${a.summary ? `<div class="article-preview-summary">${a.summary}</div>` : ''}</div></a>`;
-    }).join('');
+    // Only articles explicitly marked with a positive number in the "featured" column.
+    // Sort is stable, so ties fall back to CSV order.
+    const featured = rows
+      .filter(r => r.title)
+      .map(r => ({
+        title: r.title,
+        summary: r.summary || '',
+        image: r.image ? (r.image.startsWith('http') ? r.image : (r.image.startsWith('images/') ? r.image : 'images/' + r.image)) : null,
+        link: r.link || 'articles.html',
+        priority: Number(r.featured),
+      }))
+      .filter(a => Number.isFinite(a.priority) && a.priority > 0)
+      .sort((a, b) => a.priority - b.priority);
+
+    if (featured.length === 0) { section.style.display = 'none'; return; }
+
+    const PER_PAGE = 3;
+    const totalPages = Math.ceil(featured.length / PER_PAGE);
+    let currentPage = 0;
+    const grid = document.getElementById('articlesPreview');
+    const dotsContainer = document.getElementById('articlesPreviewDots');
+    const prevBtn = document.getElementById('articlesCarouselPrev');
+    const nextBtn = document.getElementById('articlesCarouselNext');
+
+    function renderPage() {
+      const start = currentPage * PER_PAGE;
+      const pageItems = featured.slice(start, start + PER_PAGE);
+      grid.innerHTML = pageItems.map(a => {
+        const imgHTML = a.image
+          ? `<div class="article-preview-img" style="background-image:url(${a.image})"></div>`
+          : `<div class="article-preview-img-placeholder">📝</div>`;
+        return `<a href="${a.link}" target="_blank" rel="noopener" class="article-preview-card">${imgHTML}<div class="article-preview-body"><div class="article-preview-title">${a.title}</div>${a.summary ? `<div class="article-preview-summary">${a.summary}</div>` : ''}</div></a>`;
+      }).join('');
+      dotsContainer.querySelectorAll('.articles-preview-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === currentPage);
+      });
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage === totalPages - 1;
+    }
+
+    function goTo(page) {
+      if (page < 0 || page >= totalPages || page === currentPage) return;
+      grid.classList.add('is-switching');
+      setTimeout(() => {
+        currentPage = page;
+        renderPage();
+        grid.classList.remove('is-switching');
+      }, 180);
+    }
+
+    if (totalPages > 1) {
+      dotsContainer.innerHTML = Array.from({ length: totalPages }, (_, i) =>
+        `<button type="button" class="articles-preview-dot${i === 0 ? ' active' : ''}" data-page="${i}" aria-label="עמוד ${i + 1}"></button>`
+      ).join('');
+      dotsContainer.querySelectorAll('.articles-preview-dot').forEach(d => {
+        d.addEventListener('click', () => goTo(Number(d.dataset.page)));
+      });
+      prevBtn.addEventListener('click', () => goTo(currentPage - 1));
+      nextBtn.addEventListener('click', () => goTo(currentPage + 1));
+    } else {
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+      dotsContainer.style.display = 'none';
+    }
+
+    renderPage();
   } catch (e) {
-    const section = document.querySelector('.articles-preview-section');
     if (section) section.style.display = 'none';
   }
 })();
