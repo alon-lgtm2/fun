@@ -1026,7 +1026,7 @@ function showArticleDetail(article) {
     <div class="article-detail">
       ${article.image ? `
         <div class="article-detail-image-wrap">
-          <img class="article-detail-hero" src="${article.image}" alt="${article.title}" onerror="this.parentElement.style.display='none'">
+          <img class="article-detail-hero" src="${article.image.startsWith('http') ? article.image : (article.image.startsWith('images/') ? article.image : 'images/' + article.image)}" alt="${article.title}" onerror="this.parentElement.style.display='none'">
           ${imageCredit ? `<div class="article-detail-credit">${imageCredit}</div>` : ''}
         </div>` : ''}
       <div class="article-detail-body">
