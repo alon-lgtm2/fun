@@ -122,6 +122,39 @@ If `content` is provided, clicking the article card opens a detail page on the s
 | [Umami](https://umami.is/) | Privacy-friendly analytics |
 | PWA (manifest + SW) | Mobile installability |
 
+## Branching Workflow
+
+| Branch | Purpose |
+|--------|---------|
+| `stage` | Default/development branch. All new work starts here. |
+| `main` | Production branch. Auto-deploys to GitHub Pages at [fun.israelis.nl](https://fun.israelis.nl). |
+
+### Development flow
+
+1. Create a feature branch off `stage`
+2. Do your work, commit, and push the feature branch
+3. Merge the feature branch into `stage` for testing
+4. When `stage` is stable and ready, merge `stage` into `main` to deploy
+
+**Important:** NEVER merge feature branches directly into `main`. Always go through `stage` first.
+
+```bash
+# Start new work
+git checkout stage
+git pull origin stage
+git checkout -b feature/my-change
+
+# After work is done, merge into stage
+git checkout stage
+git merge feature/my-change
+git push origin stage
+
+# When ready for production
+git checkout main
+git merge stage
+git push origin main
+```
+
 ## Local Development
 
 ```bash
@@ -135,11 +168,9 @@ Then open [http://localhost:3000](http://localhost:3000) (serve) or [http://loca
 
 ## Deployment
 
-Push to `main` on GitHub — the site is hosted and served from [fun.israelis.nl](https://fun.israelis.nl).
+The site is hosted on **GitHub Pages** and auto-deploys from the `main` branch. There is no build step -- pushing to `main` publishes the site directly.
 
-```bash
-git push origin main
-```
+See [DEPLOY-INSTRUCTIONS.md](DEPLOY-INSTRUCTIONS.md) for the full deployment workflow.
 
 ## Repository
 

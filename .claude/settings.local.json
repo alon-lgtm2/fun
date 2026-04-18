@@ -8,7 +8,15 @@
       "Bash(gh pr:*)",
       "Bash(git checkout:*)",
       "Bash(git merge:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "Bash(ls -lh /c/Users/PC/Documents/Websites/fun/*.html /c/Users/PC/Documents/Websites/fun/*.js /c/Users/PC/Documents/Websites/fun/*.json)",
+      "Bash(grep -o \"<title>[^<]*</title>\" /c/Users/PC/Documents/Websites/fun/*.html)",
+      "WebFetch(domain:doc-0s-c4-sheets.googleusercontent.com)",
+      "WebFetch(domain:az-ma-staging.onrender.com)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://fun.israelis.nl/images/glow.png\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://fun.israelis.nl/images/trainmodel.jpg\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://fun.israelis.nl/images/cat.png\")",
+      "WebFetch(domain:docs.google.com)"
     ]
   }
 }
