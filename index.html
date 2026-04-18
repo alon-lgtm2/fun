@@ -4179,7 +4179,9 @@ loadEvents();
       const heroImg = document.getElementById('heroArticleImg');
       const heroTitle = document.getElementById('heroArticleTitle');
       const heroSummary = document.getElementById('heroArticleSummary');
-      heroCard.href = heroRow.link || 'articles.html';
+      const heroHasContent = heroRow.content && heroRow.content.trim();
+      heroCard.href = heroHasContent ? `articles.html?article=${encodeURIComponent(heroRow.title)}` : (heroRow.link || 'articles.html');
+      if (heroHasContent) { heroCard.removeAttribute('target'); heroCard.removeAttribute('rel'); }
       const imgSrc = heroRow.image ? (heroRow.image.startsWith('http') ? heroRow.image : (heroRow.image.startsWith('images/') ? heroRow.image : 'images/' + heroRow.image)) : null;
       if (imgSrc) {
         heroImg.style.backgroundImage = `url(${imgSrc})`;
@@ -4191,7 +4193,7 @@ loadEvents();
       heroSummary.textContent = heroRow.summary || '';
       const heroAuthorEl = document.getElementById('heroArticleAuthor');
       if (heroRow.author) {
-        heroAuthorEl.textContent = '✍️ ' + heroRow.author;
+        heroAuthorEl.textContent = heroRow.author;
         heroAuthorEl.classList.remove('hidden');
       }
       heroSection.classList.remove('hidden');
