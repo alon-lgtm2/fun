@@ -2115,209 +2115,8 @@ body {
   font-size: 14px;
 }
 
-/* ===== SIGNUP BANNER ===== */
-.signup-banner {
-  background: rgba(155, 48, 255, 0.05);
-  color: var(--text);
-  text-align: center;
-  padding: 10px 20px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid rgba(155, 48, 255, 0.08);
-}
 
-.signup-banner.hidden { display: none !important; }
 
-.signup-banner-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  border: 1px solid rgba(155, 48, 255, 0.2);
-  border-radius: 100px;
-  background: white;
-  color: var(--purple);
-  font-family: 'Heebo', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.signup-banner-btn:hover { background: var(--purple); color: white; border-color: var(--purple); }
-
-/* ===== SIGN-IN MODAL (floating, delayed) ===== */
-.signin-modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-}
-
-.signin-modal-overlay.open {
-  display: flex;
-  animation: fadeIn 0.3s ease;
-}
-
-.signin-modal {
-  background: white;
-  border-radius: 20px;
-  padding: 36px 32px 28px;
-  max-width: 380px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  animation: slideUp 0.35s ease;
-  direction: rtl;
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.signin-modal-emoji {
-  font-size: 40px;
-  margin-bottom: 12px;
-}
-
-.signin-modal-title {
-  font-family: 'Heebo', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-
-.signin-modal-subtitle {
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  color: var(--text-light);
-  margin-bottom: 24px;
-  line-height: 1.5;
-}
-
-.signin-modal-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 28px;
-  border: none;
-  border-radius: 100px;
-  background: var(--gradient);
-  color: white;
-  font-family: 'Heebo', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 16px rgba(155, 48, 255, 0.25);
-  margin-bottom: 12px;
-}
-
-.signin-modal-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(155, 48, 255, 0.35);
-}
-
-.signin-modal-btn img {
-  width: 18px;
-  height: 18px;
-}
-
-.signin-modal-dismiss {
-  display: block;
-  background: none;
-  border: none;
-  color: var(--text-light);
-  font-family: 'Heebo', sans-serif;
-  font-size: 13px;
-  cursor: pointer;
-  margin: 0 auto;
-  padding: 4px 8px;
-}
-
-.signin-modal-dismiss:hover {
-  color: var(--text);
-}
-
-/* ===== STICKY SIGN-IN BAR (shown after modal dismiss) ===== */
-.signin-sticky-bar {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  background: white;
-  border-top: 1px solid rgba(155, 48, 255, 0.1);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-  padding: 12px 20px;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  font-family: 'Heebo', sans-serif;
-  animation: slideUpBar 0.3s ease;
-}
-
-.signin-sticky-bar.visible {
-  display: flex;
-}
-
-@keyframes slideUpBar {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
-.signin-sticky-bar-text {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.signin-sticky-bar-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 22px;
-  border: none;
-  border-radius: 100px;
-  background: var(--gradient);
-  color: white;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 3px 12px rgba(155, 48, 255, 0.25);
-  white-space: nowrap;
-}
-
-.signin-sticky-bar-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 5px 16px rgba(155, 48, 255, 0.35);
-}
-
-.signin-sticky-bar-btn img {
-  width: 16px;
-  height: 16px;
-}
 
 /* ===== PROFILE MODAL ===== */
 .profile-modal-overlay {
@@ -2701,14 +2500,6 @@ body {
   </div>
 </div>
 
-<!-- SIGNUP BANNER (shown when not logged in) -->
-<div class="signup-banner hidden" id="signupBanner">
-  <span>הצטרפו לקהילה שלנו וגלו את כל הפעילויות</span>
-  <button class="signup-banner-btn" onclick="signInWithGoogle()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:16px;height:16px;">
-    התחברו עם Google
-  </button>
-</div>
 
 <!-- STICKY NAV -->
 <nav class="sticky-nav">
@@ -4400,28 +4191,6 @@ loadEvents();
   </div>
 </div>
 
-<!-- Sign-in Modal (floating, delayed) -->
-<div class="signin-modal-overlay" id="signinModal">
-  <div class="signin-modal">
-    <div class="signin-modal-emoji">🎪</div>
-    <div class="signin-modal-title">גלו את כל הפעילויות</div>
-    <div class="signin-modal-subtitle">התחברו כדי לראות מיקום, מחירים, ניווט ועוד</div>
-    <button class="signin-modal-btn" onclick="signInWithGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-      התחברו עם Google
-    </button>
-    <button class="signin-modal-dismiss" onclick="dismissSigninModal()">אחר כך</button>
-  </div>
-</div>
-
-<!-- Sticky sign-in bar (shown after modal dismiss) -->
-<div class="signin-sticky-bar" id="signinStickyBar">
-  <span class="signin-sticky-bar-text">🔒 רוצים לראות הכל?</span>
-  <button class="signin-sticky-bar-btn" onclick="signInWithGoogle()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-    התחברו עם Google
-  </button>
-</div>
 
 <!-- Firebase Auth -->
 <script src="auth.js"></script>
@@ -4443,13 +4212,6 @@ function onUserLoggedIn(needsProfileCompletion) {
   document.querySelectorAll('.event-card.gated').forEach(card => {
     card.classList.remove('gated');
   });
-  // Hide signup banner, sign-in modal, and sticky bar
-  const banner = document.getElementById('signupBanner');
-  if (banner) banner.classList.add('hidden');
-  dismissSigninModal();
-  const stickyBar = document.getElementById('signinStickyBar');
-  if (stickyBar) stickyBar.classList.remove('visible');
-
   // Update profile name in nav
   const profileName = document.getElementById('profileName');
   if (profileName && currentUser) {
@@ -4473,15 +4235,6 @@ function onUserLoggedIn(needsProfileCompletion) {
 
 function onUserLoggedOut() {
   applyBlurGate();
-  const banner = document.getElementById('signupBanner');
-  if (banner) banner.classList.remove('hidden');
-  // If modal was already dismissed this session, show sticky bar directly
-  if (signinModalDismissed) {
-    const bar = document.getElementById('signinStickyBar');
-    if (bar) bar.classList.add('visible');
-  } else {
-    scheduleSigninModal();
-  }
 }
 
 // ===== AUTH GATE =====
@@ -4499,48 +4252,6 @@ function applyBlurGate() {
   });
 }
 
-// ===== FLOATING SIGN-IN MODAL =====
-let signinModalShown = false;
-let signinModalDismissed = sessionStorage.getItem('signinModalDismissed') === '1';
-let _signinScrollHandler = null;
-
-function scheduleSigninModal() {
-  if (signinModalDismissed || signinModalShown || currentUser) return;
-
-  const timer = setTimeout(showSigninModal, 4000);
-
-  _signinScrollHandler = function() {
-    if (window.scrollY > 400 && !signinModalShown) {
-      clearTimeout(timer);
-      showSigninModal();
-      window.removeEventListener('scroll', _signinScrollHandler);
-    }
-  };
-  window.addEventListener('scroll', _signinScrollHandler, { passive: true });
-}
-
-function showSigninModal() {
-  if (signinModalShown || signinModalDismissed || currentUser) return;
-  signinModalShown = true;
-  const modal = document.getElementById('signinModal');
-  if (modal) modal.classList.add('open');
-}
-
-function dismissSigninModal() {
-  signinModalDismissed = true;
-  signinModalShown = true;
-  const modal = document.getElementById('signinModal');
-  if (modal) modal.classList.remove('open');
-  sessionStorage.setItem('signinModalDismissed', '1');
-  if (_signinScrollHandler) {
-    window.removeEventListener('scroll', _signinScrollHandler);
-  }
-  // Show sticky bar as persistent CTA (only if not logged in)
-  if (!currentUser) {
-    const bar = document.getElementById('signinStickyBar');
-    if (bar) bar.classList.add('visible');
-  }
-}
 
 // Hook into the render cycle to apply blur gate after cards are rendered
 const _originalRender = render;
@@ -4648,10 +4359,6 @@ document.getElementById('profileModal').addEventListener('click', function(e) {
   if (e.target === this) closeProfileModal();
 });
 
-// Close sign-in modal on backdrop click
-document.getElementById('signinModal').addEventListener('click', function(e) {
-  if (e.target === this) dismissSigninModal();
-});
 
 // ===== REPORT EVENT =====
 function toggleReportEvent(eventId) {
