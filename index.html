@@ -1737,6 +1737,12 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.hero-article-author {
+  font-size: 12px;
+  color: var(--text-lighter);
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
 .hero-article-cta {
   font-size: 14px;
   font-weight: 700;
@@ -2697,6 +2703,7 @@ body {
       <div class="hero-article-body">
         <div class="hero-article-title" id="heroArticleTitle"></div>
         <div class="hero-article-summary" id="heroArticleSummary"></div>
+        <div class="hero-article-author hidden" id="heroArticleAuthor"></div>
         <span class="hero-article-cta">קראו עוד ←</span>
       </div>
     </a>
@@ -4182,6 +4189,11 @@ loadEvents();
       }
       heroTitle.textContent = heroRow.title;
       heroSummary.textContent = heroRow.summary || '';
+      const heroAuthorEl = document.getElementById('heroArticleAuthor');
+      if (heroRow.author) {
+        heroAuthorEl.textContent = '✍️ ' + heroRow.author;
+        heroAuthorEl.classList.remove('hidden');
+      }
       heroSection.classList.remove('hidden');
     }
 
