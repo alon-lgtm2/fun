@@ -3402,8 +3402,9 @@ function renderCalendar() {
     }
   });
 
-  // Only show Saturday (6), Sunday (0), and public holiday / vacation dates
+  // Only show Saturday (6), Sunday (0), and public holiday / vacation dates — never past dates
   const sorted = Object.keys(groups).sort().filter(date => {
+    if (date < today) return false;
     const dow = new Date(date + 'T00:00:00').getDay();
     return dow === 0 || dow === 6 || getHolidayInfo(date) !== null;
   });
