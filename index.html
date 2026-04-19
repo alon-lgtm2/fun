@@ -3261,9 +3261,10 @@ function eventMatchesFilters(e) {
 
 function getFilteredEvents() {
   const { start: windowStart, end: windowEnd } = getActiveWindow();
+  const todayStr = localDateStr(new Date());
   let filtered = events.filter(e => {
     const endDate = e.endDate || e.date;
-    if (endDate < windowStart || e.date > windowEnd) return false;
+    if (endDate < todayStr || e.date > windowEnd) return false;
     return eventMatchesFilters(e);
   });
   if (maxDriveMinutes != null && userLat != null) {
