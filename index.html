@@ -1084,6 +1084,7 @@ body {
 }
 
 .etag-area { background: rgba(155,48,255,0.08); color: var(--purple); }
+.etag-featured { background: rgba(255,179,0,0.18); color: #B7791F; font-weight: 700; }
 .etag-type { background: rgba(46,204,64,0.1); color: var(--green-dark); }
 .etag-free { background: rgba(255,193,7,0.15); color: #D49B00; }
 .etag-museum { background: rgba(121,85,72,0.1); color: #5D4037; }
@@ -2510,6 +2511,7 @@ body {
 
     <div class="filters-row" id="filters">
       <button class="filter-pill active" data-filter="all">הכל</button>
+      <button class="filter-pill" data-filter="featured">⭐ המומלצים שלנו</button>
       <button class="filter-pill" data-filter="liked" id="likedFilterPill">❤️ מועדפים <span class="liked-filter-count" id="likedToggleCount"></span></button>
       <button class="filter-pill" data-filter="museumkaart">✅ Museumkaart</button>
       <button class="filter-pill" data-filter="free">🆓 חינם</button>
@@ -2817,6 +2819,7 @@ const DUTCH_CITIES = [
   { name: 'מאסטריכט', en: 'Maastricht', lat: 50.8514, lng: 5.6910 },
   { name: 'ליידן', en: 'Leiden', lat: 52.1601, lng: 4.4970 },
   { name: 'אמרספורט', en: 'Amersfoort', lat: 52.1561, lng: 5.3878 },
+  { name: 'הילברסום', en: 'Hilversum', lat: 52.2292, lng: 5.1669 },
 ];
 
 function findCityByProfile(profileCity) {
@@ -3211,6 +3214,7 @@ function rowToEvent(row, id) {
     lat: parseFloat(row.lat) || 0,
     lng: parseFloat(row.lng) || 0,
     museumkaart: (row.museumkaart || '').toUpperCase() === 'TRUE',
+    featured: (row.featured || '').toUpperCase() === 'TRUE',
     duration: row.duration ? parseFloat(row.duration) : null,
   };
 }
@@ -3253,6 +3257,7 @@ function eventMatchesFilters(e) {
   for (const f of activeFilters) {
     if (f === 'free' && !e.free) return false;
     if (f === 'museumkaart' && !e.museumkaart) return false;
+    if (f === 'featured' && !e.featured) return false;
     if (f === 'liked' && !isLiked(e.id)) return false;
     if (['outdoor','indoor','music','theater','market','workshop','sport'].includes(f) && !e.types.includes(f)) return false;
   }
@@ -3299,6 +3304,7 @@ function cardHTML(e, i, displayDate) {
       ${e.link ? '</a>' : ''}
       <div class="event-body">
         <div class="event-tags">
+          ${e.featured ? '<span class="etag etag-featured">⭐ מומלץ</span>' : ''}
           <span class="etag etag-area">📍 ${e.area}</span>
           ${e.types.map(t => `<span class="etag etag-type">${typeEmoji(t)} ${typeLabel(t)}</span>`).join('')}
           ${e.free ? '<span class="etag etag-free">🆓 חינם</span>' : ''}
@@ -3593,6 +3599,7 @@ function updateFilterAvailability() {
     const wouldMatch = currentFiltered.some(e => {
       if (f === 'free') return e.free;
       if (f === 'museumkaart') return e.museumkaart;
+      if (f === 'featured') return e.featured;
       if (f === 'liked') return isLiked(e.id);
       return e.types.includes(f);
     });
