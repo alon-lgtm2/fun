@@ -12,6 +12,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://fun.israelis.nl/">
 <title>אז מה עושים היום? -fun.israelis.nl</title>
 <meta name="description" content="פעילויות איכות עם המשפחה בהולנד בסופ״ש">
 <meta property="og:title" content="אז מה עושים היום">
@@ -2081,6 +2082,9 @@ body {
   background-position: center;
 }
 
+/* Sign-in hidden since 2026-10-22: the site is open to everyone. Remove this rule to bring it back. */
+.hero-auth-corner { display: none !important; }
+
 /* ===== AUTH GATE ===== */
 .event-card.gated .event-actions {
   display: none;
@@ -2700,6 +2704,7 @@ body {
 <footer class="footer">
   <p>נבנה באהבה לקהילה הישראלית בהולנד 🧡</p>
   <p style="margin-top:5px">חלק מ-<a href="https://israelis.nl">israelis.nl</a></p>
+  <p style="margin-top:5px"><a href="/weekend/">כל האירועים של סוף השבוע ברשימה אחת</a></p>
 </footer>
 
 <!-- SUGGESTION MODAL -->
@@ -4253,7 +4258,11 @@ function onUserLoggedOut() {
 }
 
 // ===== AUTH GATE =====
+// Off since 2026-10-22: every event is open to everyone, and indexable. The gate is kept,
+// switched off, for a later members' offer. Set to true to bring it back.
+const AUTH_GATE_ENABLED = false;
 function applyBlurGate() {
+  if (!AUTH_GATE_ENABLED) return;
   document.querySelectorAll('.event-card').forEach(card => {
     card.classList.add('gated');
     const body = card.querySelector('.event-body');
