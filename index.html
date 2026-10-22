@@ -1099,6 +1099,7 @@ body {
 }
 
 .event-desc {
+  white-space: pre-line; /* keep the paragraph breaks of the Facebook comment */
   font-size: 13px;
   color: var(--text-light);
   line-height: 1.55;
@@ -1470,6 +1471,7 @@ body {
 }
 
 .popup-title { font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.popup-desc { white-space: pre-line; }
 .popup-desc { font-size: 12px; color: var(--text); line-height: 1.5; margin-bottom: 6px; }
 .popup-meta { color: var(--text-light); font-size: 12px; }
 .popup-links { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
@@ -2771,7 +2773,9 @@ body {
 <script>
 // ===== CONFIG =====
 // REPLACE with your published Google Sheet CSV URL
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCExzP4oP5lNa2JA5SOCRQ49TBxECUYEaAll9BXJ28GE4ojTifUq3jjuL-U9gEdRdz5IUVJnAM0pSX/pub?gid=0&single=true&output=csv';
+// Events are published by the azma weekend run into data/events.csv in this repo (since 2026-10-22).
+// The query string defeats the CDN cache so a new run shows within a minute of the push.
+const SHEET_CSV_URL = '/data/events.csv?v=' + Date.now();
 
 // ===== HOLIDAYS =====
 const holidays = [
@@ -3385,18 +3389,20 @@ function renderList() {
 function renderCalendar() {
   const el = document.getElementById('calendarPanel');
   const today = localDateStr(new Date());
-  const { start: windowStart } = getActiveWindow();
+  const { start: windowStart, end: windowEnd } = getActiveWindow();
 
   const allFiltered = getFilteredEvents();
   updateResultsBar(allFiltered);
 
   if (!allFiltered.length) { el.innerHTML = ''; return; }
 
-  // Group events by date (expand multi-day events across each day)
+  // Group events by date (expand multi-day events across each day, but only
+  // within the display window — never explode an ongoing event across months).
   const groups = {};
   allFiltered.forEach(e => {
     const start = e.date >= windowStart ? e.date : windowStart;
-    const end = e.endDate || e.date;
+    let end = e.endDate || e.date;
+    if (end > windowEnd) end = windowEnd; // clip to the upcoming-weekend window
     let d = new Date(start + 'T00:00:00');
     const endD = new Date(end + 'T00:00:00');
     while (d <= endD) {
@@ -3783,18 +3789,18 @@ function localDateStr(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-// Returns the rolling Thu–Wed window to display.
-// On Thursday the window resets to the new week (Thu → next Wed).
+// Returns the display window: from today through the upcoming weekend (its Sunday).
+// Scope is deliberately the single upcoming weekend. During a school vacation the
+// in-between weekdays up to that Sunday also surface (they pass the holiday filter
+// in renderCalendar), but nothing beyond the upcoming Sunday is ever shown.
 function getActiveWindow() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const day = today.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
-  const daysBack = (day - 4 + 7) % 7; // days since most recent Thursday
-  const windowStart = new Date(today);
-  windowStart.setDate(today.getDate() - daysBack);
-  const windowEnd = new Date(windowStart);
-  windowEnd.setDate(windowStart.getDate() + 6); // the following Wednesday
-  return { start: localDateStr(windowStart), end: localDateStr(windowEnd) };
+  const dow = today.getDay(); // 0=Sun .. 6=Sat
+  const daysToSunday = (7 - dow) % 7; // 0 if today is already Sunday
+  const windowEnd = new Date(today);
+  windowEnd.setDate(today.getDate() + daysToSunday);
+  return { start: localDateStr(today), end: localDateStr(windowEnd) };
 }
 
 function getEventDates(e, minDate, maxDate) {
