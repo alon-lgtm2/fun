@@ -3461,9 +3461,10 @@ function renderMap() {
   if (!map) {
     map = L.map('mapContainer', { zoomControl: false }).setView([52.3, 4.9], 8);
     L.control.zoom({ position: 'topright' }).addTo(map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      maxZoom: 18
+    // CARTO began demanding an API key (tiles read "API KEY REQUIRED", reported 2026-10-23); OpenStreetMap needs none.
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19
     }).addTo(map);
   }
 
