@@ -28,17 +28,17 @@
 
 ## Data Sources
 
-Event, place, and article data is loaded dynamically from Google Sheets, published as CSV:
+Weekend events load from `data/events.csv` in this repository. Places and articles continue to load from Google Sheets published as CSV. Each row represents one dated occurrence, so day-specific hours can differ between Saturday and Sunday.
 
 | Data | Sheet GID | Used in |
 |------|-----------|---------|
-| Weekend events | `gid=0` | `index.html` → `loadEvents()` |
+| Weekend events | Local `data/events.csv` | `index.html` → `loadEvents()` |
 | Recommended places | `gid=993728456` | `places.html` → `loadPlaces()` |
 | Articles | `gid=478633181` | `articles.html` → `loadArticles()` |
 
 **Spreadsheet:** [Google Sheets](https://docs.google.com/spreadsheets/d/1Gyd7c8hWg3CFKUXCnEKa1WRlfnAXpjWGuPvhvviTSBc/edit)
 
-### Events sheet columns (gid=0)
+### Event CSV columns
 Events are parsed via `parseCSV()` in `index.html`. Each row represents a weekend event with fields such as title, date, location, image URL, details link, etc.
 
 ### Articles sheet columns (gid=478633181)
@@ -200,3 +200,7 @@ fun/
 └── .claude/
     └── launch.json     # Dev server config
 ```
+
+## Weekend of 21 and 22 November 2026
+
+This update contains 40 dated event rows, 20 for each day, covering 27 distinct events. The prior CSV is preserved in data/archive/. Event detail and navigation links use the organiser and named Maps URLs. Images without an appropriate verified asset use the existing card fallback.

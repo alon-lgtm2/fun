@@ -3300,7 +3300,8 @@ function cardHTML(e, i, displayDate) {
   const shareText = `${e.title}\n${e.location}\n${dateLabel} | ${e.time}\n${e.price}\n${e.link ? e.link + '\n' : ''}\nלפעילויות נוספות בקרו ב"אז מה עושים היום?"\nhttps://fun.israelis.nl`;
   const whatsappText = encodeURIComponent(shareText);
   const fbUrl = encodeURIComponent(e.link || 'https://fun.israelis.nl');
-  const navUrl = e.lat && e.lng ? `https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}` : '';
+  const navQuery = e.location || [e.title, e.area].filter(Boolean).join(' ');
+  const navUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(navQuery);
   const imgUrl = getImageURL(e.image);
   const noImgStyle = `background:var(--gradient-soft);display:flex;align-items:center;justify-content:center;font-size:40px;`;
 
